@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="hid">
+      <UniqueIdentifier>{3A7B880B-A684-887C-2F00-9F7C9B08947C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer">
+      <UniqueIdentifier>{9C6AA017-8837-FB22-B150-E9CA9D7C30B1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer\vk">
+      <UniqueIdentifier>{AC8C16AE-1842-8FA3-A136-897A0DEB85A7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Core.h" />
+    <ClInclude Include="src\hid\Window.h">
+      <Filter>hid</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\vk\Init.h">
+      <Filter>renderer\vk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\vk\Renderer.h">
+      <Filter>renderer\vk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\vk\Swapchain.h">
+      <Filter>renderer\vk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\vk\Types.h">
+      <Filter>renderer\vk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\vk\ValidationLayers.h">
+      <Filter>renderer\vk</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\hid\Window.cpp">
+      <Filter>hid</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\renderer\vk\Init.cpp">
+      <Filter>renderer\vk</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderer\vk\Renderer.cpp">
+      <Filter>renderer\vk</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderer\vk\Swapchain.cpp">
+      <Filter>renderer\vk</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderer\vk\ValidationLayers.cpp">
+      <Filter>renderer\vk</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

@@ -7,3 +7,9 @@
 [submodule "dependencies/stb"]
 	path = dependencies/stb
 	url = https://github.com/nothings/stb.git
+[submodule "premake-bin/export-compile-commands"]
+	path = premake-bin/export-compile-commands
+	url = https://github.com/tarruda/premake-export-compile-commands
+[submodule "premake-bin/premake-ecc"]
+	path = premake-bin/premake-ecc
+	url = https://github.com/MattBystrin/premake-ecc.git
