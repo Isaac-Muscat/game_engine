@@ -127,13 +127,11 @@ namespace vk::init {
         return imageView;
     }
 
-    VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities, Window window) {
+    VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities, uint32_t width, uint32_t height) {
         if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max()) {
             return capabilities.currentExtent;
         }
         else {
-            int width, height;
-            window.GetFramebufferSize(&width, &height);
 
             VkExtent2D actualExtent = {
                 static_cast<uint32_t>(width),

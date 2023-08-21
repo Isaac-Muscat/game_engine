@@ -9,7 +9,7 @@ namespace vk {
         mSwapChainSupportDetails = init::querySwapChainSupport(physicalDevice, surface);
         mSurfaceFormat = init::chooseSwapSurfaceFormat(mSwapChainSupportDetails.formats);
         mPresentMode = init::chooseSwapPresentMode(mSwapChainSupportDetails.presentModes);
-        mExtent = init::chooseSwapExtent(mSwapChainSupportDetails.capabilities, window);
+        mExtent = init::chooseSwapExtent(mSwapChainSupportDetails.capabilities, window.mWidth, window.mHeight);
 
          uint32_t imageCount = mSwapChainSupportDetails.capabilities.minImageCount + 1;
          if (mSwapChainSupportDetails.capabilities.maxImageCount > 0 && imageCount > mSwapChainSupportDetails.capabilities.maxImageCount) {

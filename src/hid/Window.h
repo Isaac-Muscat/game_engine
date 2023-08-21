@@ -7,6 +7,10 @@
 
 class Window {
 public:
+	uint32_t mWidth;
+	uint32_t mHeight;
+	std::string mName;
+public:
 	Window(int width, int height, std::string name);
 	~Window();
 	bool ShouldClose() { return glfwWindowShouldClose(mWindow); }
@@ -16,7 +20,4 @@ public:
 	void GetFramebufferSize(int* width, int* height);
 private:
 	GLFWwindow* mWindow;
-	int mWidth;
-	int mHeight;
-	std::string mName;
 };
