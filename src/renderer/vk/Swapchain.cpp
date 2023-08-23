@@ -4,9 +4,9 @@
 
 namespace vk {
 
-    Swapchain::Swapchain(VkPhysicalDevice physicalDevice, VkDevice device, VkSurfaceKHR surface, const Window& window) {
+    Swapchain::Swapchain(const VulkanContext& context, const Window& window) {
 
-        mSwapChainSupportDetails = init::querySwapChainSupport(physicalDevice, surface);
+        mSwapChainSupportDetails = init::querySwapChainSupport(context.physical_device, context.surface);
         mSurfaceFormat = init::chooseSwapSurfaceFormat(mSwapChainSupportDetails.formats);
         mPresentMode = init::chooseSwapPresentMode(mSwapChainSupportDetails.presentModes);
         mExtent = init::chooseSwapExtent(mSwapChainSupportDetails.capabilities, window.mWidth, window.mHeight);
@@ -18,7 +18,7 @@ namespace vk {
 
          VkSwapchainCreateInfoKHR createInfo{};
          createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-         createInfo.surface = surface;
+         createInfo.surface = context.surface;
          createInfo.minImageCount = imageCount;
          createInfo.imageFormat = mSurfaceFormat.format;
          createInfo.imageColorSpace = mSurfaceFormat.colorSpace;
@@ -26,7 +26,7 @@ namespace vk {
          createInfo.imageArrayLayers = 1;
          createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
-         QueueFamilyIndices indices = init::findQueueFamilies(physicalDevice, surface);
+         QueueFamilyIndices indices = init::findQueueFamilies(context.physical_device, context.surface);
          uint32_t queueFamilyIndices[] = { indices.graphicsFamily.value(), indices.presentFamily.value() };
 
          if (indices.graphicsFamily != indices.presentFamily) {
@@ -43,15 +43,16 @@ namespace vk {
          createInfo.clipped = VK_TRUE;
          createInfo.oldSwapchain = VK_NULL_HANDLE;
 
-         assert(vkCreateSwapchainKHR(device, &createInfo, nullptr, &mSwapchain) == VK_SUCCESS && "failed to create swap chain!");
+         assert(vkCreateSwapchainKHR(context.device, &createInfo, nullptr, &mSwapchain) == VK_SUCCESS && "failed to create swap chain!");
 
-		 vkGetSwapchainImagesKHR(device, mSwapchain, &imageCount, nullptr);
+		 vkGetSwapchainImagesKHR(context.device, mSwapchain, &imageCount, nullptr);
 		 mSwapchainImages.resize(imageCount);
-		 vkGetSwapchainImagesKHR(device, mSwapchain, &imageCount, mSwapchainImages.data());
-         mSwapchainImageViews.resize(mSwapchainImageViews.size());
-        for (uint32_t i = 0; i < mSwapchainImages.size(); i++) {
-            mSwapchainImageViews[i] = init::createImageView(device, mSwapchainImages[i], mSurfaceFormat.format, VK_IMAGE_ASPECT_COLOR_BIT, 1);
-        }
+		 vkGetSwapchainImagesKHR(context.device, mSwapchain, &imageCount, mSwapchainImages.data());
+
+         mSwapchainImageViews.resize(mSwapchainImages.size());
+         for (uint32_t i = 0; i < mSwapchainImages.size(); i++) {
+             mSwapchainImageViews[i] = init::createImageView(context.device, mSwapchainImages[i], mSurfaceFormat.format, VK_IMAGE_ASPECT_COLOR_BIT, 1);
+         }
     }
 
 }

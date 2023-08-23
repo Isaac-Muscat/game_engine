@@ -31,6 +31,9 @@
     <ClInclude Include="src\renderer\vk\ValidationLayers.h">
       <Filter>renderer\vk</Filter>
     </ClInclude>
+    <ClInclude Include="src\renderer\vk\Shader.h">
+      <Filter>renderer\vk</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\hid\Window.cpp">
@@ -47,6 +50,9 @@
       <Filter>renderer\vk</Filter>
     </ClCompile>
     <ClCompile Include="src\renderer\vk\ValidationLayers.cpp">
+      <Filter>renderer\vk</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderer\vk\Shader.cpp">
       <Filter>renderer\vk</Filter>
     </ClCompile>
   </ItemGroup>

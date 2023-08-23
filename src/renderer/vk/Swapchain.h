@@ -8,8 +8,8 @@
 namespace vk {
 	class Swapchain {
 	public:
-		Swapchain(VkPhysicalDevice physicalDevice, VkDevice device, VkSurfaceKHR surface, const Window& window);
-	private:
+		Swapchain(const VulkanContext& context, const Window& window);
+
 		VkSwapchainKHR mSwapchain;
 		SwapChainSupportDetails mSwapChainSupportDetails;
 		VkSurfaceFormatKHR mSurfaceFormat;

@@ -1,7 +1,8 @@
 #pragma once
 #include "Core.h"
 #include "hid/Window.h"
-#include "renderer/vk/Swapchain.h"
+#include "Swapchain.h"
+#include "Shader.h"
 
 #include "vulkan/vulkan.h"
 
@@ -11,19 +12,15 @@ namespace vk {
 	class Renderer {
 	public:
 		void init(const Window& window);
+		void draw();
 		void destroy();
 
 	public:
-		VkInstance mInstance;
-		VkSurfaceKHR mSurface;
-		VkPhysicalDevice mPhysicalDevice;
-		VkDevice mDevice;
-		VkQueue mGraphicsQueue;
-		VkQueue mPresentQueue;
-		std::unique_ptr<Swapchain> mSwapchain;
-		
-		VkSampleCountFlagBits mMsaaSamples;
-		VkDebugUtilsMessengerEXT mDebugMessenger;
+		VulkanContext m_context {};
+		std::unique_ptr<Swapchain> m_swapchain;
+		VkRenderPass m_renderpass {};
+		VkDescriptorSetLayout m_descriptor_set_layout {};
+		std::shared_ptr<Shader> m_shader;
 	};
 	extern Renderer gRenderer;
 }
