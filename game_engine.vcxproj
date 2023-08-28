@@ -94,21 +94,23 @@
   <ItemGroup>
     <ClInclude Include="src\Core.h" />
     <ClInclude Include="src\hid\Window.h" />
+    <ClInclude Include="src\hid\Windows\WindowsWindow.h" />
+    <ClInclude Include="src\renderer\Renderer.h" />
     <ClInclude Include="src\renderer\vk\Init.h" />
-    <ClInclude Include="src\renderer\vk\Renderer.h" />
     <ClInclude Include="src\renderer\vk\Shader.h" />
     <ClInclude Include="src\renderer\vk\Swapchain.h" />
     <ClInclude Include="src\renderer\vk\Types.h" />
     <ClInclude Include="src\renderer\vk\ValidationLayers.h" />
+    <ClInclude Include="src\renderer\vk\VulkanRenderer.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\hid\Window.cpp" />
+    <ClCompile Include="src\hid\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\renderer\vk\Init.cpp" />
-    <ClCompile Include="src\renderer\vk\Renderer.cpp" />
     <ClCompile Include="src\renderer\vk\Shader.cpp" />
     <ClCompile Include="src\renderer\vk\Swapchain.cpp" />
     <ClCompile Include="src\renderer\vk\ValidationLayers.cpp" />
+    <ClCompile Include="src\renderer\vk\VulkanRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="dependencies\glfw\glfw.vcxproj">

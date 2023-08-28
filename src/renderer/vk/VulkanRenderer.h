@@ -1,6 +1,7 @@
 #pragma once
 #include "Core.h"
 #include "hid/Window.h"
+#include "renderer/Renderer.h"
 #include "Swapchain.h"
 #include "Shader.h"
 
@@ -9,10 +10,10 @@
 namespace vk {
 	// Singleton
 
-	class Renderer {
+	class VulkanRenderer : public Renderer {
 	public:
-		void init(const Window& window);
-		void draw();
+		VulkanRenderer();
+		virtual void draw() override;
 		void destroy();
 
 	public:
@@ -21,6 +22,6 @@ namespace vk {
 		VkRenderPass m_renderpass {};
 		VkDescriptorSetLayout m_descriptor_set_layout {};
 		std::shared_ptr<Shader> m_shader;
+		VkPipelineLayout m_pipeline_layout;
 	};
-	extern Renderer gRenderer;
 }

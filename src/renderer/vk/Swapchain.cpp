@@ -1,15 +1,18 @@
-#include "renderer/vk/Init.h"
-#include "renderer/vk/Swapchain.h"
-#include "renderer/vk/Renderer.h"
+#include "Init.h"
+#include "Swapchain.h"
+#include "VulkanRenderer.h"
 
 namespace vk {
 
-    Swapchain::Swapchain(const VulkanContext& context, const Window& window) {
+    Swapchain::Swapchain(const VulkanContext& context) {
 
         mSwapChainSupportDetails = init::querySwapChainSupport(context.physical_device, context.surface);
         mSurfaceFormat = init::chooseSwapSurfaceFormat(mSwapChainSupportDetails.formats);
         mPresentMode = init::chooseSwapPresentMode(mSwapChainSupportDetails.presentModes);
-        mExtent = init::chooseSwapExtent(mSwapChainSupportDetails.capabilities, window.mWidth, window.mHeight);
+
+        int width, height;
+        g_window->get_frame_buffer_size(&width, &height);
+        mExtent = init::chooseSwapExtent(mSwapChainSupportDetails.capabilities, width, height);
 
          uint32_t imageCount = mSwapChainSupportDetails.capabilities.minImageCount + 1;
          if (mSwapChainSupportDetails.capabilities.maxImageCount > 0 && imageCount > mSwapChainSupportDetails.capabilities.maxImageCount) {

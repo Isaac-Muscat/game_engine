@@ -4,6 +4,9 @@
     <Filter Include="hid">
       <UniqueIdentifier>{3A7B880B-A684-887C-2F00-9F7C9B08947C}</UniqueIdentifier>
     </Filter>
+    <Filter Include="hid\Windows">
+      <UniqueIdentifier>{74BF12C8-E074-8BBD-6969-8594D51D82C1}</UniqueIdentifier>
+    </Filter>
     <Filter Include="renderer">
       <UniqueIdentifier>{9C6AA017-8837-FB22-B150-E9CA9D7C30B1}</UniqueIdentifier>
     </Filter>
@@ -16,10 +19,16 @@
     <ClInclude Include="src\hid\Window.h">
       <Filter>hid</Filter>
     </ClInclude>
+    <ClInclude Include="src\hid\Windows\WindowsWindow.h">
+      <Filter>hid\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\Renderer.h">
+      <Filter>renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\renderer\vk\Init.h">
       <Filter>renderer\vk</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\vk\Renderer.h">
+    <ClInclude Include="src\renderer\vk\Shader.h">
       <Filter>renderer\vk</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer\vk\Swapchain.h">
@@ -31,19 +40,19 @@
     <ClInclude Include="src\renderer\vk\ValidationLayers.h">
       <Filter>renderer\vk</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\vk\Shader.h">
+    <ClInclude Include="src\renderer\vk\VulkanRenderer.h">
       <Filter>renderer\vk</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\hid\Window.cpp">
-      <Filter>hid</Filter>
+    <ClCompile Include="src\hid\Windows\WindowsWindow.cpp">
+      <Filter>hid\Windows</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\renderer\vk\Init.cpp">
       <Filter>renderer\vk</Filter>
     </ClCompile>
-    <ClCompile Include="src\renderer\vk\Renderer.cpp">
+    <ClCompile Include="src\renderer\vk\Shader.cpp">
       <Filter>renderer\vk</Filter>
     </ClCompile>
     <ClCompile Include="src\renderer\vk\Swapchain.cpp">
@@ -52,7 +61,7 @@
     <ClCompile Include="src\renderer\vk\ValidationLayers.cpp">
       <Filter>renderer\vk</Filter>
     </ClCompile>
-    <ClCompile Include="src\renderer\vk\Shader.cpp">
+    <ClCompile Include="src\renderer\vk\VulkanRenderer.cpp">
       <Filter>renderer\vk</Filter>
     </ClCompile>
   </ItemGroup>

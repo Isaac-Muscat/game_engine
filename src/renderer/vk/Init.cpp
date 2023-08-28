@@ -1,11 +1,20 @@
-#include "renderer/vk/init.h"
-#include "renderer/vk/Renderer.h"
-#include "renderer/vk/ValidationLayers.h"
+#include "Init.h"
+#include "VulkanRenderer.h"
+#include "ValidationLayers.h"
 #include "hid/Window.h"
 
 namespace vk::init {
 
-    VkInstance createInstance(bool enableValidationLayers, const Window& window) {
+    const std::vector<const char*> deviceExtensions = {
+        VK_KHR_SWAPCHAIN_EXTENSION_NAME
+    };
+
+    std::vector<VkDynamicState> dynamicStates = {
+		VK_DYNAMIC_STATE_VIEWPORT,
+		VK_DYNAMIC_STATE_SCISSOR
+    };
+
+    VkInstance createInstance(bool enableValidationLayers) {
         assert(enableValidationLayers && checkValidationLayerSupport() && "validation layers requested, but not available!");
 
         VkApplicationInfo appInfo{};
@@ -16,7 +25,7 @@ namespace vk::init {
         appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
         appInfo.apiVersion = VK_API_VERSION_1_0;
 
-		auto extensions = window.GetRequiredExtensions(enableValidationLayers);
+		auto extensions = g_window->get_required_extensions(enableValidationLayers);
 
         VkInstanceCreateInfo createInfo{};
         createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
@@ -391,7 +400,7 @@ namespace vk::init {
         return descriptorSetLayout;
 
     }
-    VkPipeline createGraphicsPipeline(const VulkanContext& context, const std::shared_ptr<Shader>& shader, const std::unique_ptr<Swapchain>& swapchain, VkRenderPass renderPass, VkDescriptorSetLayout descriptorSetLayout) {
+    VkPipeline createGraphicsPipeline(const VulkanContext& context, const std::shared_ptr<Shader>& shader, const std::unique_ptr<Swapchain>& swapchain, VkRenderPass renderPass, VkDescriptorSetLayout descriptorSetLayout, VkPipelineLayout* pipelineLayout) {
         VkPipelineShaderStageCreateInfo vertShaderStageInfo{};
         vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
         vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
@@ -507,7 +516,7 @@ namespace vk::init {
         pipelineLayoutInfo.pushConstantRangeCount = 0; // Optional
         pipelineLayoutInfo.pPushConstantRanges = nullptr; // Optional
 
-        if (vkCreatePipelineLayout(context.device, &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
+        if (vkCreatePipelineLayout(context.device, &pipelineLayoutInfo, nullptr, pipelineLayout) != VK_SUCCESS) {
             throw std::runtime_error("failed to create pipeline layout!");
         }
 
@@ -523,7 +532,7 @@ namespace vk::init {
         pipelineInfo.pDepthStencilState = &depthStencil;
         pipelineInfo.pColorBlendState = &colorBlending;
         pipelineInfo.pDynamicState = &dynamicState;
-        pipelineInfo.layout = pipelineLayout;
+        pipelineInfo.layout = *pipelineLayout;
         pipelineInfo.renderPass = renderPass;
         pipelineInfo.subpass = 0;
         pipelineInfo.basePipelineHandle = VK_NULL_HANDLE; // Optional

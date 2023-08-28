@@ -1,6 +1,6 @@
 #pragma once
 #include "Core.h"
-#include "renderer/vk/Types.h"
+#include "Types.h"
 #include "hid/Window.h"
 #include <vulkan/vulkan.h>
 
@@ -8,7 +8,7 @@
 namespace vk {
 	class Swapchain {
 	public:
-		Swapchain(const VulkanContext& context, const Window& window);
+		Swapchain(const VulkanContext& context);
 
 		VkSwapchainKHR mSwapchain;
 		SwapChainSupportDetails mSwapChainSupportDetails;
