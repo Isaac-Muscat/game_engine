@@ -6,7 +6,7 @@ project "game_engine"
 	objdir "%{wks.location}/bin/obj/%{cfg.buildcfg}/%{prj.name}"
 
 	pchheader "pch.h"
-	pchsource "src/pch.h"
+	pchsource "src/pch.cpp"
 
 	files {
 		"src/**.h",

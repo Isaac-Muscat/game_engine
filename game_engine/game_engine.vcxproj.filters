@@ -58,6 +58,7 @@
       <Filter>hid\Windows</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\pch.cpp" />
     <ClCompile Include="src\renderer\vk\Image.cpp">
       <Filter>renderer\vk</Filter>
     </ClCompile>
