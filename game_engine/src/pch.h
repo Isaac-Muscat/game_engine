@@ -19,4 +19,3 @@
 #include <cstdlib>
 #include <stdint.h>
 #include <memory>
-

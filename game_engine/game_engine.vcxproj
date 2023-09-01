@@ -41,15 +41,15 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>bin\Debug\game_engine\</OutDir>
-    <IntDir>bin\obj\Debug\game_engine\</IntDir>
+    <OutDir>..\bin\Debug\game_engine\</OutDir>
+    <IntDir>..\bin\obj\Debug\game_engine\</IntDir>
     <TargetName>game_engine</TargetName>
     <TargetExt>.exe</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>bin\Release\game_engine\</OutDir>
-    <IntDir>bin\obj\Release\game_engine\</IntDir>
+    <OutDir>..\bin\Release\game_engine\</OutDir>
+    <IntDir>..\bin\obj\Release\game_engine\</IntDir>
     <TargetName>game_engine</TargetName>
     <TargetExt>.exe</TargetExt>
   </PropertyGroup>
@@ -58,7 +58,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;C:\VulkanSDK\1.3.231.0\Include;dependencies\glfw\include;dependencies\glm;dependencies\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;C:\VulkanSDK\1.3.231.0\Include;..\dependencies\glfw\include;..\dependencies\glm;..\dependencies\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -75,7 +75,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;C:\VulkanSDK\1.3.231.0\Include;dependencies\glfw\include;dependencies\glm;dependencies\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;C:\VulkanSDK\1.3.231.0\Include;..\dependencies\glfw\include;..\dependencies\glm;..\dependencies\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -92,13 +92,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Core.h" />
     <ClInclude Include="src\hid\Window.h" />
     <ClInclude Include="src\hid\Windows\WindowsWindow.h" />
+    <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\renderer\Renderer.h" />
+    <ClInclude Include="src\renderer\vk\Image.h" />
     <ClInclude Include="src\renderer\vk\Init.h" />
+    <ClInclude Include="src\renderer\vk\Mesh.h" />
     <ClInclude Include="src\renderer\vk\Shader.h" />
     <ClInclude Include="src\renderer\vk\Swapchain.h" />
+    <ClInclude Include="src\renderer\vk\Texture.h" />
     <ClInclude Include="src\renderer\vk\Types.h" />
     <ClInclude Include="src\renderer\vk\ValidationLayers.h" />
     <ClInclude Include="src\renderer\vk\VulkanRenderer.h" />
@@ -106,14 +109,17 @@
   <ItemGroup>
     <ClCompile Include="src\hid\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\renderer\vk\Image.cpp" />
     <ClCompile Include="src\renderer\vk\Init.cpp" />
+    <ClCompile Include="src\renderer\vk\Mesh.cpp" />
     <ClCompile Include="src\renderer\vk\Shader.cpp" />
     <ClCompile Include="src\renderer\vk\Swapchain.cpp" />
+    <ClCompile Include="src\renderer\vk\Texture.cpp" />
     <ClCompile Include="src\renderer\vk\ValidationLayers.cpp" />
     <ClCompile Include="src\renderer\vk\VulkanRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="dependencies\glfw\glfw.vcxproj">
+    <ProjectReference Include="..\dependencies\glfw\glfw.vcxproj">
       <Project>{9563977C-819A-980D-2A87-7E10169D140F}</Project>
     </ProjectReference>
   </ItemGroup>

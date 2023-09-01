@@ -1,5 +1,5 @@
 #pragma once
-#include "Core.h"
+#include "pch.h"
 
 #include <vulkan/vulkan.h>
 
@@ -13,6 +13,7 @@ namespace vk {
         VkDevice device;
         VkQueue graphics_queue;
         VkQueue present_queue;
+        VkCommandPool command_pool;
 
         VkSampleCountFlagBits msaa_samples;
         VkDebugUtilsMessengerEXT debug_messenger;

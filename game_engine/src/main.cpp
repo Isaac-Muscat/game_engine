@@ -1,13 +1,9 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
 
-#include <iostream>
-#include <stdexcept>
-#include <cstdlib>
-#include "Core.h"
+
+#include "pch.h"
 #include "renderer/vk/VulkanRenderer.h"
 #include "hid/Window.h"
 #include "hid/Windows/WindowsWindow.h"

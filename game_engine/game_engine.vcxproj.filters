@@ -15,23 +15,32 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Core.h" />
     <ClInclude Include="src\hid\Window.h">
       <Filter>hid</Filter>
     </ClInclude>
     <ClInclude Include="src\hid\Windows\WindowsWindow.h">
       <Filter>hid\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\renderer\Renderer.h">
       <Filter>renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\renderer\vk\Image.h">
+      <Filter>renderer\vk</Filter>
+    </ClInclude>
     <ClInclude Include="src\renderer\vk\Init.h">
+      <Filter>renderer\vk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\vk\Mesh.h">
       <Filter>renderer\vk</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer\vk\Shader.h">
       <Filter>renderer\vk</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer\vk\Swapchain.h">
+      <Filter>renderer\vk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\vk\Texture.h">
       <Filter>renderer\vk</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer\vk\Types.h">
@@ -49,13 +58,22 @@
       <Filter>hid\Windows</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\renderer\vk\Image.cpp">
+      <Filter>renderer\vk</Filter>
+    </ClCompile>
     <ClCompile Include="src\renderer\vk\Init.cpp">
+      <Filter>renderer\vk</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderer\vk\Mesh.cpp">
       <Filter>renderer\vk</Filter>
     </ClCompile>
     <ClCompile Include="src\renderer\vk\Shader.cpp">
       <Filter>renderer\vk</Filter>
     </ClCompile>
     <ClCompile Include="src\renderer\vk\Swapchain.cpp">
+      <Filter>renderer\vk</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderer\vk\Texture.cpp">
       <Filter>renderer\vk</Filter>
     </ClCompile>
     <ClCompile Include="src\renderer\vk\ValidationLayers.cpp">

@@ -4,7 +4,7 @@
 
 namespace vk {
 
-    Swapchain::Swapchain(const VulkanContext& context) {
+    Swapchain::Swapchain(const VulkanContext& context, VkRenderPass renderpass) {
 
         mSwapChainSupportDetails = init::querySwapChainSupport(context.physical_device, context.surface);
         mSurfaceFormat = init::chooseSwapSurfaceFormat(mSwapChainSupportDetails.formats);
@@ -56,6 +56,32 @@ namespace vk {
          for (uint32_t i = 0; i < mSwapchainImages.size(); i++) {
              mSwapchainImageViews[i] = init::createImageView(context.device, mSwapchainImages[i], mSurfaceFormat.format, VK_IMAGE_ASPECT_COLOR_BIT, 1);
          }
-    }
 
+         m_color_image = std::make_shared<Image>(context, mExtent.width, mExtent.height, 1, context.msaa_samples,mSurfaceFormat.format, VK_IMAGE_TILING_OPTIMAL,
+             VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT, VK_IMAGE_ASPECT_COLOR_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+         m_depth_image = std::make_shared<Image>(context, mExtent.width, mExtent.height, 1, context.msaa_samples, vk::init::find_depth_format(context), VK_IMAGE_TILING_OPTIMAL,
+             VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_IMAGE_ASPECT_DEPTH_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+
+         mSwapchainFramebuffers.resize(mSwapchainImageViews.size());
+         for (size_t i = 0; i < mSwapchainImageViews.size(); i++) {
+             std::array<VkImageView, 3> attachments = {
+                 m_color_image->m_view,
+                 m_depth_image->m_view,
+                 mSwapchainImageViews[i]
+             };
+
+             VkFramebufferCreateInfo framebufferInfo{};
+             framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+             framebufferInfo.renderPass = renderpass;
+             framebufferInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
+             framebufferInfo.pAttachments = attachments.data();
+             framebufferInfo.width = mExtent.width;
+             framebufferInfo.height = mExtent.height;
+             framebufferInfo.layers = 1;
+
+             if (vkCreateFramebuffer(context.device, &framebufferInfo, nullptr, &mSwapchainFramebuffers[i]) != VK_SUCCESS) {
+                 throw std::runtime_error("failed to create framebuffer!");
+             }
+         }
+    }
 }

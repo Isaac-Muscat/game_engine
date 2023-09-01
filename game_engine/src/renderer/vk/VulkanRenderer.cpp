@@ -20,21 +20,24 @@ namespace vk {
 			m_context.instance, m_context.surface, &m_context.msaa_samples
 		);
 		m_context.device = init::createLogicalDevice(m_context.physical_device, m_context.surface, VALIDATION_LAYERS_ENABLE);
+		m_context.command_pool = init::create_commmand_pool(m_context);
 
 		QueueFamilyIndices indices = init::findQueueFamilies(m_context.physical_device, m_context.surface);
 		vkGetDeviceQueue(m_context.device, indices.graphicsFamily.value(), 0, &m_context.graphics_queue);
 		vkGetDeviceQueue(m_context.device, indices.presentFamily.value(), 0, &m_context.present_queue);
 
-		m_swapchain = std::make_unique<Swapchain>(m_context);
-		m_renderpass = init::createRenderPass(m_context, m_swapchain);
+		m_renderpass = init::createRenderPass(m_context);
+		m_swapchain = std::make_unique<Swapchain>(m_context, m_renderpass);
 		m_descriptor_set_layout = init::createDescriptorSetLayout(m_context);
 		m_shader = std::make_shared<Shader>(m_context, "resources/shaders/vert.spv", "resources/shaders/frag.spv");
 
 		m_graphics_pipeline = init::createGraphicsPipeline(m_context, m_shader, m_swapchain, m_renderpass, m_descriptor_set_layout, &m_pipeline_layout);
+		m_texture = std::make_shared<Texture>("resources/textures/viking_room.png", m_context);
 	}
 	void VulkanRenderer::draw() {
 
 	}
 	void VulkanRenderer::destroy(){
+
 	}
 }
