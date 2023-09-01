@@ -6,6 +6,7 @@
 namespace vk {
 	class Image {
 	public:
+		VkImage m_image;
 		VkImageView m_view;
 		Image(const VulkanContext& context, uint32_t width, uint32_t height, uint32_t mipLevels, VkSampleCountFlagBits numSamples, VkFormat format, 
 			VkImageTiling tiling, VkImageUsageFlags usage, VkImageAspectFlags aspect_flags, VkMemoryPropertyFlags properties);
@@ -13,7 +14,6 @@ namespace vk {
 
 	private:
 		const VulkanContext& m_context;
-		VkImage m_image;
 		VkDeviceMemory m_memory;
 	};
 }
