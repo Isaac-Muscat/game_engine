@@ -1,9 +1,15 @@
 #pragma once
 #include "pch.h"
-
+#include "glm/glm.hpp"
 #include <vulkan/vulkan.h>
 
 namespace vk {
+    struct UniformBufferObject {
+        alignas(16) glm::mat4 model;
+        alignas(16) glm::mat4 view;
+        alignas(16) glm::mat4 proj;
+    };
+
     // Struct for passing around commonly needed information
     typedef struct VulkanContext {
         const int MAX_FRAMES_IN_FLIGHT = 2;

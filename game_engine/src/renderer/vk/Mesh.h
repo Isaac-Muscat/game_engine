@@ -1,7 +1,9 @@
 #pragma once
 #include "pch.h"
+#include "Buffer.h"
 #include "glm/glm.hpp"
 #include "vulkan/vulkan.h"
+
 
 namespace vk {
     struct Vertex {
@@ -17,6 +19,12 @@ namespace vk {
     };
 
 	class Mesh {
-
+    public:
+        std::vector<Vertex> m_vertices;
+        std::vector<uint32_t> m_indices;
+        std::shared_ptr<DeviceBuffer> m_vertex_buffer;
+        std::shared_ptr<DeviceBuffer> m_index_buffer;
+        Mesh(const VulkanContext& context, std::string filepath);
+        void load_model(std::string filepath);
 	};
 }

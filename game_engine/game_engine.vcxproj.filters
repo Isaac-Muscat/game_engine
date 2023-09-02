@@ -52,6 +52,7 @@
     <ClInclude Include="src\renderer\vk\VulkanRenderer.h">
       <Filter>renderer\vk</Filter>
     </ClInclude>
+    <ClInclude Include="src\renderer\vk\Buffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\hid\Windows\WindowsWindow.cpp">
@@ -83,5 +84,6 @@
     <ClCompile Include="src\renderer\vk\VulkanRenderer.cpp">
       <Filter>renderer\vk</Filter>
     </ClCompile>
+    <ClCompile Include="src\renderer\vk\Buffer.cpp" />
   </ItemGroup>
 </Project>

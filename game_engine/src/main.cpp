@@ -1,8 +1,3 @@
-#define GLFW_INCLUDE_VULKAN
-#include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
-
-
 #include "pch.h"
 #include "renderer/vk/VulkanRenderer.h"
 #include "hid/Window.h"

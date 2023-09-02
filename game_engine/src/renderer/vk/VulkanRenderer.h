@@ -6,6 +6,8 @@
 #include "Shader.h"
 #include "Image.h"
 #include "Texture.h"
+#include "Mesh.h"
+#include "Buffer.h"
 
 #include "vulkan/vulkan.h"
 
@@ -26,6 +28,10 @@ namespace vk {
 		std::shared_ptr<Shader> m_shader;
 		VkPipelineLayout m_pipeline_layout;
 		VkPipeline m_graphics_pipeline;
+		VkDescriptorPool m_descriptor_pool;
+
 		std::shared_ptr<Texture> m_texture;
+		std::shared_ptr<Mesh> m_mesh;
+		std::vector<std::shared_ptr<SharedBuffer>> m_uniform_buffers;
 	};
 }

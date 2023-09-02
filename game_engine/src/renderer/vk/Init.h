@@ -24,6 +24,7 @@ namespace vk::init {
     VkPipeline createGraphicsPipeline(const VulkanContext& context, std::shared_ptr<Shader> shader, 
         const std::unique_ptr<Swapchain>& swapchain, VkRenderPass renderPass, VkDescriptorSetLayout descriptorSetLayout, VkPipelineLayout* pipelineLayout);
     VkCommandPool create_commmand_pool(const VulkanContext& context);
+    VkDescriptorPool create_descriptor_pool(const VulkanContext& context);
     void createBuffer(const VulkanContext& context, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 
     VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities, uint32_t width, uint32_t height);
