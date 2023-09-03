@@ -31,11 +31,11 @@ namespace vk {
 		m_renderpass = init::createRenderPass(m_context);
 		m_swapchain = std::make_unique<Swapchain>(m_context, m_renderpass);
 		m_descriptor_set_layout = init::createDescriptorSetLayout(m_context);
-		m_shader = std::make_shared<Shader>(m_context, "resources/shaders/vert.spv", "resources/shaders/frag.spv");
+		m_shader = std::make_shared<Shader>(m_context, "assets/shaders/vert.spv", "assets/shaders/frag.spv");
 
 		m_graphics_pipeline = init::createGraphicsPipeline(m_context, m_shader, m_swapchain, m_renderpass, m_descriptor_set_layout, &m_pipeline_layout);
-		m_texture = std::make_shared<Texture>("resources/textures/viking_room.png", m_context);
-		m_mesh = std::make_shared<Mesh>(m_context, "resources/models/viking_room.obj");
+		m_texture = std::make_shared<Texture>("assets/textures/viking_room.png", m_context);
+		m_mesh = std::make_shared<Mesh>(m_context, "assets/models/viking_room.obj");
 		for (int i = 0; i < m_context.MAX_FRAMES_IN_FLIGHT; i++) {
 			m_uniform_buffers.emplace_back(std::make_shared<SharedBuffer>(m_context, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, sizeof(UniformBufferObject)));
 		}

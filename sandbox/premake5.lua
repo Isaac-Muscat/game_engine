@@ -1,12 +1,9 @@
-project "game_engine"
-	kind "StaticLib"
+project "sandbox"
+	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++20"
 	targetdir "%{wks.location}/bin/%{cfg.buildcfg}/%{prj.name}"
 	objdir "%{wks.location}/bin/obj/%{cfg.buildcfg}/%{prj.name}"
-
-	pchheader "pch.h"
-	pchsource "src/pch.cpp"
 
 	files {
 		"src/**.h",
@@ -15,6 +12,7 @@ project "game_engine"
 
 	includedirs {
 		"src",
+		"%{wks.location}/game_engine/src",
 		VULKAN_INCLUDE_DIR,
 		GLFW_INCLUDE_DIR,
 		GLM_INCLUDE_DIR,
@@ -23,8 +21,7 @@ project "game_engine"
 	}
 
 	links {
-		VULKAN_LIB,
-		"glfw",
+		"game_engine"
 	}
 
 	filter "configurations:Debug"

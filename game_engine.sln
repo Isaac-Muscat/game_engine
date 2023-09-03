@@ -1,11 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "game_engine", "game_engine\game_engine.vcxproj", "{942F236F-00E5-9B64-89D9-953BF58D9268}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Apps", "Apps", "{608BC25D-4C43-04AB-B54A-DD06A1219F9B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sandbox", "sandbox\sandbox.vcxproj", "{145A6C82-8039-EB1D-8951-76F4F5AF517F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dependencies", "Dependencies", "{53E47842-3FC8-3998-A828-34EB942B241A}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "glfw", "dependencies\glfw\glfw.vcxproj", "{9563977C-819A-980D-2A87-7E10169D140F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Engine", "Engine", "{8249BEE1-6EAC-4D86-1732-863C03741909}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "game_engine", "game_engine\game_engine.vcxproj", "{942F236F-00E5-9B64-89D9-953BF58D9268}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,19 +19,25 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{942F236F-00E5-9B64-89D9-953BF58D9268}.Debug|x64.ActiveCfg = Debug|x64
-		{942F236F-00E5-9B64-89D9-953BF58D9268}.Debug|x64.Build.0 = Debug|x64
-		{942F236F-00E5-9B64-89D9-953BF58D9268}.Release|x64.ActiveCfg = Release|x64
-		{942F236F-00E5-9B64-89D9-953BF58D9268}.Release|x64.Build.0 = Release|x64
+		{145A6C82-8039-EB1D-8951-76F4F5AF517F}.Debug|x64.ActiveCfg = Debug|x64
+		{145A6C82-8039-EB1D-8951-76F4F5AF517F}.Debug|x64.Build.0 = Debug|x64
+		{145A6C82-8039-EB1D-8951-76F4F5AF517F}.Release|x64.ActiveCfg = Release|x64
+		{145A6C82-8039-EB1D-8951-76F4F5AF517F}.Release|x64.Build.0 = Release|x64
 		{9563977C-819A-980D-2A87-7E10169D140F}.Debug|x64.ActiveCfg = Debug|x64
 		{9563977C-819A-980D-2A87-7E10169D140F}.Debug|x64.Build.0 = Debug|x64
 		{9563977C-819A-980D-2A87-7E10169D140F}.Release|x64.ActiveCfg = Release|x64
 		{9563977C-819A-980D-2A87-7E10169D140F}.Release|x64.Build.0 = Release|x64
+		{942F236F-00E5-9B64-89D9-953BF58D9268}.Debug|x64.ActiveCfg = Debug|x64
+		{942F236F-00E5-9B64-89D9-953BF58D9268}.Debug|x64.Build.0 = Debug|x64
+		{942F236F-00E5-9B64-89D9-953BF58D9268}.Release|x64.ActiveCfg = Release|x64
+		{942F236F-00E5-9B64-89D9-953BF58D9268}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{145A6C82-8039-EB1D-8951-76F4F5AF517F} = {608BC25D-4C43-04AB-B54A-DD06A1219F9B}
 		{9563977C-819A-980D-2A87-7E10169D140F} = {53E47842-3FC8-3998-A828-34EB942B241A}
+		{942F236F-00E5-9B64-89D9-953BF58D9268} = {8249BEE1-6EAC-4D86-1732-863C03741909}
 	EndGlobalSection
 EndGlobal

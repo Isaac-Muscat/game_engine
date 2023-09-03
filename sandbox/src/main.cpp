@@ -1,6 +1,4 @@
-#include "pch.h"
 #include "renderer/vk/VulkanRenderer.h"
-#include "hid/Window.h"
 #include "hid/Windows/WindowsWindow.h"
 
 std::unique_ptr<Renderer> g_renderer;

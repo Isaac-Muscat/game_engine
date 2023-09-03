@@ -13,10 +13,16 @@ TINY_OBJ_LOADER_INCLUDE_DIR = "%{wks.location}/dependencies/tiny_obj_loader"
 workspace "game_engine"
 	architecture "x86_64"
 	configurations { "Debug", "Release" }
-	startproject "game_engine"
+	startproject "sandbox"
 
 group "Dependencies"
 	include "dependencies"
 group ""
 
-include "game_engine"
+group "Engine"
+	include "game_engine"
+group ""
+
+group "Apps"
+	include "sandbox"
+group ""

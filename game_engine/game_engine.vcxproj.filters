@@ -25,6 +25,9 @@
     <ClInclude Include="src\renderer\Renderer.h">
       <Filter>renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\renderer\vk\Buffer.h">
+      <Filter>renderer\vk</Filter>
+    </ClInclude>
     <ClInclude Include="src\renderer\vk\Image.h">
       <Filter>renderer\vk</Filter>
     </ClInclude>
@@ -52,14 +55,15 @@
     <ClInclude Include="src\renderer\vk\VulkanRenderer.h">
       <Filter>renderer\vk</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\vk\Buffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\hid\Windows\WindowsWindow.cpp">
       <Filter>hid\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\pch.cpp" />
+    <ClCompile Include="src\renderer\vk\Buffer.cpp">
+      <Filter>renderer\vk</Filter>
+    </ClCompile>
     <ClCompile Include="src\renderer\vk\Image.cpp">
       <Filter>renderer\vk</Filter>
     </ClCompile>
@@ -84,6 +88,5 @@
     <ClCompile Include="src\renderer\vk\VulkanRenderer.cpp">
       <Filter>renderer\vk</Filter>
     </ClCompile>
-    <ClCompile Include="src\renderer\vk\Buffer.cpp" />
   </ItemGroup>
 </Project>
