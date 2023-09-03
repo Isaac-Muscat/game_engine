@@ -4,7 +4,8 @@
 #include "Buffer.h"
 
 namespace vk {
-	DeviceBuffer::DeviceBuffer(const VulkanContext& context, VkBufferUsageFlags buffer_type,void* host_data, size_t size_bytes) {
+	DeviceBuffer::DeviceBuffer(const VulkanContext& context, VkBufferUsageFlags buffer_type,void* host_data, size_t size_bytes) 
+        : m_size_bytes(size_bytes) {
         VkBuffer stagingBuffer;
         VkDeviceMemory stagingBufferMemory;
         init::createBuffer(context, size_bytes, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
@@ -31,7 +32,8 @@ namespace vk {
         init::endSingleTimeCommands(context, commandBuffer);
     }
 
-    SharedBuffer::SharedBuffer(const VulkanContext& context, VkBufferUsageFlags buffer_type, size_t size_bytes) {
+    SharedBuffer::SharedBuffer(const VulkanContext& context, VkBufferUsageFlags buffer_type, size_t size_bytes) 
+        : m_size_bytes(size_bytes) {
         init::createBuffer(context, size_bytes, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, m_buffer, m_memory);
     }
 

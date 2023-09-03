@@ -7,6 +7,7 @@ namespace vk {
 	class Texture {
 	public:
 		std::shared_ptr<Image> m_image;
+		VkSampler m_sampler;
 
 		Texture(std::string filepath, const VulkanContext& context);
 		void transition_image_layout(const VulkanContext& context, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
@@ -15,6 +16,5 @@ namespace vk {
 		void create_sampler(const VulkanContext& context);
 	private:
 		uint32_t m_miplevels;
-		VkSampler m_sampler;
 	};
 }

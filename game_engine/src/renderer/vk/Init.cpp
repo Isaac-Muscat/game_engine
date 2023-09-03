@@ -340,8 +340,7 @@ namespace vk::init {
         colorAttachmentResolve.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
         colorAttachmentResolve.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
         colorAttachmentResolve.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-        colorAttachmentResolve.finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-        // VK_IMAGE_LAYOUT_PRESENT_SRC_KHR without imgui
+        colorAttachmentResolve.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
         VkAttachmentReference colorAttachmentResolveRef{};
         colorAttachmentResolveRef.attachment = 2;
@@ -577,6 +576,20 @@ namespace vk::init {
         return command_pool;
     }
 
+    std::vector<VkCommandBuffer> create_command_buffers(const VulkanContext& context) {
+        std::vector<VkCommandBuffer> command_buffers(context.MAX_FRAMES_IN_FLIGHT);
+        VkCommandBufferAllocateInfo allocInfo{};
+        allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+        allocInfo.commandPool = context.command_pool;
+        allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+        allocInfo.commandBufferCount = (uint32_t)command_buffers.size();
+
+        if (vkAllocateCommandBuffers(context.device, &allocInfo, command_buffers.data()) != VK_SUCCESS) {
+            throw std::runtime_error("failed to allocate command buffers!");
+        }
+        return command_buffers;
+    }
+
     VkDescriptorPool create_descriptor_pool(const VulkanContext& context) {
         std::array<VkDescriptorPoolSize, 2> poolSizes{};
         poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
@@ -622,6 +635,76 @@ namespace vk::init {
 
         vkBindBufferMemory(context.device, buffer, bufferMemory, 0);
 
+    }
+
+    std::vector<VkDescriptorSet> create_descriptor_sets(const VulkanContext& context, VkDescriptorSetLayout descriptorSetLayout, VkDescriptorPool descriptorPool, 
+        const std::vector<std::shared_ptr<SharedBuffer>>& uniform_buffers, std::shared_ptr<Texture> texture) {
+        std::vector<VkDescriptorSetLayout> layouts(context.MAX_FRAMES_IN_FLIGHT, descriptorSetLayout);
+        VkDescriptorSetAllocateInfo allocInfo{};
+        allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+        allocInfo.descriptorPool = descriptorPool;
+        allocInfo.descriptorSetCount = static_cast<uint32_t>(context.MAX_FRAMES_IN_FLIGHT);
+        allocInfo.pSetLayouts = layouts.data();
+
+        std::vector<VkDescriptorSet> descriptor_sets(context.MAX_FRAMES_IN_FLIGHT);
+        if (vkAllocateDescriptorSets(context.device, &allocInfo, descriptor_sets.data()) != VK_SUCCESS) {
+            throw std::runtime_error("failed to allocate descriptor sets!");
+        }
+
+        for (size_t i = 0; i < context.MAX_FRAMES_IN_FLIGHT; i++) {
+            VkDescriptorBufferInfo bufferInfo{};
+            bufferInfo.buffer = uniform_buffers[i]->m_buffer;
+            bufferInfo.offset = 0;
+            bufferInfo.range = sizeof(UniformBufferObject);
+
+            VkDescriptorImageInfo imageInfo{};
+            imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+            imageInfo.imageView = texture->m_image->m_view;
+            imageInfo.sampler = texture->m_sampler;
+
+            std::array<VkWriteDescriptorSet, 2> descriptorWrites{};
+
+            descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+            descriptorWrites[0].dstSet = descriptor_sets[i];
+            descriptorWrites[0].dstBinding = 0;
+            descriptorWrites[0].dstArrayElement = 0;
+            descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+            descriptorWrites[0].descriptorCount = 1;
+            descriptorWrites[0].pBufferInfo = &bufferInfo;
+
+            descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+            descriptorWrites[1].dstSet = descriptor_sets[i];
+            descriptorWrites[1].dstBinding = 1;
+            descriptorWrites[1].dstArrayElement = 0;
+            descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+            descriptorWrites[1].descriptorCount = 1;
+            descriptorWrites[1].pImageInfo = &imageInfo;
+            vkUpdateDescriptorSets(context.device, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
+        }
+        return descriptor_sets;
+    }
+
+    void create_sync_objects(const VulkanContext& context,
+        std::vector<VkSemaphore>& image_available_semaphores, std::vector<VkSemaphore>& render_finished_semaphores, std::vector<VkFence>& in_flight_fences) {
+        image_available_semaphores.resize(context.MAX_FRAMES_IN_FLIGHT);
+        render_finished_semaphores.resize(context.MAX_FRAMES_IN_FLIGHT);
+        in_flight_fences.resize(context.MAX_FRAMES_IN_FLIGHT);
+
+        VkSemaphoreCreateInfo semaphoreInfo{};
+        semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+
+        VkFenceCreateInfo fenceInfo{};
+        fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+        fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+
+        for (size_t i = 0; i < context.MAX_FRAMES_IN_FLIGHT; i++) {
+            if (vkCreateSemaphore(context.device, &semaphoreInfo, nullptr, &image_available_semaphores[i]) != VK_SUCCESS ||
+                vkCreateSemaphore(context.device, &semaphoreInfo, nullptr, &render_finished_semaphores[i]) != VK_SUCCESS ||
+                vkCreateFence(context.device, &fenceInfo, nullptr, &in_flight_fences[i]) != VK_SUCCESS) {
+
+                throw std::runtime_error("failed to create synchronization objects for a frame!");
+            }
+        }
     }
 
     VkFormat find_supported_format(const VulkanContext& context, const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features) {

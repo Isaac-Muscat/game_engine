@@ -48,8 +48,8 @@ namespace vk {
 
 	Mesh::Mesh(const VulkanContext& context, std::string filepath) {
         load_model(filepath);
-        m_vertex_buffer = std::make_shared<DeviceBuffer>(context, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, m_vertices.data(), sizeof(Vertex) * m_vertices.size());
-        m_index_buffer = std::make_shared<DeviceBuffer>(context, VK_BUFFER_USAGE_INDEX_BUFFER_BIT, m_indices.data(), sizeof(Vertex) * m_indices.size());
+        m_vertex_buffer = std::make_shared<DeviceBuffer>(context, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, m_vertices.data(), sizeof(m_vertices[0]) * m_vertices.size());
+        m_index_buffer = std::make_shared<DeviceBuffer>(context, VK_BUFFER_USAGE_INDEX_BUFFER_BIT, m_indices.data(), sizeof(m_indices[0]) * m_indices.size());
 	}
 
     void Mesh::load_model(std::string filepath) {

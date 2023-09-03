@@ -37,6 +37,8 @@ vk::Texture::Texture(std::string filepath, const VulkanContext& context) {
 
     vkDestroyBuffer(context.device, stagingBuffer, nullptr);
     vkFreeMemory(context.device, stagingBufferMemory, nullptr);
+
+    create_sampler(context);
 }
 
 void vk::Texture::transition_image_layout(const VulkanContext& context, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout) {
