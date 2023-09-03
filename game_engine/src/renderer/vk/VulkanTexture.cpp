@@ -2,10 +2,10 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-#include "Texture.h"
-#include "Init.h"
+#include "VulkanTexture.h"
+#include "VulkanInit.h"
 
-vk::Texture::Texture(std::string filepath, const VulkanContext& context) {
+vk::VulkanTexture::VulkanTexture(std::string filepath, const VulkanContext& context) {
     int texWidth, texHeight, texChannels;
     stbi_uc* pixels = stbi_load(filepath.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
     VkDeviceSize imageSize = texWidth * texHeight * 4;
@@ -18,7 +18,7 @@ vk::Texture::Texture(std::string filepath, const VulkanContext& context) {
 
     VkBuffer stagingBuffer;
     VkDeviceMemory stagingBufferMemory;
-    init::createBuffer(context, imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
+    init::CreateBuffer(context, imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
 
     void* data;
     vkMapMemory(context.device, stagingBufferMemory, 0, imageSize, 0, &data);
@@ -27,22 +27,22 @@ vk::Texture::Texture(std::string filepath, const VulkanContext& context) {
 
     stbi_image_free(pixels);
 
-    m_image = std::make_shared<Image>(context, texWidth, texHeight, m_miplevels, VK_SAMPLE_COUNT_1_BIT, VK_FORMAT_R8G8B8A8_UNORM,
+    m_image = std::make_shared<VulkanImage>(context, texWidth, texHeight, m_miplevels, VK_SAMPLE_COUNT_1_BIT, VK_FORMAT_R8G8B8A8_UNORM,
         VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, 
         VK_IMAGE_ASPECT_COLOR_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
-    transition_image_layout(context, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
-    copy_buffer_to_image(context, stagingBuffer, static_cast<uint32_t>(texWidth), static_cast<uint32_t>(texHeight));
-    generate_mipmaps(context, VK_FORMAT_R8G8B8A8_UNORM, texWidth, texHeight);
+    TransitionImageLayout(context, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+    CopyBufferToImage(context, stagingBuffer, static_cast<uint32_t>(texWidth), static_cast<uint32_t>(texHeight));
+    GenerateMipmaps(context, VK_FORMAT_R8G8B8A8_UNORM, texWidth, texHeight);
 
     vkDestroyBuffer(context.device, stagingBuffer, nullptr);
     vkFreeMemory(context.device, stagingBufferMemory, nullptr);
 
-    create_sampler(context);
+    CreateSampler(context);
 }
 
-void vk::Texture::transition_image_layout(const VulkanContext& context, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout) {
-    VkCommandBuffer commandBuffer = vk::init::beginSingleTimeCommands(context);
+void vk::VulkanTexture::TransitionImageLayout(const VulkanContext& context, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout) {
+    VkCommandBuffer commandBuffer = vk::init::BeginSingleTimeCommands(context);
 
     VkImageMemoryBarrier barrier{};
 
@@ -87,10 +87,10 @@ void vk::Texture::transition_image_layout(const VulkanContext& context, VkFormat
         0, nullptr,
         1, &barrier
     );
-    init::endSingleTimeCommands(context, commandBuffer);
+    init::EndSingleTimeCommands(context, commandBuffer);
 }
 
-void vk::Texture::generate_mipmaps(const VulkanContext& context, VkFormat imageFormat, int32_t texWidth, int32_t texHeight) {
+void vk::VulkanTexture::GenerateMipmaps(const VulkanContext& context, VkFormat imageFormat, int32_t texWidth, int32_t texHeight) {
     // Check if image format supports linear blitting
     VkFormatProperties formatProperties;
     vkGetPhysicalDeviceFormatProperties(context.physical_device, imageFormat, &formatProperties);
@@ -99,7 +99,7 @@ void vk::Texture::generate_mipmaps(const VulkanContext& context, VkFormat imageF
         throw std::runtime_error("texture image format does not support linear blitting!");
     }
 
-    VkCommandBuffer commandBuffer = init::beginSingleTimeCommands(context);
+    VkCommandBuffer commandBuffer = init::BeginSingleTimeCommands(context);
 
     VkImageMemoryBarrier barrier{};
     barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
@@ -174,11 +174,11 @@ void vk::Texture::generate_mipmaps(const VulkanContext& context, VkFormat imageF
         0, nullptr,
         1, &barrier);
 
-    init::endSingleTimeCommands(context, commandBuffer);
+    init::EndSingleTimeCommands(context, commandBuffer);
 }
 
-void vk::Texture::copy_buffer_to_image(const VulkanContext& context, VkBuffer buffer, uint32_t width, uint32_t height) {
-    VkCommandBuffer commandBuffer = init::beginSingleTimeCommands(context);
+void vk::VulkanTexture::CopyBufferToImage(const VulkanContext& context, VkBuffer buffer, uint32_t width, uint32_t height) {
+    VkCommandBuffer commandBuffer = init::BeginSingleTimeCommands(context);
 
     VkBufferImageCopy region{};
     region.bufferOffset = 0;
@@ -205,10 +205,10 @@ void vk::Texture::copy_buffer_to_image(const VulkanContext& context, VkBuffer bu
         &region
     );
 
-    init::endSingleTimeCommands(context, commandBuffer);
+    init::EndSingleTimeCommands(context, commandBuffer);
 }
 
-void vk::Texture::create_sampler(const VulkanContext& context) {
+void vk::VulkanTexture::CreateSampler(const VulkanContext& context) {
     VkSamplerCreateInfo samplerInfo{};
     samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
     samplerInfo.magFilter = VK_FILTER_LINEAR;

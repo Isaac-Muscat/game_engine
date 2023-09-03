@@ -3,8 +3,8 @@
 
 class Renderer {
 public:
-	virtual void draw() = 0;
-	virtual void destroy() = 0;
+	virtual void Draw() = 0;
+	virtual void Destroy() = 0;
 };
 
 extern std::unique_ptr<Renderer> g_renderer;

@@ -3,15 +3,15 @@
 #include "vulkan/vulkan.h"
 
 namespace vk {
-    const std::vector<const char*> validationLayers = {
+    const std::vector<const char*> validation_layers = {
         "VK_LAYER_KHRONOS_validation"
     };
 
-    void setupDebugMessenger(VkInstance instance, VkDebugUtilsMessengerEXT* pDebugMessenger, bool enableValidationLayers);
+    void SetupDebugMessenger(VkInstance instance, VkDebugUtilsMessengerEXT* pDebugMessenger, bool enable_validation_layers);
 
-    bool checkValidationLayerSupport();
+    bool CheckValidationLayerSupport();
 
-    void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
+    void PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
 
     VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
         VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,

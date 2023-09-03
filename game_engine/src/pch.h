@@ -1,7 +1,7 @@
 #pragma once
 
 #include <optional>
-#include <assert.h>
+#include <cassert>
 #include <vector>
 #include <string>
 #include <unordered_map>

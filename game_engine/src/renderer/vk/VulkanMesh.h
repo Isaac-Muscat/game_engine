@@ -1,0 +1,31 @@
+#pragma once
+#include "pch.h"
+#include "VulkanBuffer.h"
+
+#include "glm/glm.hpp"
+#include "vulkan/vulkan.h"
+
+
+namespace vk {
+    struct Vertex {
+        glm::vec3 pos;
+        glm::vec3 color;
+        glm::vec2 texture_coords;
+
+        static VkVertexInputBindingDescription GetBindingDescription();
+        static std::array<VkVertexInputAttributeDescription, 3> GetAttributeDescriptions();
+        bool operator==(const Vertex& other) const {
+            return pos == other.pos && color == other.color && texture_coords == other.texture_coords;
+        }
+    };
+
+	class Mesh {
+    public:
+        std::vector<Vertex> m_vertices;
+        std::vector<uint32_t> m_indices;
+        std::shared_ptr<VulkanDeviceBuffer> m_vertex_buffer;
+        std::shared_ptr<VulkanDeviceBuffer> m_index_buffer;
+        Mesh(const VulkanContext& context, std::string filepath);
+        void LoadModel(std::string filepath);
+	};
+}

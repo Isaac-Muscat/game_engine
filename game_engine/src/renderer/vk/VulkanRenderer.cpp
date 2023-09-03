@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "VulkanRenderer.h"
-#include "Init.h"
-#include "ValidationLayers.h"
+#include "VulkanInit.h"
+#include "VulkanValidationLayers.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -10,44 +10,43 @@
 #define VALIDATION_LAYERS_ENABLE true
 
 namespace vk {
-
 	VulkanRenderer::VulkanRenderer() {
 		m_context.enable_validation_layers = VALIDATION_LAYERS_ENABLE;
-		m_context.instance = init::createInstance(VALIDATION_LAYERS_ENABLE);
-		setupDebugMessenger(m_context.instance, &m_context.debug_messenger, VALIDATION_LAYERS_ENABLE);
+		m_context.instance = init::CreateInstance(VALIDATION_LAYERS_ENABLE);
+		SetupDebugMessenger(m_context.instance, &m_context.debug_messenger, VALIDATION_LAYERS_ENABLE);
 
-		g_window->create_vulkan_surface(m_context.instance, &m_context.surface);
-		m_context.physical_device = init::createPhysicalDevice(
+		g_window->CreateVulkanSurface(m_context.instance, &m_context.surface);
+		m_context.physical_device = init::CreatePhysicalDevice(
 			m_context.instance, m_context.surface, &m_context.msaa_samples
 		);
-		m_context.device = init::createLogicalDevice(m_context.physical_device, m_context.surface, VALIDATION_LAYERS_ENABLE);
-		m_context.command_pool = init::create_commmand_pool(m_context);
-		m_descriptor_pool = init::create_descriptor_pool(m_context);
+		m_context.device = init::CreateLogicalDevice(m_context.physical_device, m_context.surface, VALIDATION_LAYERS_ENABLE);
+		m_context.command_pool = init::CreateCommandPool(m_context);
+		m_descriptor_pool = init::CreateDescriptorPool(m_context);
 
-		QueueFamilyIndices indices = init::findQueueFamilies(m_context.physical_device, m_context.surface);
-		vkGetDeviceQueue(m_context.device, indices.graphicsFamily.value(), 0, &m_context.graphics_queue);
-		vkGetDeviceQueue(m_context.device, indices.presentFamily.value(), 0, &m_context.present_queue);
+		QueueFamilyIndices indices = init::FindQueueFamilies(m_context.physical_device, m_context.surface);
+		vkGetDeviceQueue(m_context.device, indices.graphics_family.value(), 0, &m_context.graphics_queue);
+		vkGetDeviceQueue(m_context.device, indices.present_family.value(), 0, &m_context.present_queue);
 
-		m_renderpass = init::createRenderPass(m_context);
-		m_swapchain = std::make_unique<Swapchain>(m_context, m_renderpass);
-		m_descriptor_set_layout = init::createDescriptorSetLayout(m_context);
-		m_shader = std::make_shared<Shader>(m_context, "assets/shaders/vert.spv", "assets/shaders/frag.spv");
+		m_renderpass = init::CreateRenderPass(m_context);
+		m_swapchain = std::make_unique<VulkanSwapchain>(m_context, m_renderpass);
+		m_descriptor_set_layout = init::CreateDescriptorSetLayout(m_context);
+		m_shader = std::make_shared<VulkanShader>(m_context, "assets/shaders/vert.spv", "assets/shaders/frag.spv");
 
-		m_graphics_pipeline = init::createGraphicsPipeline(m_context, m_shader, m_swapchain, m_renderpass, m_descriptor_set_layout, &m_pipeline_layout);
-		m_texture = std::make_shared<Texture>("assets/textures/viking_room.png", m_context);
+		m_graphics_pipeline = init::CreateGraphicsPipeline(m_context, m_shader, m_swapchain, m_renderpass, m_descriptor_set_layout, &m_pipeline_layout);
+		m_texture = std::make_shared<VulkanTexture>("assets/textures/viking_room.png", m_context);
 		m_mesh = std::make_shared<Mesh>(m_context, "assets/models/viking_room.obj");
 		for (int i = 0; i < m_context.MAX_FRAMES_IN_FLIGHT; i++) {
-			m_uniform_buffers.emplace_back(std::make_shared<SharedBuffer>(m_context, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, sizeof(UniformBufferObject)));
+			m_uniform_buffers.emplace_back(std::make_shared<VulkanSharedBuffer>(m_context, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, sizeof(UniformBufferObject)));
 		}
-		m_descriptor_sets = init::create_descriptor_sets(m_context, m_descriptor_set_layout, m_descriptor_pool, m_uniform_buffers, m_texture);
-		m_command_buffers = init::create_command_buffers(m_context);
-		init::create_sync_objects(m_context, m_image_available_semaphores, m_render_finished_semaphores, m_in_flight_fences);
+		m_descriptor_sets = init::CreateDescriptorSets(m_context, m_descriptor_set_layout, m_descriptor_pool, m_uniform_buffers, m_texture);
+		m_command_buffers = init::CreateCommandBuffers(m_context);
+		init::CreateSyncObjects(m_context, m_image_available_semaphores, m_render_finished_semaphores, m_in_flight_fences);
 	}
-	void VulkanRenderer::draw() {
+	void VulkanRenderer::Draw() {
         vkWaitForFences(m_context.device, 1, &m_in_flight_fences[m_current_frame], VK_TRUE, UINT64_MAX);
 
         uint32_t imageIndex;
-        VkResult result = vkAcquireNextImageKHR(m_context.device, m_swapchain->mSwapchain, UINT64_MAX, m_image_available_semaphores[m_current_frame], VK_NULL_HANDLE, &imageIndex);
+        VkResult result = vkAcquireNextImageKHR(m_context.device, m_swapchain->m_swapchain, UINT64_MAX, m_image_available_semaphores[m_current_frame], VK_NULL_HANDLE, &imageIndex);
 
        /* if (result == VK_ERROR_OUT_OF_DATE_KHR) {
             recreateSwapChain();
@@ -68,9 +67,9 @@ namespace vk {
         UniformBufferObject ubo{};
         ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-        ubo.proj = glm::perspective(glm::radians(45.0f), m_swapchain->mExtent.width / (float)m_swapchain->mExtent.height, 0.1f, 10.0f);
+        ubo.proj = glm::perspective(glm::radians(45.0f), m_swapchain->m_extent.width / (float)m_swapchain->m_extent.height, 0.1f, 10.0f);
         ubo.proj[1][1] *= -1;
-        m_uniform_buffers[m_current_frame]->update_data(m_context, &ubo, sizeof(UniformBufferObject));
+        m_uniform_buffers[m_current_frame]->UpdateData(m_context, &ubo, sizeof(UniformBufferObject));
 
         // Reset/Clear commands of buffer
         vkResetCommandBuffer(m_command_buffers[m_current_frame], 0);
@@ -89,9 +88,9 @@ namespace vk {
         VkRenderPassBeginInfo renderPassInfo{};
         renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
         renderPassInfo.renderPass = m_renderpass;
-        renderPassInfo.framebuffer = m_swapchain->mSwapchainFramebuffers[imageIndex];
+        renderPassInfo.framebuffer = m_swapchain->m_framebuffers[imageIndex];
         renderPassInfo.renderArea.offset = { 0, 0 };
-        renderPassInfo.renderArea.extent = m_swapchain->mExtent;
+        renderPassInfo.renderArea.extent = m_swapchain->m_extent;
         std::array<VkClearValue, 2> clearValues{};
         clearValues[0].color = { {0.0f, 0.0f, 0.0f, 1.0f} };
         clearValues[1].depthStencil = { 1.0f, 0 };
@@ -107,15 +106,15 @@ namespace vk {
         VkViewport viewport{};
         viewport.x = 0.0f;
         viewport.y = 0.0f;
-        viewport.width = static_cast<float>(m_swapchain->mExtent.width);
-        viewport.height = static_cast<float>(m_swapchain->mExtent.height);
+        viewport.width = static_cast<float>(m_swapchain->m_extent.width);
+        viewport.height = static_cast<float>(m_swapchain->m_extent.height);
         viewport.minDepth = 0.0f;
         viewport.maxDepth = 1.0f;
         vkCmdSetViewport(m_command_buffers[m_current_frame], 0, 1, &viewport);
 
         VkRect2D scissor{};
         scissor.offset = { 0, 0 };
-        scissor.extent = m_swapchain->mExtent;
+        scissor.extent = m_swapchain->m_extent;
         vkCmdSetScissor(m_command_buffers[m_current_frame], 0, 1, &scissor);
 
         VkBuffer vertexBuffers[] = { m_mesh->m_vertex_buffer->m_buffer };
@@ -161,7 +160,7 @@ namespace vk {
         presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
         presentInfo.waitSemaphoreCount = 1;
         presentInfo.pWaitSemaphores = signalSemaphores;
-        VkSwapchainKHR swapChains[] = { m_swapchain->mSwapchain };
+        VkSwapchainKHR swapChains[] = { m_swapchain->m_swapchain };
         presentInfo.swapchainCount = 1;
         presentInfo.pSwapchains = swapChains;
         presentInfo.pImageIndices = &imageIndex;
@@ -178,7 +177,7 @@ namespace vk {
 
         m_current_frame = (m_current_frame+ 1) % m_context.MAX_FRAMES_IN_FLIGHT;
 	}
-	void VulkanRenderer::destroy(){
+	void VulkanRenderer::Destroy(){
 
 	}
 }

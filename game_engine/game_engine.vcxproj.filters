@@ -18,38 +18,38 @@
     <ClInclude Include="src\hid\Window.h">
       <Filter>hid</Filter>
     </ClInclude>
-    <ClInclude Include="src\hid\Windows\WindowsWindow.h">
+    <ClInclude Include="src\hid\win32\Win32Window.h">
       <Filter>hid\Windows</Filter>
     </ClInclude>
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\renderer\Renderer.h">
       <Filter>renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\vk\Buffer.h">
+    <ClInclude Include="src\renderer\vk\VulkanBuffer.h">
       <Filter>renderer\vk</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\vk\Image.h">
+    <ClInclude Include="src\renderer\vk\VulkanImage.h">
       <Filter>renderer\vk</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\vk\Init.h">
+    <ClInclude Include="src\renderer\vk\VulkanInit.h">
       <Filter>renderer\vk</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\vk\Mesh.h">
+    <ClInclude Include="src\renderer\vk\VulkanMesh.h">
       <Filter>renderer\vk</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\vk\Shader.h">
+    <ClInclude Include="src\renderer\vk\VulkanShader.h">
       <Filter>renderer\vk</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\vk\Swapchain.h">
+    <ClInclude Include="src\renderer\vk\VulkanSwapchain.h">
       <Filter>renderer\vk</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\vk\Texture.h">
+    <ClInclude Include="src\renderer\vk\VulkanTexture.h">
       <Filter>renderer\vk</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\vk\Types.h">
+    <ClInclude Include="src\renderer\vk\VulkanTypes.h">
       <Filter>renderer\vk</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\vk\ValidationLayers.h">
+    <ClInclude Include="src\renderer\vk\VulkanValidationLayers.h">
       <Filter>renderer\vk</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer\vk\VulkanRenderer.h">
@@ -57,32 +57,32 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\hid\Windows\WindowsWindow.cpp">
+    <ClCompile Include="src\hid\win32\Win32Window.cpp">
       <Filter>hid\Windows</Filter>
     </ClCompile>
     <ClCompile Include="src\pch.cpp" />
-    <ClCompile Include="src\renderer\vk\Buffer.cpp">
+    <ClCompile Include="src\renderer\vk\VulkanBuffer.cpp">
       <Filter>renderer\vk</Filter>
     </ClCompile>
-    <ClCompile Include="src\renderer\vk\Image.cpp">
+    <ClCompile Include="src\renderer\vk\VulkanImage.cpp">
       <Filter>renderer\vk</Filter>
     </ClCompile>
-    <ClCompile Include="src\renderer\vk\Init.cpp">
+    <ClCompile Include="src\renderer\vk\VulkanInit.cpp">
       <Filter>renderer\vk</Filter>
     </ClCompile>
-    <ClCompile Include="src\renderer\vk\Mesh.cpp">
+    <ClCompile Include="src\renderer\vk\VulkanMesh.cpp">
       <Filter>renderer\vk</Filter>
     </ClCompile>
-    <ClCompile Include="src\renderer\vk\Shader.cpp">
+    <ClCompile Include="src\renderer\vk\VulkanShader.cpp">
       <Filter>renderer\vk</Filter>
     </ClCompile>
-    <ClCompile Include="src\renderer\vk\Swapchain.cpp">
+    <ClCompile Include="src\renderer\vk\VulkanSwapchain.cpp">
       <Filter>renderer\vk</Filter>
     </ClCompile>
-    <ClCompile Include="src\renderer\vk\Texture.cpp">
+    <ClCompile Include="src\renderer\vk\VulkanTexture.cpp">
       <Filter>renderer\vk</Filter>
     </ClCompile>
-    <ClCompile Include="src\renderer\vk\ValidationLayers.cpp">
+    <ClCompile Include="src\renderer\vk\VulkanValidationLayers.cpp">
       <Filter>renderer\vk</Filter>
     </ClCompile>
     <ClCompile Include="src\renderer\vk\VulkanRenderer.cpp">

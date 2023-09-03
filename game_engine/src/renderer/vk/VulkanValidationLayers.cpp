@@ -1,26 +1,26 @@
 #include "pch.h"
-#include "ValidationLayers.h"
+#include "VulkanValidationLayers.h"
 
 namespace vk {
     
 
-    void setupDebugMessenger(VkInstance instance, VkDebugUtilsMessengerEXT* pDebugMessenger, bool enableValidationLayers) {
-        if (!enableValidationLayers) return;
+    void SetupDebugMessenger(VkInstance instance, VkDebugUtilsMessengerEXT* pDebugMessenger, bool enable_validation_layers) {
+        if (!enable_validation_layers) return;
 
         VkDebugUtilsMessengerCreateInfoEXT createInfo;
-        populateDebugMessengerCreateInfo(createInfo);
+        PopulateDebugMessengerCreateInfo(createInfo);
 
         assert(CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, pDebugMessenger) == VK_SUCCESS && "failed to set up debug messenger!");
     }
 
-    bool checkValidationLayerSupport() {
+    bool CheckValidationLayerSupport() {
         uint32_t layerCount;
         vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
 
         std::vector<VkLayerProperties> availableLayers(layerCount);
         vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
 
-        for (const char* layerName : validationLayers) {
+        for (const char* layerName : validation_layers) {
             bool layerFound = false;
 
             for (const auto& layerProperties : availableLayers) {
@@ -38,7 +38,7 @@ namespace vk {
         return true;
     }
 
-    void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo) {
+    void PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo) {
         createInfo = {};
         createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
         createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;

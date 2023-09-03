@@ -1,16 +1,16 @@
 #include "pch.h"
-#include "Shader.h"
+#include "VulkanShader.h"
 
 namespace vk {
-	Shader::Shader(const VulkanContext& context, const std::string& vert_filepath, const std::string& frag_filepath) 
+	VulkanShader::VulkanShader(const VulkanContext& context, const std::string& vert_filepath, const std::string& frag_filepath) 
 		: m_vert_filepath(vert_filepath), m_frag_filepath(frag_filepath) {
-		auto vertShaderCode = read_file(vert_filepath);
-		auto fragShaderCode = read_file(frag_filepath);
+		auto vertShaderCode = ReadFile(vert_filepath);
+		auto fragShaderCode = ReadFile(frag_filepath);
 
-		m_vert_shader_module = createShaderModule(vertShaderCode, context);
-		m_frag_shader_module = createShaderModule(fragShaderCode, context);
+		m_vert_shader_module = CreateShaderModule(vertShaderCode, context);
+		m_frag_shader_module = CreateShaderModule(fragShaderCode, context);
 	}
-	std::vector<char> Shader::read_file(const std::string& filename) {
+	std::vector<char> VulkanShader::ReadFile(const std::string& filename) {
 		std::ifstream file(filename, std::ios::ate | std::ios::binary);
 
 		if (!file.is_open()) {
@@ -26,7 +26,7 @@ namespace vk {
 		return buffer;
 	}
 
-	VkShaderModule Shader::createShaderModule(const std::vector<char>& code, const VulkanContext& context) {
+	VkShaderModule VulkanShader::CreateShaderModule(const std::vector<char>& code, const VulkanContext& context) {
 		VkShaderModuleCreateInfo createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
 		createInfo.codeSize = code.size();
