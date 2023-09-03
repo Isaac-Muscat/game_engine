@@ -96,6 +96,10 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\core\Application.h" />
+    <ClInclude Include="src\core\EntryPoint.h" />
+    <ClInclude Include="src\core\Platform.h" />
+    <ClInclude Include="src\hid\Input.h" />
     <ClInclude Include="src\hid\Window.h" />
     <ClInclude Include="src\hid\win32\Win32Window.h" />
     <ClInclude Include="src\pch.h" />
@@ -112,6 +116,7 @@
     <ClInclude Include="src\renderer\vk\VulkanRenderer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\core\Application.cpp" />
     <ClCompile Include="src\hid\win32\Win32Window.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>

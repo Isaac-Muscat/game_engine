@@ -55,6 +55,10 @@
     <ClInclude Include="src\renderer\vk\VulkanRenderer.h">
       <Filter>renderer\vk</Filter>
     </ClInclude>
+    <ClInclude Include="src\core\EntryPoint.h" />
+    <ClInclude Include="src\core\Platform.h" />
+    <ClInclude Include="src\hid\Input.h" />
+    <ClInclude Include="src\core\Application.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\hid\win32\Win32Window.cpp">
@@ -88,5 +92,6 @@
     <ClCompile Include="src\renderer\vk\VulkanRenderer.cpp">
       <Filter>renderer\vk</Filter>
     </ClCompile>
+    <ClCompile Include="src\core\Application.cpp" />
   </ItemGroup>
 </Project>

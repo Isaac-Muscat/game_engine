@@ -44,3 +44,7 @@ I think they hit the sweet spot in terms of performance and ease of use.
 * Classes --> ThisIsAClass
 * Variables --> regular_variable, m_member_variable, s_static_variable, g_global_variable, p_pointer
 * Functions --> ThisIsAFunction
+
+### Misc
+* Set Platform enums on startup
+	* Use switch statement for input with cases using platform
