@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="core">
+      <UniqueIdentifier>{4E40957C-3A77-960D-E363-7C10CF79120F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ecs">
+      <UniqueIdentifier>{C06D880B-2C77-887C-B5F2-9E7C21FB937C}</UniqueIdentifier>
+    </Filter>
     <Filter Include="hid">
       <UniqueIdentifier>{3A7B880B-A684-887C-2F00-9F7C9B08947C}</UniqueIdentifier>
     </Filter>
-    <Filter Include="hid\Windows">
-      <UniqueIdentifier>{74BF12C8-E074-8BBD-6969-8594D51D82C1}</UniqueIdentifier>
+    <Filter Include="hid\win32">
+      <UniqueIdentifier>{BCC6B1B3-2831-662A-716F-17D0DD18447F}</UniqueIdentifier>
     </Filter>
     <Filter Include="renderer">
       <UniqueIdentifier>{9C6AA017-8837-FB22-B150-E9CA9D7C30B1}</UniqueIdentifier>
@@ -15,11 +21,29 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\core\Application.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\EntryPoint.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\Platform.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ecs\Components.h">
+      <Filter>ecs</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ecs\Entity.h">
+      <Filter>ecs</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hid\Input.h">
+      <Filter>hid</Filter>
+    </ClInclude>
     <ClInclude Include="src\hid\Window.h">
       <Filter>hid</Filter>
     </ClInclude>
     <ClInclude Include="src\hid\win32\Win32Window.h">
-      <Filter>hid\Windows</Filter>
+      <Filter>hid\win32</Filter>
     </ClInclude>
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\renderer\Renderer.h">
@@ -37,6 +61,9 @@
     <ClInclude Include="src\renderer\vk\VulkanMesh.h">
       <Filter>renderer\vk</Filter>
     </ClInclude>
+    <ClInclude Include="src\renderer\vk\VulkanRenderer.h">
+      <Filter>renderer\vk</Filter>
+    </ClInclude>
     <ClInclude Include="src\renderer\vk\VulkanShader.h">
       <Filter>renderer\vk</Filter>
     </ClInclude>
@@ -52,17 +79,16 @@
     <ClInclude Include="src\renderer\vk\VulkanValidationLayers.h">
       <Filter>renderer\vk</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\vk\VulkanRenderer.h">
-      <Filter>renderer\vk</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\EntryPoint.h" />
-    <ClInclude Include="src\core\Platform.h" />
-    <ClInclude Include="src\hid\Input.h" />
-    <ClInclude Include="src\core\Application.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\core\Application.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ecs\Entity.cpp">
+      <Filter>ecs</Filter>
+    </ClCompile>
     <ClCompile Include="src\hid\win32\Win32Window.cpp">
-      <Filter>hid\Windows</Filter>
+      <Filter>hid\win32</Filter>
     </ClCompile>
     <ClCompile Include="src\pch.cpp" />
     <ClCompile Include="src\renderer\vk\VulkanBuffer.cpp">
@@ -77,6 +103,9 @@
     <ClCompile Include="src\renderer\vk\VulkanMesh.cpp">
       <Filter>renderer\vk</Filter>
     </ClCompile>
+    <ClCompile Include="src\renderer\vk\VulkanRenderer.cpp">
+      <Filter>renderer\vk</Filter>
+    </ClCompile>
     <ClCompile Include="src\renderer\vk\VulkanShader.cpp">
       <Filter>renderer\vk</Filter>
     </ClCompile>
@@ -89,9 +118,5 @@
     <ClCompile Include="src\renderer\vk\VulkanValidationLayers.cpp">
       <Filter>renderer\vk</Filter>
     </ClCompile>
-    <ClCompile Include="src\renderer\vk\VulkanRenderer.cpp">
-      <Filter>renderer\vk</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\Application.cpp" />
   </ItemGroup>
 </Project>

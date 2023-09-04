@@ -177,7 +177,7 @@ namespace vk {
 
         m_current_frame = (m_current_frame+ 1) % m_context.MAX_FRAMES_IN_FLIGHT;
 	}
-	void VulkanRenderer::Destroy(){
+    void VulkanRenderer::SwapBuffers() {
 
-	}
+    }
 }

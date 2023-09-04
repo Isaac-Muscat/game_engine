@@ -99,6 +99,8 @@
     <ClInclude Include="src\core\Application.h" />
     <ClInclude Include="src\core\EntryPoint.h" />
     <ClInclude Include="src\core\Platform.h" />
+    <ClInclude Include="src\ecs\Components.h" />
+    <ClInclude Include="src\ecs\Entity.h" />
     <ClInclude Include="src\hid\Input.h" />
     <ClInclude Include="src\hid\Window.h" />
     <ClInclude Include="src\hid\win32\Win32Window.h" />
@@ -108,15 +110,16 @@
     <ClInclude Include="src\renderer\vk\VulkanImage.h" />
     <ClInclude Include="src\renderer\vk\VulkanInit.h" />
     <ClInclude Include="src\renderer\vk\VulkanMesh.h" />
+    <ClInclude Include="src\renderer\vk\VulkanRenderer.h" />
     <ClInclude Include="src\renderer\vk\VulkanShader.h" />
     <ClInclude Include="src\renderer\vk\VulkanSwapchain.h" />
     <ClInclude Include="src\renderer\vk\VulkanTexture.h" />
     <ClInclude Include="src\renderer\vk\VulkanTypes.h" />
     <ClInclude Include="src\renderer\vk\VulkanValidationLayers.h" />
-    <ClInclude Include="src\renderer\vk\VulkanRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\Application.cpp" />
+    <ClCompile Include="src\ecs\Entity.cpp" />
     <ClCompile Include="src\hid\win32\Win32Window.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
@@ -125,11 +128,11 @@
     <ClCompile Include="src\renderer\vk\VulkanImage.cpp" />
     <ClCompile Include="src\renderer\vk\VulkanInit.cpp" />
     <ClCompile Include="src\renderer\vk\VulkanMesh.cpp" />
+    <ClCompile Include="src\renderer\vk\VulkanRenderer.cpp" />
     <ClCompile Include="src\renderer\vk\VulkanShader.cpp" />
     <ClCompile Include="src\renderer\vk\VulkanSwapchain.cpp" />
     <ClCompile Include="src\renderer\vk\VulkanTexture.cpp" />
     <ClCompile Include="src\renderer\vk\VulkanValidationLayers.cpp" />
-    <ClCompile Include="src\renderer\vk\VulkanRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\dependencies\glfw\glfw.vcxproj">

@@ -15,7 +15,6 @@ I will only stop using these fancy C++ features if I need more performance for t
 I think they hit the sweet spot in terms of performance and ease of use.
 
 ## To Be Implemented
-* Input
 * Logging (Remove exceptions)
 	* Logginng uses asserts (Maybe add color?)
 * Camera

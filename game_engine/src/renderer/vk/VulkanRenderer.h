@@ -15,8 +15,8 @@ namespace vk {
 	class VulkanRenderer : public Renderer {
 	public:
 		VulkanRenderer();
-		virtual void Draw() override;
-		void Destroy();
+		void Draw() override;
+		void SwapBuffers() override;
 	public:
 		uint32_t m_current_frame = 0;
 		VulkanContext m_context {};
