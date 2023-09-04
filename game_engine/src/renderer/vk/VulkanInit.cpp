@@ -182,6 +182,8 @@ namespace vk::init {
                 return i;
             }
         }
+        assert(false && "Could not find memory type satisfying conditions.");
+        return -1;
     }
 
     bool IsDeviceSuitable(VkPhysicalDevice device, VkSurfaceKHR surface) {

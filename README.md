@@ -21,6 +21,9 @@ I think they hit the sweet spot in terms of performance and ease of use.
 * Renderer Cleanup
 * ECS
 * Scenes
+* Memory allocators
+	* Pool allocator
+	* Stack allocator
 * Make editor for engine
 	* 2D rendering
 	* Text rendering
