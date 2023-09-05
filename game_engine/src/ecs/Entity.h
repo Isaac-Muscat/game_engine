@@ -1,11 +1,12 @@
 #pragma once
 #include "pch.h"
-#include "Components.h"
 
-class Scene {
-	ComponentArray<TransformComponent> m_transforms;
-	ComponentArray<MeshComponent> m_meshes;
-	ComponentArray<ScriptComponent> m_scripts;
+typedef uint64_t EntityID;
+typedef uint64_t ComponentMask;
+typedef uint8_t ComponentID;
+
+class Scene;
+class Entity {
+	Scene* m_scene;
+	EntityID m_entity;
 };
-
-typedef uint64_t Entity;

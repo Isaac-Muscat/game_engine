@@ -1,42 +1,50 @@
 #include "core/EntryPoint.h"
 #include "ecs/Entity.h"
 #include "ecs/Components.h"
+#include "ecs/Scene.h"
 #include "hid/Input.h"
 
 void Application::OnCreate() {
-	Entity entity1 = 100;
-	Entity entity2 = 200;
-	Entity entity3 = 300;
-	Entity entity4 = 400;
-	TransformComponent transform1 = { glm::vec3(1), {}, {} };
-	TransformComponent transform2 = { glm::vec3(2), {}, {} };
-	TransformComponent transform3 = { glm::vec3(3), {}, {} };
-	TransformComponent transform4 = { glm::vec3(4), {}, {} };
-	TransformComponent t = {};
-	ComponentArray<TransformComponent> transform_components;
 
-	transform_components.AddComponentToEntity(entity1, transform1);
-	transform_components.AddComponentToEntity(entity2, transform2);
-	transform_components.AddComponentToEntity(entity3, transform3);
+	/* Goal API for ECS
+		Entity player = g_ecs.GetEntityByName("Player");
+		Transform t = player.GetComponent<Transform>();
+		Mesh m = Mesh("path/to/file.obj");
+		player.AddComponent<Mesh>(m);
+	*/
+	Scene scene;
+	scene.RegisterView<TransformComponent, ScriptComponent>();
 
-	transform_components.DestroyEntity(entity2);
+	for (int i = 0; i < 2; i++) {
+		EntityID entity = scene.CreateEntity();
+		TransformComponent transform = { glm::vec3(10, 20, 30) + glm::vec3(i)};
+		scene.AddComponent<TransformComponent>(entity, transform);
+		ScriptComponent script = {};
+		scene.AddComponent<ScriptComponent>(entity, script);
+	}
 
-	transform_components.AddComponentToEntity(entity4, transform4);
-	t = transform_components.GetComponent(entity1);
-	t = transform_components.GetComponent(entity3);
-	t = transform_components.GetComponent(entity4);
+	const auto& entities_with_transforms_and_scripts = scene.GetView<TransformComponent, ScriptComponent>();
 
-	transform_components.DestroyEntity(entity4);
+	for (auto e : entities_with_transforms_and_scripts) {
+		std::cout << e << std::endl;
+		std::cout << scene.GetComponent<TransformComponent>(e).position.x << std::endl;
+		std::cout << scene.GetComponent<TransformComponent>(e).position.y << std::endl;
+		std::cout << scene.GetComponent<TransformComponent>(e).position.z << std::endl;
+	}
 
-	transform_components.AddComponentToEntity(entity2, transform2);
-	t = transform_components.GetComponent(entity1);
-	t = transform_components.GetComponent(entity2);
-	t = transform_components.GetComponent(entity3);
+	EntityID entity1 = *entities_with_transforms_and_scripts.begin();
+	TransformComponent& t = scene.GetComponent<TransformComponent>(entity1);
+	t.position *= 3;
+	t = scene.GetComponent<TransformComponent>(entity1);
+	
+	scene.DeleteComponent<ScriptComponent>(entity1);
 
-	transform_components.DestroyEntity(entity1);
-	transform_components.DestroyEntity(entity2);
-	t = transform_components.GetComponent(entity3);
-	transform_components.DestroyEntity(entity3);
+
+	scene.DestroyEntity(entity1);
+
+	uint32_t tid = Scene::GetComponentID<TransformComponent>();
+	uint32_t mid = Scene::GetComponentID<MeshComponent>();
+	uint32_t sid = Scene::GetComponentID<ScriptComponent>();
 }
 
 void Application::OnUpdate() {
