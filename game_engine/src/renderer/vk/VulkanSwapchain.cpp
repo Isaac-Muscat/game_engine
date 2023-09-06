@@ -47,7 +47,8 @@ namespace vk {
          createInfo.clipped = VK_TRUE;
          createInfo.oldSwapchain = VK_NULL_HANDLE;
 
-         assert(vkCreateSwapchainKHR(context.device, &createInfo, nullptr, &m_swapchain) == VK_SUCCESS && "failed to create swap chain!");
+         VkResult result = vkCreateSwapchainKHR(context.device, &createInfo, nullptr, &m_swapchain);
+         assert(result == VK_SUCCESS && "failed to create swap chain!");
 
 		 vkGetSwapchainImagesKHR(context.device, m_swapchain, &imageCount, nullptr);
 		 m_images.resize(imageCount);

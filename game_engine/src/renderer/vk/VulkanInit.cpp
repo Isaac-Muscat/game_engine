@@ -24,7 +24,7 @@ namespace vk::init {
         app_info.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
         app_info.pEngineName = "Game Engine";
         app_info.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-        app_info.apiVersion = VK_API_VERSION_1_0;
+        app_info.apiVersion = VK_API_VERSION_1_2;
 
 		auto extensions = g_window->GetRequiredExtensions(enable_validation_layers);
 
@@ -48,7 +48,8 @@ namespace vk::init {
         }
 
         VkInstance instance;
-        assert(vkCreateInstance(&create_info, nullptr, &instance) == VK_SUCCESS && "failed to create instance!");
+        VkResult result = vkCreateInstance(&create_info, nullptr, &instance);
+        assert(result == VK_SUCCESS && "failed to create instance!");
         return instance;
     }
 
@@ -110,7 +111,8 @@ namespace vk::init {
         }
 
         VkDevice device;
-        assert(vkCreateDevice(physical_device, &create_info, nullptr, &device) == VK_SUCCESS && "failed to create logical device!");
+        VkResult result = vkCreateDevice(physical_device, &create_info, nullptr, &device);
+        assert(result == VK_SUCCESS && "failed to create logical device!");
 
         return device;
     }

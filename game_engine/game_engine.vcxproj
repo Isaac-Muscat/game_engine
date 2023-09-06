@@ -120,6 +120,7 @@
     <ClInclude Include="src\renderer\vk\VulkanTexture.h" />
     <ClInclude Include="src\renderer\vk\VulkanTypes.h" />
     <ClInclude Include="src\renderer\vk\VulkanValidationLayers.h" />
+    <ClInclude Include="src\scene\Scene.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\Application.cpp" />
@@ -137,6 +138,7 @@
     <ClCompile Include="src\renderer\vk\VulkanSwapchain.cpp" />
     <ClCompile Include="src\renderer\vk\VulkanTexture.cpp" />
     <ClCompile Include="src\renderer\vk\VulkanValidationLayers.cpp" />
+    <ClCompile Include="src\scene\Scene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\dependencies\glfw\glfw.vcxproj">

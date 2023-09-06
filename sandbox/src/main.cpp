@@ -5,7 +5,9 @@
 
 #include "PlayerController.h"
 
+std::shared_ptr<Scene> scene;
 void Application::OnCreate() {
+	// Test Workspace
 
 	/* Goal API for ECS
 		Entity player = g_ecs.GetEntityByName("Player");
@@ -13,6 +15,7 @@ void Application::OnCreate() {
 		Mesh m = Mesh("path/to/file.obj");
 		player.AddComponent<Mesh>(m);
 	*/
+	EntityComponentSystem g_ecs;
 	g_ecs.RegisterView<TransformComponent, NameComponent>();
 
 	for (int i = 0; i < 2; i++) {
@@ -57,14 +60,23 @@ void Application::OnCreate() {
 	uint32_t mid = EntityComponentSystem::GetComponentID<MeshComponent>();
 	uint32_t sid = EntityComponentSystem::GetComponentID<ScriptComponent>();
 
-	Entity player = Entity(*entities_with_transforms_and_scripts.begin(), &g_ecs);
-	ScriptComponent player_controller = { new PlayerController };
-	player_controller.script->m_entity = player;
-	player.AddComponent<ScriptComponent>(player_controller);
-	
+	// Create Scenes. Eventually will have an editor with scene serialization and deserialization.
+	// For now, manually define scenes in Application::OnCreate function.
+	scene = std::make_shared<Scene>();
+	for (int i = 0; i < 100; i++) {
+		Entity player = scene->m_ecs->CreateEntity();
+		ScriptComponent player_controller = { new PlayerController };
+		player_controller.script->m_entity = player;
+		player.AddComponent<ScriptComponent>(player_controller);
+		player.AddComponent<TransformComponent>({});
+	}
+	m_scenes.push_back(scene);
 }
 
 void Application::OnUpdate() {
+	if (Input::GetKeyPressed(GLFW_KEY_A) || Input::GetKeyPressed(GLFW_KEY_D)) {
+		std::cout << "Key pressed." << std::endl;
+	}
 	if (Input::GetMousePressed(GLFW_MOUSE_BUTTON_LEFT)) {
 		std::cout << "Mouse x: " << Input::GetMousePosition().x << std::endl;
 		std::cout << "Mouse y: " << Input::GetMousePosition().y << std::endl;

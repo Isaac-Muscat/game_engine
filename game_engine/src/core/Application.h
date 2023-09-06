@@ -1,6 +1,7 @@
 #pragma once
 #include "pch.h"
 #include "Platform.h"
+#include "scene/Scene.h"
 
 struct ApplicationInfo {
 	Platform platform;
@@ -13,10 +14,12 @@ struct ApplicationInfo {
 class Application {
 public:
 	static Application* CreateApplication();
+	int m_current_scene_index = 0;
+	std::vector<std::shared_ptr<Scene>> m_scenes;
 	Application(ApplicationInfo info);
 	~Application();
-	void Run();
 
+	void Run();
 	void OnCreate();
 	void OnUpdate();
 	void OnDestroy();

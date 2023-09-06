@@ -9,8 +9,8 @@ namespace vk {
 
         VkDebugUtilsMessengerCreateInfoEXT createInfo;
         PopulateDebugMessengerCreateInfo(createInfo);
-
-        assert(CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, pDebugMessenger) == VK_SUCCESS && "failed to set up debug messenger!");
+        VkResult result = CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, pDebugMessenger);
+        assert(result == VK_SUCCESS && "failed to set up debug messenger!");
     }
 
     bool CheckValidationLayerSupport() {

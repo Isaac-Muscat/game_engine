@@ -11,10 +11,10 @@ public:
 		TransformComponent& t = GetComponent<TransformComponent>();
 		if (Input::GetKeyPressed(GLFW_KEY_A)) {
 			t.position.x += 1;
-			Print(t);
+			//Print(t);
 		} else if (Input::GetKeyPressed(GLFW_KEY_D)) {
 			t.position.x -= 1;
-			Print(t);
+			//Print(t);
 		}
 	}
 
