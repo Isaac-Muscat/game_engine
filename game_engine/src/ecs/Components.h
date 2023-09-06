@@ -15,9 +15,11 @@ struct TransformComponent {
 	glm::vec3 scale;
 };
 
-typedef std::string NameComponent;
+struct NameComponent {
+	std::string name;
+};
 
-class ScriptableEntity;
+class EntityScript;
 struct ScriptComponent {
-	ScriptableEntity* instance;
+	EntityScript* script;
 };

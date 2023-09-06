@@ -82,7 +82,7 @@
     <ClInclude Include="src\ecs\EntityComponentSystem.h" />
     <ClInclude Include="src\ecs\ComponentArray.h" />
     <ClInclude Include="src\ecs\Entity.h" />
-    <ClInclude Include="src\ecs\ScriptableEntity.h" />
+    <ClInclude Include="src\ecs\EntityScript.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\Application.cpp">

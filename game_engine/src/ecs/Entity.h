@@ -8,7 +8,7 @@ class Entity {
 public:
 	friend class EntityComponentSystem;
 	Entity(EntityID id, EntityComponentSystem* ecs) : m_id(id), m_ecs(ecs) {}
-	Entity() = delete;
+	Entity() { m_id = 0; m_ecs = nullptr; };
 	template<typename T>
 	void AddComponent(T component) {
 		m_ecs->AddComponent<T>(m_id, component);

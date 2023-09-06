@@ -3,6 +3,8 @@
 #include "ecs/Entity.h"
 #include "hid/Input.h"
 
+#include "PlayerController.h"
+
 void Application::OnCreate() {
 
 	/* Goal API for ECS
@@ -11,55 +13,59 @@ void Application::OnCreate() {
 		Mesh m = Mesh("path/to/file.obj");
 		player.AddComponent<Mesh>(m);
 	*/
-	EntityComponentSystem scene;
-	scene.RegisterView<TransformComponent, ScriptComponent>();
+	g_ecs.RegisterView<TransformComponent, NameComponent>();
 
 	for (int i = 0; i < 2; i++) {
-		Entity entity = scene.CreateEntity();
-		TransformComponent transform = { glm::vec3(10, 20, 30) + glm::vec3(i)};
+		Entity entity = g_ecs.CreateEntity();
+		TransformComponent transform = { glm::vec3(10, 20, 30) + glm::vec3(i) };
 		entity.AddComponent<TransformComponent>(transform);
-		ScriptComponent script = {};
-		entity.AddComponent<ScriptComponent>(script);
+		entity.AddComponent<NameComponent>({ "Test" });
 		entity.SetTag("Entity" + std::to_string(i));
 	}
 
-	Entity e0 = scene.FindEntityByTag("Entity0");
-	Entity e1 = scene.FindEntityByTag("Entity1");
-	Entity e2 = scene.FindEntityByTag("Entity2");
+	Entity e0 = g_ecs.FindEntityByTag("Entity0");
+	Entity e1 = g_ecs.FindEntityByTag("Entity1");
+	Entity e2 = g_ecs.FindEntityByTag("Entity2");
 
-	const auto& entities_with_transforms_and_scripts = scene.GetView<TransformComponent, ScriptComponent>();
+	const auto& entities_with_transforms_and_scripts = g_ecs.GetView<TransformComponent, NameComponent>();
 
-	for (const auto& e : scene.GetView<TransformComponent, ScriptComponent>()) {
+	for (const auto& e : g_ecs.GetView<TransformComponent, NameComponent>()) {
 		std::cout << e << std::endl;
-		std::cout << scene.GetComponent<TransformComponent>(e).position.x << std::endl;
-		std::cout << scene.GetComponent<TransformComponent>(e).position.y << std::endl;
-		std::cout << scene.GetComponent<TransformComponent>(e).position.z << std::endl;
+		std::cout << g_ecs.GetComponent<TransformComponent>(e).position.x << std::endl;
+		std::cout << g_ecs.GetComponent<TransformComponent>(e).position.y << std::endl;
+		std::cout << g_ecs.GetComponent<TransformComponent>(e).position.z << std::endl;
 	}
 
 	EntityID entity1 = *entities_with_transforms_and_scripts.begin();
-	TransformComponent& t = scene.GetComponent<TransformComponent>(entity1);
+	TransformComponent& t = g_ecs.GetComponent<TransformComponent>(entity1);
 	t.position *= 3;
-	t = scene.GetComponent<TransformComponent>(entity1);
-	
-	scene.DeleteComponent<ScriptComponent>(entity1);
+	t = g_ecs.GetComponent<TransformComponent>(entity1);
 
-	scene.DestroyEntity(entity1);
+	g_ecs.DeleteComponent<NameComponent>(entity1);
+
+	g_ecs.DestroyEntity(entity1);
 
 	std::cout << "After destroying " << entity1 << std::endl;
-	for (const auto& e : scene.GetView<TransformComponent, ScriptComponent>()) {
+	for (const auto& e : g_ecs.GetView<TransformComponent, NameComponent>()) {
 		std::cout << e << std::endl;
-		std::cout << scene.GetComponent<TransformComponent>(e).position.x << std::endl;
-		std::cout << scene.GetComponent<TransformComponent>(e).position.y << std::endl;
-		std::cout << scene.GetComponent<TransformComponent>(e).position.z << std::endl;
+		std::cout << g_ecs.GetComponent<TransformComponent>(e).position.x << std::endl;
+		std::cout << g_ecs.GetComponent<TransformComponent>(e).position.y << std::endl;
+		std::cout << g_ecs.GetComponent<TransformComponent>(e).position.z << std::endl;
 	}
 
 	uint32_t tid = EntityComponentSystem::GetComponentID<TransformComponent>();
 	uint32_t mid = EntityComponentSystem::GetComponentID<MeshComponent>();
 	uint32_t sid = EntityComponentSystem::GetComponentID<ScriptComponent>();
+
+	Entity player = Entity(*entities_with_transforms_and_scripts.begin(), &g_ecs);
+	ScriptComponent player_controller = { new PlayerController };
+	player_controller.script->m_entity = player;
+	player.AddComponent<ScriptComponent>(player_controller);
+	
 }
 
 void Application::OnUpdate() {
-	if (Input::GetKeyPressed(GLFW_KEY_A)) {
+	if (Input::GetMousePressed(GLFW_MOUSE_BUTTON_LEFT)) {
 		std::cout << "Mouse x: " << Input::GetMousePosition().x << std::endl;
 		std::cout << "Mouse y: " << Input::GetMousePosition().y << std::endl;
 	}

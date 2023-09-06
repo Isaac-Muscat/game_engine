@@ -19,10 +19,13 @@ public:
 	template<typename T>
 	void AddComponent(EntityID entity, T component) {
 		// Update component arrays.
-		uint8_t component_id = GetComponentID<T>();
+		uint32_t component_id = GetComponentID<T>();
 		if (component_id >= m_component_arrays.size()) {
 			m_component_arrays.resize(component_id + 1);
+		}
+		if (m_component_ids[component_id] == false) {
 			m_component_arrays[component_id] = new ComponentArray<T>();
+			m_component_ids[component_id] = true;
 		}
 		static_cast<ComponentArray<T>*>(m_component_arrays[component_id])->AddComponentToEntity(entity, component);
 
@@ -153,6 +156,7 @@ private:
 	static uint64_t s_entity_counter;
 	static uint8_t s_component_counter;
 
+	std::array<bool, MAX_COMPONENT_TYPES> m_component_ids = {};
 	std::vector<IComponentArray*> m_component_arrays;
 	std::unordered_map<ComponentMask, std::set<EntityID>> m_views;
 	ComponentArray<ComponentMask> m_entity_signatures;
@@ -163,3 +167,4 @@ private:
 		return static_cast<ComponentMask>(1) << component_id;
 	}
 };
+extern EntityComponentSystem g_ecs;
