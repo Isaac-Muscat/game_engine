@@ -26,8 +26,8 @@ void EntityComponentSystem::SetTag(EntityID entity, std::string tag) {
 }
 
 Entity EntityComponentSystem::FindEntityByTag(const std::string& tag) {
-	for (size_t i = 0; i <= m_entity_tags.m_last_index; i++) {
-		if (m_entity_tags.m_components[i] == tag) {
+	for (size_t i = 0; i < m_entity_tags.End(); i++) {
+		if (m_entity_tags[i] == tag) {
 			return Entity(m_entity_tags.m_index_to_entity_map[i], this);
 		}
 	}

@@ -5,27 +5,26 @@
 
 Scene::Scene() {
     m_ecs = std::make_unique<EntityComponentSystem>();
-	m_ecs->RegisterView<ScriptComponent>();
     m_ecs->RegisterView<MeshComponent, TransformComponent>();
 }
 
 void Scene::Init() {
-    const auto& scripts = m_ecs->GetView<ScriptComponent>();
-    for (const auto& e : scripts) {
-        auto& script = m_ecs->GetComponent<ScriptComponent>(e);
+    const auto& scripts = m_ecs->GetComponentArray<ScriptComponent>();
+    for (size_t i = 0; i < scripts.End(); i++) {
+        auto& script = scripts[i];
         script.script->OnAwake();
     }
 
-    for (const auto& e : scripts) {
-        auto& script = m_ecs->GetComponent<ScriptComponent>(e);
+    for (size_t i = 0; i < scripts.End(); i++) {
+        auto& script = scripts[i];
         script.script->OnCreate();
     }
 }
 
 void Scene::OnUpdate() {
-    const auto& scripts = m_ecs->GetView<ScriptComponent>();
-    for (const auto& e : scripts) {
-        auto& script = m_ecs->GetComponent<ScriptComponent>(e);
+    const auto& scripts = m_ecs->GetComponentArray<ScriptComponent>();
+    for (size_t i = 0; i < scripts.End(); i++) {
+        auto& script = scripts[i];
         script.script->OnUpdate();
     }
 }
@@ -43,9 +42,9 @@ void Scene::RenderScene() {
 }
 
 void Scene::Destroy() {
-    const auto& scripts = m_ecs->GetView<ScriptComponent>();
-    for (const auto& e : scripts) {
-        auto& script = m_ecs->GetComponent<ScriptComponent>(e);
+    const auto& scripts = m_ecs->GetComponentArray<ScriptComponent>();
+    for (size_t i = 0; i < scripts.End(); i++) {
+        auto& script = scripts[i];
         script.script->OnDestroy();
     }
 }

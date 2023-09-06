@@ -95,12 +95,17 @@ public:
 	std::vector<EntityID> FindEntitiesWithComponent(T component) {
 		std::vector<EntityID> entities;
 		auto component_array = static_cast<ComponentArray<T>*>(m_component_arrays[GetComponentID<T>()]);
-		for (size_t i = 0; i <= component_array->m_last_index; i++) {
-			if (component_array->m_components[i] == component) {
+		for (size_t i = 0; i < component_array->End(); i++) {
+			if (component_array[i] == component) {
 				entities.emplace_back(component_array->m_index_to_entity_map[i]);
 			}
 		}
 		return entities;
+	}
+
+	template<typename T>
+	ComponentArray<T>& GetComponentArray() {
+		return *static_cast<ComponentArray<T>*>(m_component_arrays[GetComponentID<T>()]);
 	}
 
 	void SetTag(EntityID entity, std::string tag);
@@ -114,6 +119,7 @@ public:
 	// Return invalid EntityID (0) if no entity has tag.
 	Entity FindEntityByTag(const std::string& tag);
 
+	// If you only need the component info for one type, use GetComponentArray.
 	template<typename ...ComponentTypes>
 	void RegisterView() {
 		ComponentMask mask = 0;

@@ -10,7 +10,7 @@ Currently the only libraries being used are:
 * GLFW
 * stb_image
 
-The code is written with C++, and mainly uses polymorphism, smart pointers.
+The code is written with C++ and uses polymorphism and smart pointers.
 I will only stop using these fancy C++ features if I need more performance for the engine.
 I think they hit the sweet spot in terms of performance and ease of use.
 
@@ -19,8 +19,6 @@ I think they hit the sweet spot in terms of performance and ease of use.
 	* Logginng uses asserts (Maybe add color?)
 * Camera
 * Renderer Cleanup
-* ECS
-* Scenes
 * Memory allocators
 	* Pool allocator
 	* Stack allocator

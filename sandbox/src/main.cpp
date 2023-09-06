@@ -5,7 +5,6 @@
 
 #include "PlayerController.h"
 
-std::shared_ptr<Scene> scene;
 void Application::OnCreate() {
 	// Test Workspace
 
@@ -62,7 +61,7 @@ void Application::OnCreate() {
 
 	// Create Scenes. Eventually will have an editor with scene serialization and deserialization.
 	// For now, manually define scenes in Application::OnCreate function.
-	scene = std::make_shared<Scene>();
+	std::shared_ptr<Scene> scene = std::make_shared<Scene>();
 	for (int i = 0; i < 100; i++) {
 		Entity player = scene->m_ecs->CreateEntity();
 		ScriptComponent player_controller = { new PlayerController };
