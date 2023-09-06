@@ -14,6 +14,12 @@ public:
 		return s_component_id;
 	}
 
+	~EntityComponentSystem() {
+		for (auto components : m_component_arrays) {
+			delete components;
+		}
+	}
+
 	Entity CreateEntity();
 
 	template<typename T>

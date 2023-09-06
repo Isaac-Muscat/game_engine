@@ -3,8 +3,11 @@
 
 class PlayerController : public EntityScript {
 public:
+	Entity player1;
 	void OnCreate() override {
-		std::cout << "Created player controller." << std::endl;
+		player1 = m_entity.GetECS()->FindEntityByTag("Player1");
+		std::string tag = player1.GetComponent<NameComponent>().name;
+		std::cout << "Found " << tag << ". Created player controller." << std::endl;
 	}
 
 	void OnUpdate() override {

@@ -69,6 +69,8 @@ void Application::OnCreate() {
 		player_controller.script->m_entity = player;
 		player.AddComponent<ScriptComponent>(player_controller);
 		player.AddComponent<TransformComponent>({});
+		player.SetTag("Player" + std::to_string(i));
+		player.AddComponent<NameComponent>({ "Player" + std::to_string(i) });
 	}
 	m_scenes.push_back(scene);
 }
