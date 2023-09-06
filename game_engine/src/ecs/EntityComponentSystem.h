@@ -1,19 +1,20 @@
 #pragma once
 #include "pch.h"
 #include "ComponentArray.h"
-#include "Entity.h"
 #include "Components.h"
 
-class Scene {
+class Entity;
+class EntityComponentSystem {
 public:
 	static const uint32_t MAX_ENTITIES = 10000;
 	static const uint8_t MAX_COMPONENT_TYPES = 64;
-
 	template<typename T>
 	static ComponentID GetComponentID() {
 		static ComponentID s_component_id = s_component_counter++;
 		return s_component_id;
 	}
+
+	Entity CreateEntity();
 
 	template<typename T>
 	void AddComponent(EntityID entity, T component) {
@@ -29,8 +30,8 @@ public:
 		ComponentMask& entity_signature = m_entity_signatures.GetComponent(entity);
 		entity_signature |= GetComponentMask(component_id);
 
-		// Update scene views.
-		for (auto& pair : m_scene_views) {
+		// Update views.
+		for (auto& pair : m_views) {
 			auto& mask = pair.first;
 			auto& view = pair.second;
 
@@ -60,15 +61,49 @@ public:
 		static_cast<ComponentArray<T>*>(m_component_arrays[component_id])->RemoveComponentFromEntity(entity);
 
 		// Update entity signatures.
-		ComponentMask& mask = m_entity_signatures.GetComponent(entity);
-		mask &= ~GetComponentMask(component_id);
+		ComponentMask& entity_signature = m_entity_signatures.GetComponent(entity);
+		entity_signature &= ~GetComponentMask(component_id);
 
-		// Update scene views.
-		for (auto& pair : m_scene_views) {
+		// Update views.
+		for (auto& pair : m_views) {
+			auto& mask = pair.first;
 			auto& view = pair.second;
-			view.erase(entity);
+
+			// Entity signature matches system signature - insert into set
+			if ((entity_signature & mask) == mask) {
+				view.insert(entity);
+			}
+			// Entity signature does not match system signature - erase from set
+			else {
+				view.erase(entity);
+			}
 		}
 	}
+
+	// Returns all entities with matching component.
+	// For more complicated queries, use views.
+	template<typename T>
+	std::vector<EntityID> FindEntitiesWithComponent(T component) {
+		std::vector<EntityID> entities;
+		auto component_array = static_cast<ComponentArray<T>*>(m_component_arrays[GetComponentID<T>()]);
+		for (size_t i = 0; i <= component_array->m_last_index; i++) {
+			if (component_array->m_components[i] == component) {
+				entities.emplace_back(component_array->m_index_to_entity_map[i]);
+			}
+		}
+		return entities;
+	}
+
+	void SetTag(EntityID entity, std::string tag);
+
+	void DeleteTag(EntityID entity) {
+		assert(m_entity_tags.EntityHasComponent(entity) && "Attempting to delete entity without tag assigned.");
+		m_entity_tags.DestroyEntity(entity);
+	}
+
+	// Careful. Not performant.
+	// Return invalid EntityID (0) if no entity has tag.
+	Entity FindEntityByTag(const std::string& tag);
 
 	template<typename ...ComponentTypes>
 	void RegisterView() {
@@ -77,8 +112,8 @@ public:
 		for (int i = 0; i < (sizeof...(ComponentTypes)); i++) {
 			mask |= GetComponentMask(component_ids[i]);
 		}
-		if (m_scene_views.find(mask) == m_scene_views.end()) {
-			m_scene_views[mask] = std::set<EntityID>();
+		if (m_views.find(mask) == m_views.end()) {
+			m_views[mask] = std::set<EntityID>();
 		}
 	}
 
@@ -90,13 +125,7 @@ public:
 			mask |= GetComponentMask(component_ids[i]);
 		}
 		
-		return m_scene_views[mask];
-	}
-
-	EntityID CreateEntity() {
-		EntityID entity = s_entity_counter++;
-		m_entity_signatures.AddComponentToEntity(entity, 0);
-		return entity;
+		return m_views[mask];
 	}
 
 	void DestroyEntity(EntityID entity) {
@@ -107,7 +136,16 @@ public:
 			mask &= ~(1 << id);
 			m_component_arrays[id]->DestroyEntity(entity);
 		}
-		m_entity_signatures.RemoveComponentFromEntity(entity);
+		m_entity_signatures.DestroyEntity(entity);
+		if (m_entity_tags.EntityHasComponent(entity)) {
+			m_entity_tags.DestroyEntity(entity);
+		}
+
+		// Update views.
+		for (auto& pair : m_views) {
+			auto& view = pair.second;
+			view.erase(entity);
+		}
 	}
 
 	
@@ -116,12 +154,12 @@ private:
 	static uint8_t s_component_counter;
 
 	std::vector<IComponentArray*> m_component_arrays;
-	std::unordered_map<ComponentMask, std::set<EntityID>> m_scene_views;
+	std::unordered_map<ComponentMask, std::set<EntityID>> m_views;
 	ComponentArray<ComponentMask> m_entity_signatures;
+	ComponentArray<std::string> m_entity_tags;
 
 	// Only supports 64 component types for now.
 	ComponentMask GetComponentMask(uint8_t component_id) {
-		// Prevent
 		return static_cast<ComponentMask>(1) << component_id;
 	}
 };

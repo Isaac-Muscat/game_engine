@@ -1,12 +1,39 @@
 #pragma once
 #include "pch.h"
+#include "EntityTypes.h"
+#include "EntityComponentSystem.h"
 
-typedef uint64_t EntityID;
-typedef uint64_t ComponentMask;
-typedef uint8_t ComponentID;
-
-class Scene;
+// Main interface object that wraps the ecs.
 class Entity {
-	Scene* m_scene;
-	EntityID m_entity;
+public:
+	friend class EntityComponentSystem;
+	Entity(EntityID id, EntityComponentSystem* ecs) : m_id(id), m_ecs(ecs) {}
+	Entity() = delete;
+	template<typename T>
+	void AddComponent(T component) {
+		m_ecs->AddComponent<T>(m_id, component);
+	}
+
+	template<typename T>
+	T& GetComponent() {
+		return m_ecs->GetComponent<T>(m_id);
+	}
+
+	template<typename T>
+	void DeleteComponent() {
+		m_ecs->DeleteComponent<T>(m_id);
+	}
+
+	// Careful. Not performant.
+	void SetTag(std::string tag) {
+		m_ecs->SetTag(m_id, tag);
+	}
+
+	// Careful. Not performant.
+	void DeleteTag() {
+		return m_ecs->DeleteTag(m_id);
+	}
+private:
+	EntityComponentSystem* m_ecs;
+	EntityID m_id;
 };

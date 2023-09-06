@@ -2,7 +2,7 @@
 #include "Application.h"
 #include "renderer/vk/VulkanRenderer.h"
 #include "hid/win32/Win32Window.h"
-#include "ecs/Scene.h"
+#include "ecs/EntityComponentSystem.h"
 
 std::unique_ptr<Renderer> g_renderer;
 std::unique_ptr<Window> g_window;

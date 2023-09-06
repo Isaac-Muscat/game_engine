@@ -102,7 +102,9 @@
     <ClInclude Include="src\ecs\ComponentArray.h" />
     <ClInclude Include="src\ecs\Components.h" />
     <ClInclude Include="src\ecs\Entity.h" />
-    <ClInclude Include="src\ecs\Scene.h" />
+    <ClInclude Include="src\ecs\EntityTypes.h" />
+    <ClInclude Include="src\ecs\EntityComponentSystem.h" />
+    <ClInclude Include="src\ecs\ScriptableEntity.h" />
     <ClInclude Include="src\hid\Input.h" />
     <ClInclude Include="src\hid\Window.h" />
     <ClInclude Include="src\hid\win32\Win32Window.h" />
@@ -121,7 +123,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\Application.cpp" />
-    <ClCompile Include="src\ecs\Scene.cpp" />
+    <ClCompile Include="src\ecs\EntityComponentSystem.cpp" />
     <ClCompile Include="src\hid\win32\Win32Window.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>

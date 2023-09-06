@@ -1,12 +1,13 @@
 #pragma once
 #include "pch.h"
-#include "Entity.h"
+#include "EntityTypes.h"
 
 class IComponentArray {
 public:
 	virtual void DestroyEntity(EntityID entity) = 0;
 };
 
+// TODO: Implement turn it into an iterable.
 // TODO: Only allocate if no more room in array. 
 // Currently, allocation occurs when an entity is added causing the array to be full.
 // TODO: Optimize for no branches and fixed size?
@@ -14,6 +15,7 @@ public:
 template<typename T>
 class ComponentArray : public IComponentArray {
 public:
+	friend class EntityComponentSystem;
 	ComponentArray() : ComponentArray(1) {}
 	ComponentArray(size_t size)
 		: m_size(size), m_last_index(0) {
@@ -78,6 +80,6 @@ private:
 	size_t m_size;
 	size_t m_last_index;
 	T* m_components;
-	std::unordered_map<EntityID, size_t> m_entity_to_index_map;
 	std::unordered_map<size_t, EntityID> m_index_to_entity_map;
+	std::unordered_map<EntityID, size_t> m_entity_to_index_map;
 };
