@@ -1,9 +1,10 @@
 #pragma once
 #include "pch.h"
+#include "Camera.h"
 
 class Renderer {
 public:
-	virtual void Draw() = 0;
+	virtual void Draw(const Camera& camera) = 0;
 	virtual void SwapBuffers() = 0;
 };
 

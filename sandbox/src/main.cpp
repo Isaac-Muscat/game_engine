@@ -4,6 +4,7 @@
 #include "hid/Input.h"
 
 #include "PlayerController.h"
+#include "scripts/CameraController.h"
 
 void Application::OnCreate() {
 	// Test Workspace
@@ -71,6 +72,14 @@ void Application::OnCreate() {
 		player.SetTag("Player" + std::to_string(i));
 		player.AddComponent<NameComponent>({ "Player" + std::to_string(i) });
 	}
+
+	// Create First Person Camera.
+	Entity camera_entity = scene->m_ecs->CreateEntity();
+	camera_entity.AddComponent<CameraComponent>({ Camera(glm::vec3(2.0f)) });
+	ScriptComponent camera_controller = { new CameraController };
+	camera_controller.script->m_entity = camera_entity;
+	camera_entity.AddComponent<ScriptComponent>(camera_controller);
+	scene->SetMainCamera(camera_entity);
 	m_scenes.push_back(scene);
 }
 

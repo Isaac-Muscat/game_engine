@@ -17,7 +17,7 @@ public:
 	}
 
 	template<typename T>
-	T& GetComponent() {
+	T& GetComponent() const {
 		return m_ecs->GetComponent<T>(m_id);
 	}
 

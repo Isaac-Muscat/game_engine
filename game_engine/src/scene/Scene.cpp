@@ -2,6 +2,7 @@
 #include "Scene.h"
 #include "ecs/EntityScript.h"
 #include "ecs/EntityComponentSystem.h"
+#include "renderer/Camera.h"
 
 Scene::Scene() {
     m_ecs = std::make_unique<EntityComponentSystem>();

@@ -84,6 +84,8 @@
     <ClInclude Include="src\ecs\Entity.h" />
     <ClInclude Include="src\ecs\EntityScript.h" />
     <ClInclude Include="src\scene\Scene.h" />
+    <ClInclude Include="src\renderer\Camera.h" />
+    <ClInclude Include="src\scripts\CameraController.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\Application.cpp">
@@ -122,5 +124,6 @@
     </ClCompile>
     <ClCompile Include="src\ecs\EntityComponentSystem.cpp" />
     <ClCompile Include="src\scene\Scene.cpp" />
+    <ClCompile Include="src\renderer\Camera.cpp" />
   </ItemGroup>
 </Project>

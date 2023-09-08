@@ -109,6 +109,7 @@
     <ClInclude Include="src\hid\Window.h" />
     <ClInclude Include="src\hid\win32\Win32Window.h" />
     <ClInclude Include="src\pch.h" />
+    <ClInclude Include="src\renderer\Camera.h" />
     <ClInclude Include="src\renderer\Renderer.h" />
     <ClInclude Include="src\renderer\vk\VulkanBuffer.h" />
     <ClInclude Include="src\renderer\vk\VulkanImage.h" />
@@ -121,6 +122,7 @@
     <ClInclude Include="src\renderer\vk\VulkanTypes.h" />
     <ClInclude Include="src\renderer\vk\VulkanValidationLayers.h" />
     <ClInclude Include="src\scene\Scene.h" />
+    <ClInclude Include="src\scripts\CameraController.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\Application.cpp" />
@@ -129,6 +131,7 @@
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\renderer\Camera.cpp" />
     <ClCompile Include="src\renderer\vk\VulkanBuffer.cpp" />
     <ClCompile Include="src\renderer\vk\VulkanImage.cpp" />
     <ClCompile Include="src\renderer\vk\VulkanInit.cpp" />

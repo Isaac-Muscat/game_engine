@@ -51,7 +51,7 @@ void Application::Run() {
         if (scene_loaded) {
             m_scenes[m_current_scene_index]->RenderScene();
         }
-        g_renderer->Draw();
+        g_renderer->Draw(m_scenes[m_current_scene_index]->GetMainCamera());
         g_renderer->SwapBuffers();
     }
 

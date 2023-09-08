@@ -2,6 +2,7 @@
 #include "VulkanRenderer.h"
 #include "VulkanInit.h"
 #include "VulkanValidationLayers.h"
+#include "renderer/Camera.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -42,7 +43,7 @@ namespace vk {
 		m_command_buffers = init::CreateCommandBuffers(m_context);
 		init::CreateSyncObjects(m_context, m_image_available_semaphores, m_render_finished_semaphores, m_in_flight_fences);
 	}
-	void VulkanRenderer::Draw() {
+	void VulkanRenderer::Draw(const Camera& camera) {
         vkWaitForFences(m_context.device, 1, &m_in_flight_fences[m_current_frame], VK_TRUE, UINT64_MAX);
 
         uint32_t imageIndex;
@@ -66,8 +67,8 @@ namespace vk {
 
         UniformBufferObject ubo{};
         ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-        ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-        ubo.proj = glm::perspective(glm::radians(45.0f), m_swapchain->m_extent.width / (float)m_swapchain->m_extent.height, 0.1f, 10.0f);
+        ubo.view = camera.GetViewMatrix();
+        ubo.proj = camera.GetProjectionMatrix(m_swapchain->m_extent.width / (float)m_swapchain->m_extent.height);
         ubo.proj[1][1] *= -1;
         m_uniform_buffers[m_current_frame]->UpdateData(m_context, &ubo, sizeof(UniformBufferObject));
 

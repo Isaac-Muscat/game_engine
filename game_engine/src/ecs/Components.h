@@ -2,6 +2,7 @@
 #include "pch.h"
 #include "renderer/vk/VulkanMesh.h"
 #include "ecs/EntityTypes.h"
+#include "renderer/Camera.h"
 
 #include "glm/glm.hpp"
 
@@ -22,4 +23,8 @@ struct NameComponent {
 class EntityScript;
 struct ScriptComponent {
 	EntityScript* script;
+};
+
+struct CameraComponent {
+	Camera camera;
 };

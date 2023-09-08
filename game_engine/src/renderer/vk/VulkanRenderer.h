@@ -8,6 +8,7 @@
 #include "VulkanTexture.h"
 #include "VulkanMesh.h"
 #include "VulkanBuffer.h"
+#include "renderer/Camera.h"
 
 #include "vulkan/vulkan.h"
 
@@ -15,7 +16,7 @@ namespace vk {
 	class VulkanRenderer : public Renderer {
 	public:
 		VulkanRenderer();
-		void Draw() override;
+		void Draw(const Camera& camera) override;
 		void SwapBuffers() override;
 	public:
 		uint32_t m_current_frame = 0;
