@@ -5,7 +5,7 @@
 #include "VulkanSwapchain.h"
 #include "VulkanShader.h"
 #include "VulkanImage.h"
-#include "VulkanTexture.h"
+#include "VulkanMaterial.h"
 #include "VulkanMesh.h"
 #include "VulkanBuffer.h"
 #include "renderer/Camera.h"
@@ -13,28 +13,33 @@
 #include "vulkan/vulkan.h"
 
 namespace vk {
-	class VulkanRenderer : public Renderer {
+	class VulkanRenderer {
 	public:
 		VulkanRenderer();
-		void Draw(const Camera& camera) override;
-		void SwapBuffers() override;
+		const VulkanContext& GetContext() const { return m_context; }
+		void BeginFrame(const Camera& camera);
+		// TODO: Change texture to material.
+		void Draw(const std::shared_ptr<VulkanMesh>& mesh, glm::mat4 transform, const std::shared_ptr<VulkanMaterial>& material);
+		void EndFrame();
+		void GetNextBuffer();
 	public:
-		uint32_t m_current_frame = 0;
+		Camera m_current_camera;
+
 		VulkanContext m_context {};
-		std::unique_ptr<VulkanSwapchain> m_swapchain;
 		VkRenderPass m_renderpass {};
 		std::shared_ptr<VulkanShader> m_shader;
-		VkPipelineLayout m_pipeline_layout;
 		VkPipeline m_graphics_pipeline;
+		VkPipelineLayout m_pipeline_layout;
 		VkDescriptorSetLayout m_descriptor_set_layout {};
 		VkDescriptorPool m_descriptor_pool;
-		std::shared_ptr<VulkanTexture> m_texture;
-		std::shared_ptr<Mesh> m_mesh;
-		std::vector<VkDescriptorSet> m_descriptor_sets;
+		
 		std::vector<std::shared_ptr<VulkanSharedBuffer>> m_uniform_buffers;
 		std::vector<VkCommandBuffer> m_command_buffers;
-		std::vector<VkSemaphore> m_image_available_semaphores;
-		std::vector<VkSemaphore> m_render_finished_semaphores;
-		std::vector<VkFence> m_in_flight_fences;
+		std::vector<VkCommandBuffer> m_submissions = {};
+
+		std::unique_ptr<VulkanSwapchain> m_swapchain;
+		uint32_t m_current_frame = 0;
 	};
 }
+
+extern std::unique_ptr<vk::VulkanRenderer> g_renderer;

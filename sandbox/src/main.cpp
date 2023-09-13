@@ -2,6 +2,9 @@
 #include "ecs/EntityComponentSystem.h"
 #include "ecs/Entity.h"
 #include "hid/Input.h"
+#include "renderer/Renderer.h"
+#include "renderer/vk/VulkanRenderer.h"
+#include "renderer/vk/VulkanMaterial.h"
 
 #include "PlayerController.h"
 #include "scripts/CameraController.h"
@@ -10,73 +13,31 @@ void Application::OnCreate() {
 	// Test Workspace
 
 	/* Goal API for ECS
-		Entity player = g_ecs.GetEntityByName("Player");
-		Transform t = player.GetComponent<Transform>();
 		Mesh m = Mesh("path/to/file.obj");
 		player.AddComponent<Mesh>(m);
 	*/
-	EntityComponentSystem g_ecs;
-	g_ecs.RegisterView<TransformComponent, NameComponent>();
-
-	for (int i = 0; i < 2; i++) {
-		Entity entity = g_ecs.CreateEntity();
-		TransformComponent transform = { glm::vec3(10, 20, 30) + glm::vec3(i) };
-		entity.AddComponent<TransformComponent>(transform);
-		entity.AddComponent<NameComponent>({ "Test" });
-		entity.SetTag("Entity" + std::to_string(i));
-	}
-
-	Entity e0 = g_ecs.FindEntityByTag("Entity0");
-	Entity e1 = g_ecs.FindEntityByTag("Entity1");
-	Entity e2 = g_ecs.FindEntityByTag("Entity2");
-
-	const auto& entities_with_transforms_and_scripts = g_ecs.GetView<TransformComponent, NameComponent>();
-
-	for (const auto& e : g_ecs.GetView<TransformComponent, NameComponent>()) {
-		std::cout << e << std::endl;
-		std::cout << g_ecs.GetComponent<TransformComponent>(e).position.x << std::endl;
-		std::cout << g_ecs.GetComponent<TransformComponent>(e).position.y << std::endl;
-		std::cout << g_ecs.GetComponent<TransformComponent>(e).position.z << std::endl;
-	}
-
-	EntityID entity1 = *entities_with_transforms_and_scripts.begin();
-	TransformComponent& t = g_ecs.GetComponent<TransformComponent>(entity1);
-	t.position *= 3;
-	t = g_ecs.GetComponent<TransformComponent>(entity1);
-
-	g_ecs.DeleteComponent<NameComponent>(entity1);
-
-	g_ecs.DestroyEntity(entity1);
-
-	std::cout << "After destroying " << entity1 << std::endl;
-	for (const auto& e : g_ecs.GetView<TransformComponent, NameComponent>()) {
-		std::cout << e << std::endl;
-		std::cout << g_ecs.GetComponent<TransformComponent>(e).position.x << std::endl;
-		std::cout << g_ecs.GetComponent<TransformComponent>(e).position.y << std::endl;
-		std::cout << g_ecs.GetComponent<TransformComponent>(e).position.z << std::endl;
-	}
-
-	uint32_t tid = EntityComponentSystem::GetComponentID<TransformComponent>();
-	uint32_t mid = EntityComponentSystem::GetComponentID<MeshComponent>();
-	uint32_t sid = EntityComponentSystem::GetComponentID<ScriptComponent>();
-
 	// Create Scenes. Eventually will have an editor with scene serialization and deserialization.
 	// For now, manually define scenes in Application::OnCreate function.
 	std::shared_ptr<Scene> scene = std::make_shared<Scene>();
-	for (int i = 0; i < 100; i++) {
-		Entity player = scene->m_ecs->CreateEntity();
-		ScriptComponent player_controller = { new PlayerController };
-		player_controller.script->m_entity = player;
-		player.AddComponent<ScriptComponent>(player_controller);
-		player.AddComponent<TransformComponent>({});
-		player.SetTag("Player" + std::to_string(i));
-		player.AddComponent<NameComponent>({ "Player" + std::to_string(i) });
-	}
+	
+	// Make buffers abstract and keep meshes graphics api independant. Same for textures?
+	Entity dungeon = scene->m_ecs->CreateEntity();
+	std::shared_ptr<vk::VulkanMesh> mesh = std::make_shared<vk::VulkanMesh>("assets/models/viking_room.obj");
+	std::shared_ptr<vk::VulkanTexture> texture = std::make_shared<vk::VulkanTexture>("assets/textures/viking_room.png");
+	std::shared_ptr<vk::VulkanMaterial> material = std::make_shared<vk::VulkanMaterial>(texture);
+	dungeon.AddComponent<TransformComponent>({ glm::vec3(2.0f, 0.0f, 0.0f) });
+	dungeon.AddComponent<MeshComponent>({ mesh });
+	dungeon.AddComponent<MaterialComponent>({ material });
+
+	/*Entity dungeon2 = scene->m_ecs->CreateEntity();
+	dungeon2.AddComponent<TransformComponent>({ glm::vec3(-1.0f) });
+	dungeon2.AddComponent<MeshComponent>({ mesh });
+	dungeon2.AddComponent<MaterialComponent>({ material });*/
 
 	// Create First Person Camera.
 	Entity camera_entity = scene->m_ecs->CreateEntity();
-	camera_entity.AddComponent<CameraComponent>({ Camera(glm::vec3(2.0f)) });
-	ScriptComponent camera_controller = { new CameraController };
+	camera_entity.AddComponent<CameraComponent>({ Camera(glm::vec3(0.0f)) });
+	ScriptComponent camera_controller = { std::make_shared<CameraController>() };
 	camera_controller.script->m_entity = camera_entity;
 	camera_entity.AddComponent<ScriptComponent>(camera_controller);
 	scene->SetMainCamera(camera_entity);

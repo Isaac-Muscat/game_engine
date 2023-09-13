@@ -27,7 +27,7 @@ public:
         return glm::lookAt(Position, Position + Front, Up);
     }
     glm::mat4 GetProjectionMatrix(float aspect_ratio) const {
-        return glm::perspective(glm::radians(45.0f), aspect_ratio, 0.1f, 10.0f);
+        return glm::perspective(glm::radians(45.0f), aspect_ratio, 0.1f, 100.0f);
     };
 };
 

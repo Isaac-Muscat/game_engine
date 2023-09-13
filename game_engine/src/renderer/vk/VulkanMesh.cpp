@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "VulkanMesh.h"
+#include "VulkanRenderer.h"
 
 #include "glm/common.hpp"
 #include <glm/gtx/hash.hpp>
@@ -45,13 +46,13 @@ namespace vk {
 		return attribute_descriptions;
 	}
 
-	Mesh::Mesh(const VulkanContext& context, std::string filepath) {
+	VulkanMesh::VulkanMesh(std::string filepath) {
         LoadModel(filepath);
-        m_vertex_buffer = std::make_shared<VulkanDeviceBuffer>(context, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, m_vertices.data(), sizeof(m_vertices[0]) * m_vertices.size());
-        m_index_buffer = std::make_shared<VulkanDeviceBuffer>(context, VK_BUFFER_USAGE_INDEX_BUFFER_BIT, m_indices.data(), sizeof(m_indices[0]) * m_indices.size());
+        m_vertex_buffer = std::make_shared<VulkanDeviceBuffer>(g_renderer->GetContext(), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, m_vertices.data(), sizeof(m_vertices[0]) * m_vertices.size());
+        m_index_buffer = std::make_shared<VulkanDeviceBuffer>(g_renderer->GetContext(), VK_BUFFER_USAGE_INDEX_BUFFER_BIT, m_indices.data(), sizeof(m_indices[0]) * m_indices.size());
 	}
 
-    void Mesh::LoadModel(std::string filepath) {
+    void VulkanMesh::LoadModel(std::string filepath) {
         tinyobj::attrib_t attrib;
         std::vector<tinyobj::shape_t> shapes;
         std::vector<tinyobj::material_t> materials;

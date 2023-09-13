@@ -19,13 +19,13 @@ namespace vk {
         }
     };
 
-	class Mesh {
+	class VulkanMesh {
     public:
         std::vector<Vertex> m_vertices;
         std::vector<uint32_t> m_indices;
         std::shared_ptr<VulkanDeviceBuffer> m_vertex_buffer;
         std::shared_ptr<VulkanDeviceBuffer> m_index_buffer;
-        Mesh(const VulkanContext& context, std::string filepath);
+        VulkanMesh(std::string filepath);
         void LoadModel(std::string filepath);
 	};
 }

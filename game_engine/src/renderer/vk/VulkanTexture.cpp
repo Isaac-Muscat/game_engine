@@ -4,8 +4,9 @@
 
 #include "VulkanTexture.h"
 #include "VulkanInit.h"
+#include "VulkanRenderer.h"
 
-vk::VulkanTexture::VulkanTexture(std::string filepath, const VulkanContext& context) {
+vk::VulkanTexture::VulkanTexture(std::string filepath) {
     int texWidth, texHeight, texChannels;
     stbi_uc* pixels = stbi_load(filepath.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
     VkDeviceSize imageSize = texWidth * texHeight * 4;
@@ -18,27 +19,27 @@ vk::VulkanTexture::VulkanTexture(std::string filepath, const VulkanContext& cont
 
     VkBuffer stagingBuffer;
     VkDeviceMemory stagingBufferMemory;
-    init::CreateBuffer(context, imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
+    init::CreateBuffer(g_renderer->GetContext(), imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
 
     void* data;
-    vkMapMemory(context.device, stagingBufferMemory, 0, imageSize, 0, &data);
+    vkMapMemory(g_renderer->GetContext().device, stagingBufferMemory, 0, imageSize, 0, &data);
     memcpy(data, pixels, static_cast<size_t>(imageSize));
-    vkUnmapMemory(context.device, stagingBufferMemory);
+    vkUnmapMemory(g_renderer->GetContext().device, stagingBufferMemory);
 
     stbi_image_free(pixels);
 
-    m_image = std::make_shared<VulkanImage>(context, texWidth, texHeight, m_miplevels, VK_SAMPLE_COUNT_1_BIT, VK_FORMAT_R8G8B8A8_UNORM,
+    m_image = std::make_shared<VulkanImage>(g_renderer->GetContext(), texWidth, texHeight, m_miplevels, VK_SAMPLE_COUNT_1_BIT, VK_FORMAT_R8G8B8A8_UNORM,
         VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, 
         VK_IMAGE_ASPECT_COLOR_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
-    TransitionImageLayout(context, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
-    CopyBufferToImage(context, stagingBuffer, static_cast<uint32_t>(texWidth), static_cast<uint32_t>(texHeight));
-    GenerateMipmaps(context, VK_FORMAT_R8G8B8A8_UNORM, texWidth, texHeight);
+    TransitionImageLayout(g_renderer->GetContext(), VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+    CopyBufferToImage(g_renderer->GetContext(), stagingBuffer, static_cast<uint32_t>(texWidth), static_cast<uint32_t>(texHeight));
+    GenerateMipmaps(g_renderer->GetContext(), VK_FORMAT_R8G8B8A8_UNORM, texWidth, texHeight);
 
-    vkDestroyBuffer(context.device, stagingBuffer, nullptr);
-    vkFreeMemory(context.device, stagingBufferMemory, nullptr);
+    vkDestroyBuffer(g_renderer->GetContext().device, stagingBuffer, nullptr);
+    vkFreeMemory(g_renderer->GetContext().device, stagingBufferMemory, nullptr);
 
-    CreateSampler(context);
+    CreateSampler(g_renderer->GetContext());
 }
 
 void vk::VulkanTexture::TransitionImageLayout(const VulkanContext& context, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout) {

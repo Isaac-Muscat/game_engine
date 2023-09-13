@@ -1,11 +1,10 @@
 #pragma once
 #include "pch.h"
-#include "Camera.h"
 
+// Example of wrapping rendering classes to support multiple apis in the future.
+// For now just using vulkan renderer.
 class Renderer {
 public:
-	virtual void Draw(const Camera& camera) = 0;
+	virtual void Draw() = 0;
 	virtual void SwapBuffers() = 0;
 };
-
-extern std::unique_ptr<Renderer> g_renderer;

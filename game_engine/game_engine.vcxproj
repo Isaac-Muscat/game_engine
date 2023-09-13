@@ -99,6 +99,7 @@
     <ClInclude Include="src\core\Application.h" />
     <ClInclude Include="src\core\EntryPoint.h" />
     <ClInclude Include="src\core\Platform.h" />
+    <ClInclude Include="src\core\Time.h" />
     <ClInclude Include="src\ecs\ComponentArray.h" />
     <ClInclude Include="src\ecs\Components.h" />
     <ClInclude Include="src\ecs\Entity.h" />
@@ -114,6 +115,7 @@
     <ClInclude Include="src\renderer\vk\VulkanBuffer.h" />
     <ClInclude Include="src\renderer\vk\VulkanImage.h" />
     <ClInclude Include="src\renderer\vk\VulkanInit.h" />
+    <ClInclude Include="src\renderer\vk\VulkanMaterial.h" />
     <ClInclude Include="src\renderer\vk\VulkanMesh.h" />
     <ClInclude Include="src\renderer\vk\VulkanRenderer.h" />
     <ClInclude Include="src\renderer\vk\VulkanShader.h" />
@@ -126,6 +128,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\Application.cpp" />
+    <ClCompile Include="src\core\Time.cpp" />
     <ClCompile Include="src\ecs\EntityComponentSystem.cpp" />
     <ClCompile Include="src\hid\win32\Win32Window.cpp" />
     <ClCompile Include="src\pch.cpp">
@@ -135,6 +138,7 @@
     <ClCompile Include="src\renderer\vk\VulkanBuffer.cpp" />
     <ClCompile Include="src\renderer\vk\VulkanImage.cpp" />
     <ClCompile Include="src\renderer\vk\VulkanInit.cpp" />
+    <ClCompile Include="src\renderer\vk\VulkanMaterial.cpp" />
     <ClCompile Include="src\renderer\vk\VulkanMesh.cpp" />
     <ClCompile Include="src\renderer\vk\VulkanRenderer.cpp" />
     <ClCompile Include="src\renderer\vk\VulkanShader.cpp" />

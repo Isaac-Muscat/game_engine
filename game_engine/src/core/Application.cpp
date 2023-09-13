@@ -4,8 +4,9 @@
 #include "hid/win32/Win32Window.h"
 #include "ecs/EntityComponentSystem.h"
 #include "ecs/EntityScript.h"
+#include "core/Time.h"
 
-std::unique_ptr<Renderer> g_renderer;
+std::unique_ptr<vk::VulkanRenderer> g_renderer;
 std::unique_ptr<Window> g_window;
 
 Application::Application(ApplicationInfo info) {
@@ -43,6 +44,8 @@ void Application::Run() {
     }
 
     while (!g_window->ShouldClose()) {
+        Time::Tick();
+        g_renderer->GetNextBuffer();
         g_window->PollEvents();
         if (scene_loaded) {
             m_scenes[m_current_scene_index]->OnUpdate();
@@ -51,8 +54,6 @@ void Application::Run() {
         if (scene_loaded) {
             m_scenes[m_current_scene_index]->RenderScene();
         }
-        g_renderer->Draw(m_scenes[m_current_scene_index]->GetMainCamera());
-        g_renderer->SwapBuffers();
     }
 
     if (scene_loaded) {

@@ -10,6 +10,13 @@ namespace vk {
 	class VulkanSwapchain {
 	public:
 		VulkanSwapchain(const VulkanContext& context, VkRenderPass renderpass);
+		void GetNextImage(uint32_t current_frame);
+		VkFramebuffer GetCurrentFramebuffer() { return m_framebuffers[m_image_index]; }
+		void Submit(const std::vector<VkCommandBuffer>& submitCommandBuffers, uint32_t current_frame);
+		uint32_t m_image_index;
+		std::vector<VkSemaphore> m_image_available_semaphores;
+		std::vector<VkSemaphore> m_render_finished_semaphores;
+		std::vector<VkFence> m_in_flight_fences;
 
 		VkSwapchainKHR m_swapchain;
 		SwapChainSupportDetails m_swapchain_details;

@@ -46,9 +46,6 @@
       <Filter>hid\win32</Filter>
     </ClInclude>
     <ClInclude Include="src\pch.h" />
-    <ClInclude Include="src\renderer\Renderer.h">
-      <Filter>renderer</Filter>
-    </ClInclude>
     <ClInclude Include="src\renderer\vk\VulkanBuffer.h">
       <Filter>renderer\vk</Filter>
     </ClInclude>
@@ -86,6 +83,9 @@
     <ClInclude Include="src\scene\Scene.h" />
     <ClInclude Include="src\renderer\Camera.h" />
     <ClInclude Include="src\scripts\CameraController.h" />
+    <ClInclude Include="src\renderer\Renderer.h" />
+    <ClInclude Include="src\core\Time.h" />
+    <ClInclude Include="src\renderer\vk\VulkanMaterial.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\Application.cpp">
@@ -125,5 +125,7 @@
     <ClCompile Include="src\ecs\EntityComponentSystem.cpp" />
     <ClCompile Include="src\scene\Scene.cpp" />
     <ClCompile Include="src\renderer\Camera.cpp" />
+    <ClCompile Include="src\core\Time.cpp" />
+    <ClCompile Include="src\renderer\vk\VulkanMaterial.cpp" />
   </ItemGroup>
 </Project>
