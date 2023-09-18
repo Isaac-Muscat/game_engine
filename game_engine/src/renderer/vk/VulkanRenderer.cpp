@@ -104,17 +104,20 @@ namespace vk {
 	void VulkanRenderer::Draw(const std::shared_ptr<VulkanMesh>& mesh, glm::mat4 transform, const std::shared_ptr<VulkanMaterial>& material) {
         // Update Uniforms
         UniformBufferObject ubo{};
-        ubo.model = transform;
+        //ubo.model = transform;
         ubo.view = m_current_camera.GetViewMatrix();
         ubo.proj = m_current_camera.GetProjectionMatrix(m_swapchain->m_extent.width / (float)m_swapchain->m_extent.height);
         ubo.proj[1][1] *= -1;
         m_uniform_buffers[m_current_frame]->UpdateData(m_context, &ubo, sizeof(UniformBufferObject));
+
+        ModelPushConstant model = { transform };
 
         VkBuffer vertexBuffers[] = { mesh->m_vertex_buffer->m_buffer };
         VkDeviceSize offsets[] = { 0 };
         vkCmdBindVertexBuffers(m_command_buffers[m_current_frame], 0, 1, vertexBuffers, offsets);
         vkCmdBindIndexBuffer(m_command_buffers[m_current_frame], mesh->m_index_buffer->m_buffer, 0, VK_INDEX_TYPE_UINT32);
         vkCmdBindDescriptorSets(m_command_buffers[m_current_frame], VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipeline_layout, 0, 1, material->GetDescriptorSet(m_current_frame), 0, nullptr);
+        vkCmdPushConstants(m_command_buffers[m_current_frame], m_pipeline_layout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(ModelPushConstant), &model);
         vkCmdDrawIndexed(m_command_buffers[m_current_frame], static_cast<uint32_t>(mesh->m_indices.size()), 1, 0, 0, 0);
 	}
 

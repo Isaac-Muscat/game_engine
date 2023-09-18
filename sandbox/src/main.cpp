@@ -29,10 +29,10 @@ void Application::OnCreate() {
 	dungeon.AddComponent<MeshComponent>({ mesh });
 	dungeon.AddComponent<MaterialComponent>({ material });
 
-	/*Entity dungeon2 = scene->m_ecs->CreateEntity();
-	dungeon2.AddComponent<TransformComponent>({ glm::vec3(-1.0f) });
+	Entity dungeon2 = scene->m_ecs->CreateEntity();
+	dungeon2.AddComponent<TransformComponent>({ glm::vec3(4.0f, 0.0f, 0.0f) });
 	dungeon2.AddComponent<MeshComponent>({ mesh });
-	dungeon2.AddComponent<MaterialComponent>({ material });*/
+	dungeon2.AddComponent<MaterialComponent>({ material });
 
 	// Create First Person Camera.
 	Entity camera_entity = scene->m_ecs->CreateEntity();

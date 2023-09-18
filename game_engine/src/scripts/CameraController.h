@@ -2,11 +2,12 @@
 #include "pch.h"
 #include "ecs/EntityScript.h"
 #include "hid/Input.h"
+#include "core/Time.h"
 
 class CameraController : public EntityScript {
 public:
     // camera options
-    float MovementSpeed = 0.01f;
+    float MovementSpeed = 1.0f;
     float MouseSensitivity = 0.1f;
 	void OnCreate() override {
 
@@ -14,7 +15,7 @@ public:
 
 	void OnUpdate() override {
         Camera& camera = GetComponent<CameraComponent>().camera;
-        float velocity = MovementSpeed; //* deltaTime;
+        float velocity = MovementSpeed * Time::DeltaTime(); //* deltaTime;
         if (Input::GetKeyPressed(GLFW_KEY_W))
             camera.Position += glm::normalize(glm::vec3(camera.Front.x, 0, camera.Front.z)) * velocity;
         if (Input::GetKeyPressed(GLFW_KEY_S))
