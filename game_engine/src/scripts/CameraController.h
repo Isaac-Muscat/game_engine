@@ -7,11 +7,8 @@
 class CameraController : public EntityScript {
 public:
     // camera options
-    float MovementSpeed = 1.0f;
+    float MovementSpeed = 5.0f;
     float MouseSensitivity = 0.1f;
-	void OnCreate() override {
-
-	}
 
 	void OnUpdate() override {
         Camera& camera = GetComponent<CameraComponent>().camera;
