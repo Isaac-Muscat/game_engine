@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Application.h"
 #include "renderer/vk/VulkanRenderer.h"
-#include "hid/win32/Win32Window.h"
+#include "hid/windows/Win32Window.h"
 #include "ecs/EntityComponentSystem.h"
 #include "ecs/EntityScript.h"
 #include "core/Time.h"

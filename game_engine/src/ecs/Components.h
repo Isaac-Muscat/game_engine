@@ -18,16 +18,18 @@ struct MaterialComponent {
 };
 
 struct TransformComponent {
-	glm::vec3 position;
-	glm::vec3 rotation;
+	glm::vec3 position{0.0f};
+	glm::vec3 euler_angles{0.0f};
 	glm::vec3 scale = glm::vec3(1.0f);
 
 	glm::mat4 GetModelMatrix() {
 		glm::mat4 m = glm::mat4(1.0f);
 
-		m = glm::translate(m, position);
 		m = glm::scale(m, scale);
-		//m = glm::rotate(m, 0.0f, rotation);
+		m = glm::translate(m, position);
+		m = glm::rotate(m, euler_angles.x, glm::vec3(1.0f, 0.0f, 0.0f));
+		m = glm::rotate(m, euler_angles.y, glm::vec3(0.0f, 1.0f, 0.0f));
+		m = glm::rotate(m, euler_angles.z, glm::vec3(0.0f, 0.0f, 1.0f));
 		return m;
 	}
 };

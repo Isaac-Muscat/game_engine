@@ -103,12 +103,12 @@
     <ClInclude Include="src\ecs\ComponentArray.h" />
     <ClInclude Include="src\ecs\Components.h" />
     <ClInclude Include="src\ecs\Entity.h" />
-    <ClInclude Include="src\ecs\EntityTypes.h" />
     <ClInclude Include="src\ecs\EntityComponentSystem.h" />
     <ClInclude Include="src\ecs\EntityScript.h" />
+    <ClInclude Include="src\ecs\EntityTypes.h" />
     <ClInclude Include="src\hid\Input.h" />
     <ClInclude Include="src\hid\Window.h" />
-    <ClInclude Include="src\hid\win32\Win32Window.h" />
+    <ClInclude Include="src\hid\windows\Win32Window.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\renderer\Camera.h" />
     <ClInclude Include="src\renderer\Renderer.h" />
@@ -130,7 +130,7 @@
     <ClCompile Include="src\core\Application.cpp" />
     <ClCompile Include="src\core\Time.cpp" />
     <ClCompile Include="src\ecs\EntityComponentSystem.cpp" />
-    <ClCompile Include="src\hid\win32\Win32Window.cpp" />
+    <ClCompile Include="src\hid\windows\Win32Window.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>

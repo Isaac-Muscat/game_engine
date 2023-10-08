@@ -1,6 +1,6 @@
 #pragma once
 #include "pch.h"
-#include "win32/Win32Window.h"
+#include "windows/Win32Window.h"
 
 #include "GLFW/glfw3.h"
 #include "glm/glm.hpp"

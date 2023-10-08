@@ -25,7 +25,7 @@ void Application::OnCreate() {
 	std::shared_ptr<vk::VulkanMesh> mesh = std::make_shared<vk::VulkanMesh>("assets/models/viking_room.obj");
 	std::shared_ptr<vk::VulkanTexture> texture = std::make_shared<vk::VulkanTexture>("assets/textures/viking_room.png");
 	std::shared_ptr<vk::VulkanMaterial> material = std::make_shared<vk::VulkanMaterial>(texture);
-	dungeon.AddComponent<TransformComponent>({ glm::vec3(2.0f, 0.0f, 0.0f) });
+	dungeon.AddComponent<TransformComponent>({ glm::vec3(10.0f, 0.0f, 0.0f), glm::vec3(0.0f, glm::radians(-45.0f), 0.0f), glm::vec3(2.0f)});
 	dungeon.AddComponent<MeshComponent>({ mesh });
 	dungeon.AddComponent<MaterialComponent>({ material });
 

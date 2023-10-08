@@ -10,14 +10,20 @@
     <Filter Include="hid">
       <UniqueIdentifier>{3A7B880B-A684-887C-2F00-9F7C9B08947C}</UniqueIdentifier>
     </Filter>
-    <Filter Include="hid\win32">
-      <UniqueIdentifier>{BCC6B1B3-2831-662A-716F-17D0DD18447F}</UniqueIdentifier>
+    <Filter Include="hid\windows">
+      <UniqueIdentifier>{94575A67-000D-D35C-8901-CD33F5B5C960}</UniqueIdentifier>
     </Filter>
     <Filter Include="renderer">
       <UniqueIdentifier>{9C6AA017-8837-FB22-B150-E9CA9D7C30B1}</UniqueIdentifier>
     </Filter>
     <Filter Include="renderer\vk">
       <UniqueIdentifier>{AC8C16AE-1842-8FA3-A136-897A0DEB85A7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scene">
+      <UniqueIdentifier>{D3075810-3F1C-80C1-089E-232174717CF2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scripts">
+      <UniqueIdentifier>{6D076287-D9E6-E022-E2FE-6BF94E5D4784}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -30,7 +36,22 @@
     <ClInclude Include="src\core\Platform.h">
       <Filter>core</Filter>
     </ClInclude>
+    <ClInclude Include="src\core\Time.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ecs\ComponentArray.h">
+      <Filter>ecs</Filter>
+    </ClInclude>
     <ClInclude Include="src\ecs\Components.h">
+      <Filter>ecs</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ecs\Entity.h">
+      <Filter>ecs</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ecs\EntityComponentSystem.h">
+      <Filter>ecs</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ecs\EntityScript.h">
       <Filter>ecs</Filter>
     </ClInclude>
     <ClInclude Include="src\ecs\EntityTypes.h">
@@ -42,10 +63,16 @@
     <ClInclude Include="src\hid\Window.h">
       <Filter>hid</Filter>
     </ClInclude>
-    <ClInclude Include="src\hid\win32\Win32Window.h">
-      <Filter>hid\win32</Filter>
+    <ClInclude Include="src\hid\windows\Win32Window.h">
+      <Filter>hid\windows</Filter>
     </ClInclude>
     <ClInclude Include="src\pch.h" />
+    <ClInclude Include="src\renderer\Camera.h">
+      <Filter>renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\Renderer.h">
+      <Filter>renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\renderer\vk\VulkanBuffer.h">
       <Filter>renderer\vk</Filter>
     </ClInclude>
@@ -53,6 +80,9 @@
       <Filter>renderer\vk</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer\vk\VulkanInit.h">
+      <Filter>renderer\vk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\vk\VulkanMaterial.h">
       <Filter>renderer\vk</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer\vk\VulkanMesh.h">
@@ -76,25 +106,30 @@
     <ClInclude Include="src\renderer\vk\VulkanValidationLayers.h">
       <Filter>renderer\vk</Filter>
     </ClInclude>
-    <ClInclude Include="src\ecs\EntityComponentSystem.h" />
-    <ClInclude Include="src\ecs\ComponentArray.h" />
-    <ClInclude Include="src\ecs\Entity.h" />
-    <ClInclude Include="src\ecs\EntityScript.h" />
-    <ClInclude Include="src\scene\Scene.h" />
-    <ClInclude Include="src\renderer\Camera.h" />
-    <ClInclude Include="src\scripts\CameraController.h" />
-    <ClInclude Include="src\renderer\Renderer.h" />
-    <ClInclude Include="src\core\Time.h" />
-    <ClInclude Include="src\renderer\vk\VulkanMaterial.h" />
+    <ClInclude Include="src\scene\Scene.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scripts\CameraController.h">
+      <Filter>scripts</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\Application.cpp">
       <Filter>core</Filter>
     </ClCompile>
-    <ClCompile Include="src\hid\win32\Win32Window.cpp">
-      <Filter>hid\win32</Filter>
+    <ClCompile Include="src\core\Time.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ecs\EntityComponentSystem.cpp">
+      <Filter>ecs</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hid\windows\Win32Window.cpp">
+      <Filter>hid\windows</Filter>
     </ClCompile>
     <ClCompile Include="src\pch.cpp" />
+    <ClCompile Include="src\renderer\Camera.cpp">
+      <Filter>renderer</Filter>
+    </ClCompile>
     <ClCompile Include="src\renderer\vk\VulkanBuffer.cpp">
       <Filter>renderer\vk</Filter>
     </ClCompile>
@@ -102,6 +137,9 @@
       <Filter>renderer\vk</Filter>
     </ClCompile>
     <ClCompile Include="src\renderer\vk\VulkanInit.cpp">
+      <Filter>renderer\vk</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderer\vk\VulkanMaterial.cpp">
       <Filter>renderer\vk</Filter>
     </ClCompile>
     <ClCompile Include="src\renderer\vk\VulkanMesh.cpp">
@@ -122,10 +160,8 @@
     <ClCompile Include="src\renderer\vk\VulkanValidationLayers.cpp">
       <Filter>renderer\vk</Filter>
     </ClCompile>
-    <ClCompile Include="src\ecs\EntityComponentSystem.cpp" />
-    <ClCompile Include="src\scene\Scene.cpp" />
-    <ClCompile Include="src\renderer\Camera.cpp" />
-    <ClCompile Include="src\core\Time.cpp" />
-    <ClCompile Include="src\renderer\vk\VulkanMaterial.cpp" />
+    <ClCompile Include="src\scene\Scene.cpp">
+      <Filter>scene</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
