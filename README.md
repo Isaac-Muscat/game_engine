@@ -14,7 +14,20 @@ The code is written with C++ and uses polymorphism and smart pointers.
 I will only stop using these fancy C++ features if I need more performance for the engine.
 I think they hit the sweet spot in terms of performance and ease of use.
 
+## Current Tasks
+Automatic shader recompliation on change
+1. Scene Graph Component
+    - This will be optionally added to an entity to allow for that entity to enter the scene graph
+    - This is not super performant, but it can allow helpful queries for the developer
+2. Material System
+    - This will combine descriptors and pipelines into one object
+    - Need to figure out where shaders fit in
+3. Lights
+    - Use Storage Buffers that are dynamically changing in size if more lights are added or removed
+    - Light component with different types
+
 ## To Be Implemented
+* Compute Shader frustrum culling by uploading scene onto GPU with AABBs and/or Binary Space Partitioning
 * Logging (Remove exceptions)
 	* Logginng uses asserts (Maybe add color?)
 * Camera
