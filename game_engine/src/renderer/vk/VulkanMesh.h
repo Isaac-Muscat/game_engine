@@ -11,11 +11,13 @@ namespace vk {
         glm::vec3 pos;
         glm::vec3 color;
         glm::vec2 texture_coords;
+        glm::vec3 normal;
+        
 
         static VkVertexInputBindingDescription GetBindingDescription();
-        static std::array<VkVertexInputAttributeDescription, 3> GetAttributeDescriptions();
+        static std::array<VkVertexInputAttributeDescription, 4> GetAttributeDescriptions();
         bool operator==(const Vertex& other) const {
-            return pos == other.pos && color == other.color && texture_coords == other.texture_coords;
+            return pos == other.pos && color == other.color && texture_coords == other.texture_coords && normal == other.normal;
         }
     };
 

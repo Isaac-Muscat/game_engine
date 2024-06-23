@@ -15,17 +15,19 @@ namespace vk::init {
 	VkPhysicalDevice CreatePhysicalDevice(VkInstance instance, VkSurfaceKHR surface, VkSampleCountFlagBits* msaa_samples);
     VkDevice CreateLogicalDevice(VkPhysicalDevice physical_device, VkSurfaceKHR surface, bool enable_validation_layers);
     
-    VkDescriptorSetLayout CreateDescriptorSetLayout(const VulkanContext& context);
+    std::vector<VkDescriptorSetLayout> CreateDescriptorSetLayouts(const VulkanContext& context);
     VkRenderPass CreateRenderPass(const VulkanContext& context);
-    VkPipeline CreateGraphicsPipeline(const VulkanContext& context, std::shared_ptr<VulkanShader> shader, const std::unique_ptr<VulkanSwapchain>& swapchain, VkRenderPass renderpass, VkDescriptorSetLayout descriptor_set_layout, VkPipelineLayout* p_pipeline_layout);
+    VkPipeline CreateGraphicsPipeline(const VulkanContext& context, std::shared_ptr<VulkanShader> shader, const std::unique_ptr<VulkanSwapchain>& swapchain, VkRenderPass renderpass, std::vector<VkDescriptorSetLayout> descriptor_set_layouts, VkPipelineLayout* p_pipeline_layout);
     
     VkImageView CreateImageView(VkDevice device, VkImage image, VkFormat format, VkImageAspectFlags aspect_flags, uint32_t mip_levels);
     VkDescriptorPool CreateDescriptorPool(const VulkanContext& context);
+    VkDescriptorPool CreateLightDescriptorPool(const VulkanContext& context);
     VkCommandPool CreateCommandPool(const VulkanContext& context);
 
     void CreateBuffer(const VulkanContext& context, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& buffer_memory);
     void CreateSyncObjects(const VulkanContext& context, std::vector<VkSemaphore>& image_available_semaphores, std::vector<VkSemaphore>& render_finished_semaphores, std::vector<VkFence>& in_flight_fences);
     std::vector<VkCommandBuffer> CreateCommandBuffers(const VulkanContext& context);
+    std::vector<VkDescriptorSet> LightsCreateDescriptorSets(const VulkanContext& context, VkDescriptorSetLayout descriptorSetLayout, VkDescriptorPool descriptorPool, const std::vector<std::shared_ptr<VulkanSharedBuffer>>& uniform_buffers, int num_lights);
     std::vector<VkDescriptorSet> CreateDescriptorSets(const VulkanContext& context, VkDescriptorSetLayout descriptor_set_layout, VkDescriptorPool descriptor_pool, const std::vector<std::shared_ptr<VulkanSharedBuffer>>& uniform_buffers, std::shared_ptr<VulkanTexture> texture);
 
     VkSampleCountFlagBits GetMaxUsableSampleCount(VkPhysicalDevice physical_device);

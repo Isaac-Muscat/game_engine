@@ -1,3 +1,4 @@
+#include "ecs/Components.h"
 #include "pch.h"
 #include "Scene.h"
 #include "ecs/EntityScript.h"
@@ -37,8 +38,8 @@ void Scene::OnUpdate() {
 
 void Scene::RenderScene() {
     const auto& entities = m_ecs->GetView<MeshComponent, TransformComponent, MaterialComponent>();
-
-    g_renderer->BeginFrame(m_main_camera.GetComponent<CameraComponent>().camera);
+    const auto& lights = m_ecs->GetComponentArray<LightComponent>();
+    g_renderer->BeginFrame(m_main_camera.GetComponent<CameraComponent>().camera, lights);
     for (const auto& e : entities) {
         MeshComponent& mesh = m_ecs->GetComponent<MeshComponent>(e);
         TransformComponent& transform = m_ecs->GetComponent<TransformComponent>(e);

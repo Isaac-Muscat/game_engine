@@ -111,6 +111,7 @@
     <ClInclude Include="src\hid\windows\Win32Window.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\renderer\Camera.h" />
+    <ClInclude Include="src\renderer\Light.h" />
     <ClInclude Include="src\renderer\Renderer.h" />
     <ClInclude Include="src\renderer\vk\VulkanBuffer.h" />
     <ClInclude Include="src\renderer\vk\VulkanImage.h" />
@@ -135,6 +136,7 @@
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\renderer\Camera.cpp" />
+    <ClCompile Include="src\renderer\Light.cpp" />
     <ClCompile Include="src\renderer\vk\VulkanBuffer.cpp" />
     <ClCompile Include="src\renderer\vk\VulkanImage.cpp" />
     <ClCompile Include="src\renderer\vk\VulkanInit.cpp" />

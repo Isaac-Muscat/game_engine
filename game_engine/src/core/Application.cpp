@@ -43,7 +43,7 @@ void Application::Run() {
         m_scenes[m_current_scene_index]->Init();
     }
 
-    while (!g_window->ShouldClose()) {
+    while (!g_window->ShouldClose() && !m_user_says_close) {
         Time::Tick();
         g_renderer->GetNextBuffer();
         g_window->PollEvents();

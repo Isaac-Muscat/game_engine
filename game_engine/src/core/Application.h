@@ -24,4 +24,8 @@ public:
 	void OnUpdate();
 	void OnDestroy();
 
+    inline void Exit() { m_user_says_close = 1; };
+
+private:
+    bool m_user_says_close = 0;
 };

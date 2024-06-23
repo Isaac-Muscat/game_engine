@@ -5,12 +5,18 @@
 #include "renderer/vk/VulkanMaterial.h"
 #include "ecs/EntityTypes.h"
 #include "renderer/Camera.h"
+#include "renderer/Light.h"
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
 struct MeshComponent {
 	std::shared_ptr<vk::VulkanMesh> mesh;
+};
+
+
+struct LightComponent {
+    Light light;
 };
 
 struct MaterialComponent {
