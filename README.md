@@ -14,6 +14,10 @@ The code is written with C++ and uses polymorphism and smart pointers.
 I will only stop using these fancy C++ features if I need more performance for the engine.
 I think they hit the sweet spot in terms of performance and ease of use.
 
+## What was I Doing Last
+Variable size light array. In the middle of changing uniform to storage bufffer but not sure if this is best.
+Quuick profiling hack on render time taken and update time taken (Not Accurate)
+
 ## Current Tasks
 Automatic shader recompliation on change
 1. Scene Graph Component
@@ -25,12 +29,14 @@ Automatic shader recompliation on change
 3. Lights
     - Use Storage Buffers that are dynamically changing in size if more lights are added or removed
     - Light component with different types
+4. PBR pipeline
+5. Animation
+6. Start procedural world/terrain generation (In sandbox as target game)
 
 ## To Be Implemented
 * Compute Shader frustrum culling by uploading scene onto GPU with AABBs and/or Binary Space Partitioning
 * Logging (Remove exceptions)
 	* Logginng uses asserts (Maybe add color?)
-* Camera
 * Renderer Cleanup
 * Memory allocators
 	* Pool allocator

@@ -16,7 +16,11 @@ struct MeshComponent {
 
 
 struct LightComponent {
-    Light light;
+    alignas(4) LightType type;
+    alignas(4) float ambient;
+    alignas(4) float diffuse;
+    alignas(4) float specular;
+    alignas(16) glm::vec3 color;
 };
 
 struct MaterialComponent {

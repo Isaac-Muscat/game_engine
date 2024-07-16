@@ -13,6 +13,7 @@
 Scene::Scene() {
     m_ecs = std::make_unique<EntityComponentSystem>();
     m_ecs->RegisterView<MeshComponent, TransformComponent, MaterialComponent>();
+    m_ecs->RegisterView<LightComponent, TransformComponent>();
 }
 
 void Scene::Init() {
@@ -38,8 +39,26 @@ void Scene::OnUpdate() {
 
 void Scene::RenderScene() {
     const auto& entities = m_ecs->GetView<MeshComponent, TransformComponent, MaterialComponent>();
-    const auto& lights = m_ecs->GetComponentArray<LightComponent>();
-    g_renderer->BeginFrame(m_main_camera.GetComponent<CameraComponent>().camera, lights);
+    const auto& lights = m_ecs->GetView<LightComponent, TransformComponent>();
+    std::vector<Light> light_vec;
+    for (const auto& e : lights) {
+        LightComponent& light_comp = m_ecs->GetComponent<LightComponent>(e);
+        TransformComponent& transform = m_ecs->GetComponent<TransformComponent>(e);
+        Light light{};
+        light.type = light_comp.type;
+        light.color = light_comp.color;
+        light.ambient = light_comp.ambient;
+        light.diffuse = light_comp.diffuse;
+        light.specular = light_comp.specular;
+        light.position = transform.position;
+        light.direction = {
+            cos(transform.euler_angles.y)*cos(transform.euler_angles.z),
+            sin(transform.euler_angles.y)*cos(transform.euler_angles.z),
+            sin(transform.euler_angles.z)
+        };
+        light_vec.push_back(light);
+    }
+    g_renderer->BeginFrame(m_main_camera.GetComponent<CameraComponent>().camera, light_vec);
     for (const auto& e : entities) {
         MeshComponent& mesh = m_ecs->GetComponent<MeshComponent>(e);
         TransformComponent& transform = m_ecs->GetComponent<TransformComponent>(e);

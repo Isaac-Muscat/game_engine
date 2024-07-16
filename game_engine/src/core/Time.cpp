@@ -20,3 +20,16 @@ void Time::Timer::Tick() {
 float Time::Timer::GetDeltaTime() {
 	return m_delta_time;
 }
+
+namespace Stopwatch {
+    static auto m_last_time = std::chrono::high_resolution_clock::now();
+    void Start() {
+        m_last_time = std::chrono::high_resolution_clock::now();
+
+    }
+
+    float Stop() {
+        auto current_time = std::chrono::high_resolution_clock::now();
+        return std::chrono::duration<float, std::chrono::milliseconds::period>(current_time - m_last_time).count();
+    }
+}

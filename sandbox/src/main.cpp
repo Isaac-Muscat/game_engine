@@ -28,15 +28,33 @@ void Application::OnCreate() {
 
     // Add lights
     sun = scene->m_ecs->CreateEntity();
-    Light light = {};
+    LightComponent light = {};
     light.color = glm::vec3(0.9,0.5,0.3);
-    light.ambient = 0.1f;
+    light.ambient = 0.0f;
     light.diffuse = 1.0f;
-    light.type = LightType::Directional;
-    light.direction = glm::vec3(1, 1, 1);
-	sun.AddComponent<LightComponent>({light});
+    light.type = LightType::Point;
+	sun.AddComponent<LightComponent>(light);
+	sun.AddComponent<TransformComponent>({glm::vec3(5.0f,0,0), glm::vec3(1), glm::vec3(1)});
 	
 	// Make buffers abstract and keep meshes graphics api independant. Same for textures?
+    std::shared_ptr<vk::VulkanMesh> cube_mesh = std::make_shared<vk::VulkanMesh>("assets/models/cube.obj");
+    std::shared_ptr<vk::VulkanMesh> sphere_mesh = std::make_shared<vk::VulkanMesh>("assets/models/sphere.obj");
+    std::shared_ptr<vk::VulkanTexture> white_texture = std::make_shared<vk::VulkanTexture>("assets/textures/white.png");
+    std::shared_ptr<vk::VulkanMaterial> white_material = std::make_shared<vk::VulkanMaterial>(white_texture);
+
+    Entity cube = scene->m_ecs->CreateEntity();
+    cube.AddComponent<TransformComponent>({ glm::vec3(7.0f, 3.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0f)});
+    cube.AddComponent<MeshComponent>({ cube_mesh });
+    cube.AddComponent<MaterialComponent>({ white_material });
+
+    Entity sphere = scene->m_ecs->CreateEntity();
+    sphere.AddComponent<TransformComponent>({ glm::vec3(7.0f, -3.0f, -3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0f)});
+    sphere.AddComponent<MeshComponent>({ sphere_mesh });
+    sphere.AddComponent<MaterialComponent>({ white_material });
+
+    sun.AddComponent<MeshComponent>({ sphere_mesh });
+    sun.AddComponent<MaterialComponent>({ white_material });
+
     std::shared_ptr<vk::VulkanMesh> mesh = std::make_shared<vk::VulkanMesh>("assets/models/viking_room.obj");
     std::shared_ptr<vk::VulkanTexture> texture = std::make_shared<vk::VulkanTexture>("assets/textures/viking_room.png");
     std::shared_ptr<vk::VulkanMaterial> material = std::make_shared<vk::VulkanMaterial>(texture);
@@ -74,12 +92,14 @@ void Application::OnUpdate() {
 		std::cout << "Mouse x: " << Input::GetMousePosition().x << std::endl;
 		std::cout << "Mouse y: " << Input::GetMousePosition().y << std::endl;
 	}
-    // TODO: Need to change position in light to use transform
     static float time = 0;
     time += Time::DeltaTime();
     auto& light = sun.GetComponent<LightComponent>();
-    light.light.direction.z = sin(time);
-    light.light.direction.x = sin(time);
+    auto& transform = sun.GetComponent<TransformComponent>();
+    light.color.z = sin(time);
+    light.color.x = sin(time);
+    transform.position.z = 5.0f * sin(time);
+    transform.position.x = 5.0f * sin(time);
 
     if (Input::GetKeyPressed(GLFW_KEY_ESCAPE)) {
         Exit();

@@ -19,7 +19,7 @@ namespace vk {
 	public:
 		VulkanRenderer();
 		const VulkanContext& GetContext() const { return m_context; }
-		void BeginFrame(const Camera& camera, const ComponentArray<LightComponent>& lights);
+		void BeginFrame(const Camera& camera, std::vector<Light>& lights);
 		// TODO: Change texture to material.
 		void Draw(const std::shared_ptr<VulkanMesh>& mesh, glm::mat4 transform, const std::shared_ptr<VulkanMaterial>& material);
 		void EndFrame();

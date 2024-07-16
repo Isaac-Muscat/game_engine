@@ -15,3 +15,9 @@ namespace Time {
 	void Tick();
 	float DeltaTime();
 }
+
+
+namespace Stopwatch {
+    void Start();
+    float Stop();
+}

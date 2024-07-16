@@ -45,7 +45,7 @@ namespace vk {
 		m_command_buffers = init::CreateCommandBuffers(m_context);
 	}
 
-    void VulkanRenderer::BeginFrame(const Camera& camera, const ComponentArray<LightComponent>& lights) {
+    void VulkanRenderer::BeginFrame(const Camera& camera, std::vector<Light>& lights) {
         m_current_camera = camera;
 
         // Reset/Clear commands of buffer
@@ -80,15 +80,11 @@ namespace vk {
         vkCmdBindPipeline(m_command_buffers[m_current_frame], VK_PIPELINE_BIND_POINT_GRAPHICS, m_graphics_pipeline);
 
         // Bind the lights
-        std::vector<Light> light_vec;
-        for (size_t i = 0; i < lights.End(); i++) {
-            light_vec.push_back(lights[i].light);
-        }
-        if (light_vec.size() != m_num_lights) {
-            m_num_lights = light_vec.size();
+        if (lights.size() != m_num_lights) {
+            m_num_lights = lights.size();
             m_lights_descriptor_sets = init::LightsCreateDescriptorSets(m_context, m_descriptor_set_layouts[1], m_descriptor_pool, m_scene_buffers , m_num_lights);
         }
-        m_scene_buffers[m_current_frame]->UpdateData(m_context, light_vec.data(), sizeof(Light) * light_vec.size());
+        m_scene_buffers[m_current_frame]->UpdateData(m_context, lights.data(), sizeof(Light) * lights.size());
         vkCmdBindDescriptorSets(m_command_buffers[m_current_frame], VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipeline_layout, 1, 1, &m_lights_descriptor_sets[m_current_frame], 0, nullptr);
 
         // Populate the command buffer

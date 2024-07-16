@@ -10,6 +10,7 @@ namespace win32 {
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
         m_window = glfwCreateWindow(width, height, m_name.c_str(), nullptr, nullptr);
         glfwSetWindowUserPointer(m_window, this);
+        glfwSwapInterval(1);
     }
 
     Win32Window::~Win32Window()
