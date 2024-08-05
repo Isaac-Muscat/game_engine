@@ -25,9 +25,15 @@ namespace vk::init {
     VkCommandPool CreateCommandPool(const VulkanContext& context);
 
     void CreateBuffer(const VulkanContext& context, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& buffer_memory);
+
     void CreateSyncObjects(const VulkanContext& context, std::vector<VkSemaphore>& image_available_semaphores, std::vector<VkSemaphore>& render_finished_semaphores, std::vector<VkFence>& in_flight_fences);
+
     std::vector<VkCommandBuffer> CreateCommandBuffers(const VulkanContext& context);
-    std::vector<VkDescriptorSet> LightsCreateDescriptorSets(const VulkanContext& context, VkDescriptorSetLayout descriptorSetLayout, VkDescriptorPool descriptorPool, const std::vector<std::shared_ptr<VulkanSharedBuffer>>& uniform_buffers, int num_lights);
+
+    void LightsUpdateDescriptorSets(const VulkanContext& context, VkDescriptorSetLayout descriptorSetLayout, VkDescriptorPool descriptorPool, const std::vector<std::shared_ptr<VulkanSharedBuffer>>& uniform_buffers, uint32_t num_lights, std::vector<VkDescriptorSet>& descriptor_sets);
+
+    std::vector<VkDescriptorSet> LightsCreateDescriptorSets(const VulkanContext& context, VkDescriptorSetLayout descriptorSetLayout, VkDescriptorPool descriptorPool, const std::vector<std::shared_ptr<VulkanSharedBuffer>>& uniform_buffers, uint32_t num_lights);
+
     std::vector<VkDescriptorSet> CreateDescriptorSets(const VulkanContext& context, VkDescriptorSetLayout descriptor_set_layout, VkDescriptorPool descriptor_pool, const std::vector<std::shared_ptr<VulkanSharedBuffer>>& uniform_buffers, std::shared_ptr<VulkanTexture> texture);
 
     VkSampleCountFlagBits GetMaxUsableSampleCount(VkPhysicalDevice physical_device);

@@ -39,11 +39,11 @@ namespace vk {
 		std::vector<std::shared_ptr<VulkanSharedBuffer>> m_uniform_buffers;
 		std::vector<std::shared_ptr<VulkanSharedBuffer>> m_scene_buffers;
         std::vector<VkDescriptorSet> m_lights_descriptor_sets;
-        int m_num_lights = 1;
 		std::vector<VkCommandBuffer> m_command_buffers;
 		std::vector<VkCommandBuffer> m_submissions = {};
 
 		std::unique_ptr<VulkanSwapchain> m_swapchain;
+        uint32_t m_num_lights = 1;
 		uint32_t m_current_frame = 0;
 	};
 }

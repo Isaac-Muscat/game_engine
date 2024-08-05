@@ -36,6 +36,9 @@
     <ClInclude Include="src\core\Platform.h">
       <Filter>core</Filter>
     </ClInclude>
+    <ClInclude Include="src\core\SimplexNoise.h">
+      <Filter>core</Filter>
+    </ClInclude>
     <ClInclude Include="src\core\Time.h">
       <Filter>core</Filter>
     </ClInclude>
@@ -118,6 +121,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\Application.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\SimplexNoise.cpp">
       <Filter>core</Filter>
     </ClCompile>
     <ClCompile Include="src\core\Time.cpp">

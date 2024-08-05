@@ -28,6 +28,7 @@ namespace vk {
         std::shared_ptr<VulkanDeviceBuffer> m_vertex_buffer;
         std::shared_ptr<VulkanDeviceBuffer> m_index_buffer;
         VulkanMesh(std::string filepath);
+        VulkanMesh(std::vector<Vertex> vertices, std::vector<uint32_t> indices);
         void LoadModel(std::string filepath);
 	};
 }

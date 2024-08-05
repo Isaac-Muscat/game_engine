@@ -34,7 +34,7 @@ namespace vk {
 
     VulkanSharedBuffer::VulkanSharedBuffer(const VulkanContext& context, VkBufferUsageFlags buffer_type, size_t size_bytes) 
         : m_size_bytes(size_bytes) {
-        init::CreateBuffer(context, size_bytes, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, m_buffer, m_memory);
+        init::CreateBuffer(context, size_bytes, buffer_type, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, m_buffer, m_memory);
     }
 
     void VulkanSharedBuffer::UpdateData(const VulkanContext& context, void* host_data, size_t size_bytes) {

@@ -40,6 +40,7 @@ void Scene::OnUpdate() {
 void Scene::RenderScene() {
     const auto& entities = m_ecs->GetView<MeshComponent, TransformComponent, MaterialComponent>();
     const auto& lights = m_ecs->GetView<LightComponent, TransformComponent>();
+    // TODO: Make Efficient!
     std::vector<Light> light_vec;
     for (const auto& e : lights) {
         LightComponent& light_comp = m_ecs->GetComponent<LightComponent>(e);

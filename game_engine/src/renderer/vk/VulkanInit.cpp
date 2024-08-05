@@ -423,7 +423,7 @@ namespace vk::init {
         {
             VkDescriptorSetLayoutBinding uboLayoutBinding{};
             uboLayoutBinding.binding = 0;
-            uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+            uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
             uboLayoutBinding.descriptorCount = 1;
             uboLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 
@@ -625,7 +625,7 @@ namespace vk::init {
 
     VkDescriptorPool CreateLightDescriptorPool(const VulkanContext& context) {
         std::array<VkDescriptorPoolSize, 1> poolSizes{};
-        poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        poolSizes[0].type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
         poolSizes[0].descriptorCount = static_cast<uint32_t>(context.MAX_FRAMES_IN_FLIGHT);
 
         VkDescriptorPoolCreateInfo poolInfo{};
@@ -688,8 +688,31 @@ namespace vk::init {
 
     }
 
+    void LightsUpdateDescriptorSets(const VulkanContext& context, VkDescriptorSetLayout descriptorSetLayout, VkDescriptorPool descriptorPool, 
+        const std::vector<std::shared_ptr<VulkanSharedBuffer>>& uniform_buffers, uint32_t num_lights, std::vector<VkDescriptorSet>& descriptor_sets) {
+        std::vector<VkDescriptorSetLayout> layouts(context.MAX_FRAMES_IN_FLIGHT, descriptorSetLayout);
+
+        for (size_t i = 0; i < context.MAX_FRAMES_IN_FLIGHT; i++) {
+            VkDescriptorBufferInfo bufferInfo{};
+            bufferInfo.buffer = uniform_buffers[i]->m_buffer;
+            bufferInfo.offset = 0;
+            bufferInfo.range = num_lights * sizeof(Light);
+
+            std::array<VkWriteDescriptorSet, 1> descriptorWrites{};
+
+            descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+            descriptorWrites[0].dstSet = descriptor_sets[i];
+            descriptorWrites[0].dstBinding = 0;
+            descriptorWrites[0].dstArrayElement = 0;
+            descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+            descriptorWrites[0].descriptorCount = 1;
+            descriptorWrites[0].pBufferInfo = &bufferInfo;
+            vkUpdateDescriptorSets(context.device, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
+        }
+    }
+
     std::vector<VkDescriptorSet> LightsCreateDescriptorSets(const VulkanContext& context, VkDescriptorSetLayout descriptorSetLayout, VkDescriptorPool descriptorPool, 
-        const std::vector<std::shared_ptr<VulkanSharedBuffer>>& uniform_buffers, int num_lights) {
+        const std::vector<std::shared_ptr<VulkanSharedBuffer>>& uniform_buffers, uint32_t num_lights) {
         std::vector<VkDescriptorSetLayout> layouts(context.MAX_FRAMES_IN_FLIGHT, descriptorSetLayout);
         VkDescriptorSetAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
@@ -715,7 +738,7 @@ namespace vk::init {
             descriptorWrites[0].dstSet = descriptor_sets[i];
             descriptorWrites[0].dstBinding = 0;
             descriptorWrites[0].dstArrayElement = 0;
-            descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+            descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
             descriptorWrites[0].descriptorCount = 1;
             descriptorWrites[0].pBufferInfo = &bufferInfo;
             vkUpdateDescriptorSets(context.device, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);

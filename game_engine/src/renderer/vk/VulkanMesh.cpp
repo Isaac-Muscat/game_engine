@@ -51,6 +51,12 @@ namespace vk {
 		return attribute_descriptions;
 	}
 
+	VulkanMesh::VulkanMesh(std::vector<Vertex> vertices, std::vector<uint32_t> indices) 
+        : m_vertices(vertices), m_indices(indices) {
+        m_vertex_buffer = std::make_shared<VulkanDeviceBuffer>(g_renderer->GetContext(), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, m_vertices.data(), sizeof(m_vertices[0]) * m_vertices.size());
+        m_index_buffer = std::make_shared<VulkanDeviceBuffer>(g_renderer->GetContext(), VK_BUFFER_USAGE_INDEX_BUFFER_BIT, m_indices.data(), sizeof(m_indices[0]) * m_indices.size());
+    }
+
 	VulkanMesh::VulkanMesh(std::string filepath) {
         LoadModel(filepath);
         m_vertex_buffer = std::make_shared<VulkanDeviceBuffer>(g_renderer->GetContext(), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, m_vertices.data(), sizeof(m_vertices[0]) * m_vertices.size());

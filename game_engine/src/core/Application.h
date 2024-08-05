@@ -25,6 +25,7 @@ public:
 	void OnDestroy();
 
     inline void Exit() { m_user_says_close = 1; };
+    inline std::shared_ptr<Scene> GetCurrentScene() { return m_scenes.at(m_current_scene_index); } // TODO: Make only if valid
 
 private:
     bool m_user_says_close = 0;

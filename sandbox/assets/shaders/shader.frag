@@ -23,8 +23,8 @@ struct Light {
 #define Spot 2
 #define Area 3
 
-layout(set = 1, binding = 0) uniform LightBuffer {
-    Light lights[1];
+layout(set = 1, binding = 0) readonly buffer LightBuffer {
+    Light lights[];
 } light_buffer;
 
 void main() {

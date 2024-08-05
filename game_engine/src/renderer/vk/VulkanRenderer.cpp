@@ -9,6 +9,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "GLFW/glfw3.h"
 #include "renderer/Light.h"
+#include "vulkan/vulkan_core.h"
 
 #define VALIDATION_LAYERS_ENABLE true
 
@@ -24,23 +25,24 @@ namespace vk {
 		);
 		m_context.device = init::CreateLogicalDevice(m_context.physical_device, m_context.surface, VALIDATION_LAYERS_ENABLE);
 		m_context.command_pool = init::CreateCommandPool(m_context);
-		m_descriptor_pool = init::CreateDescriptorPool(m_context);
-		m_light_descriptor_pool = init::CreateLightDescriptorPool(m_context);
 
-		QueueFamilyIndices indices = init::FindQueueFamilies(m_context.physical_device, m_context.surface);
-		vkGetDeviceQueue(m_context.device, indices.graphics_family.value(), 0, &m_context.graphics_queue);
-		vkGetDeviceQueue(m_context.device, indices.present_family.value(), 0, &m_context.present_queue);
+        QueueFamilyIndices indices = init::FindQueueFamilies(m_context.physical_device, m_context.surface);
+        vkGetDeviceQueue(m_context.device, indices.graphics_family.value(), 0, &m_context.graphics_queue);
+        vkGetDeviceQueue(m_context.device, indices.present_family.value(), 0, &m_context.present_queue);
 
+        m_descriptor_pool = init::CreateDescriptorPool(m_context);
+        m_light_descriptor_pool = init::CreateLightDescriptorPool(m_context);
 		m_renderpass = init::CreateRenderPass(m_context);
 		m_swapchain = std::make_unique<VulkanSwapchain>(m_context, m_renderpass);
 		m_descriptor_set_layouts = init::CreateDescriptorSetLayouts(m_context);
 		m_shader = std::make_shared<VulkanShader>(m_context, "assets/shaders/vert.spv", "assets/shaders/frag.spv");
-
 		m_graphics_pipeline = init::CreateGraphicsPipeline(m_context, m_shader, m_swapchain, m_renderpass, m_descriptor_set_layouts, &m_pipeline_layout);
+
 		for (int i = 0; i < m_context.MAX_FRAMES_IN_FLIGHT; i++) {
 			m_uniform_buffers.emplace_back(std::make_shared<VulkanSharedBuffer>(m_context, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, sizeof(UniformBufferObject)));
-			m_scene_buffers.emplace_back(std::make_shared<VulkanSharedBuffer>(m_context, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, sizeof(Light)));
+			m_scene_buffers.emplace_back(std::make_shared<VulkanSharedBuffer>(m_context, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, sizeof(Light) * m_num_lights));
 		}
+
         m_lights_descriptor_sets = init::LightsCreateDescriptorSets(m_context, m_descriptor_set_layouts[1], m_light_descriptor_pool, m_scene_buffers, m_num_lights);
 		m_command_buffers = init::CreateCommandBuffers(m_context);
 	}
@@ -82,7 +84,13 @@ namespace vk {
         // Bind the lights
         if (lights.size() != m_num_lights) {
             m_num_lights = lights.size();
-            m_lights_descriptor_sets = init::LightsCreateDescriptorSets(m_context, m_descriptor_set_layouts[1], m_descriptor_pool, m_scene_buffers , m_num_lights);
+            vkDeviceWaitIdle(m_context.device); // TODO: DONT CALL vkDeviceWaitIdle BUT MAINTAIN SYNCHRONIZATION
+            m_scene_buffers.clear();
+            for (int i = 0; i < m_context.MAX_FRAMES_IN_FLIGHT; i++) {
+
+                m_scene_buffers.emplace_back(std::make_shared<VulkanSharedBuffer>(m_context, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, sizeof(Light) * m_num_lights));
+            }
+            init::LightsUpdateDescriptorSets(m_context, m_descriptor_set_layouts[1], m_descriptor_pool, m_scene_buffers , m_num_lights, m_lights_descriptor_sets);
         }
         m_scene_buffers[m_current_frame]->UpdateData(m_context, lights.data(), sizeof(Light) * lights.size());
         vkCmdBindDescriptorSets(m_command_buffers[m_current_frame], VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipeline_layout, 1, 1, &m_lights_descriptor_sets[m_current_frame], 0, nullptr);
