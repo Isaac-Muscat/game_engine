@@ -9,7 +9,7 @@
  */
 #pragma once
 #include "pch.h"
-#include <cstddef>  // size_t
+#include <cstddef>  // size_tf
 
 /**
  * @brief A Perlin Simplex Noise C++ Implementation (1D, 2D, 3D, 4D).

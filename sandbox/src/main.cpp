@@ -4,6 +4,7 @@
 #include "ecs/Components.h"
 #include "ecs/EntityComponentSystem.h"
 #include "ecs/Entity.h"
+#include "glm/ext/quaternion_geometric.hpp"
 #include "hid/Input.h"
 #include "renderer/Light.h"
 #include "renderer/Renderer.h"
@@ -18,6 +19,12 @@
 
 Entity point_light;
 Entity sun;
+
+glm::vec3 calculate_normal(std::array<glm::vec3, 3> v) {
+    glm::vec3 l1 = v[0] - v[1];
+    glm::vec3 l2 = v[0] - v[2];
+    return glm::normalize(glm::cross(l1, l2));
+}
 
 std::shared_ptr<vk::VulkanMesh> make_terrain() {
 
@@ -61,19 +68,29 @@ std::shared_ptr<vk::VulkanMesh> make_terrain() {
     // Create all vertices (there are duplicates to fix normals)
     // Each inner loop creates two triangles to make a quad (6 vertices each)
     SimplexNoise noise;
-    int size_x = 5;
-    int size_z = 5;
-    float step = 1.0f;
+    int size_x = 50;
+    int size_z = 50;
+    float p_step = 1.0f;
+    float n_step = 0.05f;
     int index = 0;
     for (int i_x = -size_x; i_x <= size_x; i_x++) {
         for (int i_z = -size_z; i_z <= size_z; i_z++) {
-            float x = i_x * step;
-            float z = i_z * step;
+            float n_x = i_x * n_step;
+            float n_z = i_z * n_step;
 
+            float p_x = i_x * p_step;
+            float p_z = i_z * p_step;
+            glm::vec3 color(0.3f, 0.8f, 0.2f);
+
+            // TODO Fix normals!!
             vk::Vertex v1, v2, v3;
-            v1 = { glm::vec3(x,         noise.noise(x, z),               z       ), glm::vec3(1), glm::vec2(0), glm::vec3(0, 1, 0) };
-            v2 = { glm::vec3(x,         noise.noise(x, z + step),        z + step), glm::vec3(1), glm::vec2(0), glm::vec3(0, 1, 0) };
-            v3 = { glm::vec3(x + step,  noise.noise(x + step, z + step), z + step), glm::vec3(1), glm::vec2(0), glm::vec3(0, 1, 0) };
+            v1 = { glm::vec3(p_x,         noise.noise(n_x, n_z),               p_z       ), color, glm::vec2(0), glm::vec3(0, 1, 0) };
+            v2 = { glm::vec3(p_x,         noise.noise(n_x, n_z + n_step),        p_z + p_step), color, glm::vec2(0), glm::vec3(0, 1, 0) };
+            v3 = { glm::vec3(p_x + p_step,  noise.noise(n_x + n_step, n_z + n_step), p_z + p_step), color, glm::vec2(0), glm::vec3(0, 1, 0) };
+            glm::vec3 n = calculate_normal({v1.pos, v2.pos, v3.pos});
+            v1.normal = n;
+            v2.normal = n;
+            v3.normal = n;
             vertices.push_back(v1);
             vertices.push_back(v2);
             vertices.push_back(v3);
@@ -84,9 +101,13 @@ std::shared_ptr<vk::VulkanMesh> make_terrain() {
             index += 3;
 
             vk::Vertex v4, v5, v6;
-            v4 = { glm::vec3(x,         noise.noise(x, z),               z       ), glm::vec3(1), glm::vec2(0), glm::vec3(0, 1, 0) };
-            v5 = { glm::vec3(x + step,  noise.noise(x + step, z + step), z + step), glm::vec3(1), glm::vec2(0), glm::vec3(0, 1, 0) };
-            v6 = { glm::vec3(x + step,  noise.noise(x + step, z),        z       ), glm::vec3(1), glm::vec2(0), glm::vec3(0, 1, 0) };
+            v4 = { glm::vec3(p_x,           noise.noise(n_x, n_z),               p_z       ), color, glm::vec2(0), glm::vec3(0, 1, 0) };
+            v5 = { glm::vec3(p_x + p_step,  noise.noise(n_x + n_step, n_z + n_step), p_z + p_step), color, glm::vec2(0), glm::vec3(0, 1, 0) };
+            v6 = { glm::vec3(p_x + p_step,  noise.noise(n_x + n_step, n_z),        p_z       ), color, glm::vec2(0), glm::vec3(0, 1, 0) };
+            n = calculate_normal({v4.pos, v5.pos, v6.pos});
+            v4.normal = n;
+            v5.normal = n;
+            v6.normal = n;
             vertices.push_back(v4);
             vertices.push_back(v5);
             vertices.push_back(v6);
@@ -170,15 +191,28 @@ void Application::OnCreate() {
 
 	// Create First Person Camera.
 	Entity camera_entity = scene->m_ecs->CreateEntity();
-	camera_entity.AddComponent<CameraComponent>({ Camera(glm::vec3(0.0f)) });
+	camera_entity.AddComponent<CameraComponent>({ Camera(glm::vec3(0, 15, 0)) });
 	ScriptComponent camera_controller = { std::make_shared<CameraController>() };
 	camera_controller.script->m_entity = camera_entity;
 	camera_entity.AddComponent<ScriptComponent>(camera_controller);
+    camera_entity.SetTag("main_player");
 	scene->SetMainCamera(camera_entity);
 	m_scenes.push_back(scene);
 }
 
+glm::vec3 accleration(0, -1, 0);
+glm::vec3 velocity(0);
+
 void Application::OnUpdate() {
+    velocity += accleration * Time::DeltaTime();
+	if (Input::GetKeyPressed(GLFW_KEY_SPACE)) {
+        velocity = glm::vec3(0);
+	}
+
+    auto player = GetCurrentScene()->m_ecs->FindEntityByTag("main_player");
+    auto& player_camera = player.GetComponent<CameraComponent>().camera;
+    player_camera.Position += velocity * Time::DeltaTime();
+
 	if (Input::GetKeyPressed(GLFW_KEY_A) || Input::GetKeyPressed(GLFW_KEY_D)) {
 		std::cout << "Key pressed." << std::endl;
 	}

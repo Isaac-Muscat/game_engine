@@ -53,7 +53,7 @@ void main() {
                 break;
         }
     }
-    outColor = texture(texSampler, fragTexCoord).rgba * vec4(lighting, 1.0f);
+    outColor = vec4(fragColor, 1.0f) * texture(texSampler, fragTexCoord).rgba * vec4(lighting, 1.0f);
     //outColor = vec4(fragNormal, 1); // Debug normals
     //outColor = vec4(vec3(dot(normalize(direction), normalize(fragNormal))), 1); // Debug Lights
 }
