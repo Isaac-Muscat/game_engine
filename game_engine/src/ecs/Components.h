@@ -6,6 +6,8 @@
 #include "ecs/EntityTypes.h"
 #include "renderer/Camera.h"
 #include "renderer/Light.h"
+#include "physics/AABB.h"
+#include "physics/TriangleBVH.h"
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
@@ -42,6 +44,22 @@ struct TransformComponent {
 		m = glm::rotate(m, euler_angles.z, glm::vec3(0.0f, 0.0f, 1.0f));
 		return m;
 	}
+    void Print() {
+        std::cout << "(" << position.x << ", " << position.y << ", " << position.z << ")" << std::endl;
+    }
+};
+
+// TODO: Need to give AABB a position and then copy transformcomponent into aabb
+struct AABBComponent {
+    AABB aabb;
+    bool static_collider;
+    bool collided;
+};
+
+struct MeshColliderComponent {
+    TriangleBVH bvh;
+    bool static_collider;
+    bool collided;
 };
 
 struct NameComponent {

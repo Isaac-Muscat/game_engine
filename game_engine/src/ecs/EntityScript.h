@@ -10,6 +10,17 @@ public:
 	T& GetComponent() {
 		return m_entity.GetComponent<T>();
 	}
+	template<typename T>
+	void AddComponent(T component) {
+		m_entity.AddComponent<T>(component);
+	}
+    Entity CreateEntity() {
+        return m_entity.GetECS()->CreateEntity();
+    }
+
+	Entity FindEntityByTag(const std::string& tag) {
+        return m_entity.GetECS()->FindEntityByTag(tag);
+    }
 	virtual void OnAwake() {};
 	virtual void OnCreate() {};
 	virtual void OnUpdate() {};

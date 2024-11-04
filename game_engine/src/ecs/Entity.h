@@ -39,6 +39,10 @@ public:
 	void DeleteTag() {
 		return m_ecs->DeleteTag(m_id);
 	}
+
+    void Destroy() {
+        m_ecs->DestroyEntity(m_id);
+    }
 private:
 	EntityComponentSystem* m_ecs;
 	EntityID m_id;

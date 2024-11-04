@@ -14,6 +14,7 @@ Scene::Scene() {
     m_ecs = std::make_unique<EntityComponentSystem>();
     m_ecs->RegisterView<MeshComponent, TransformComponent, MaterialComponent>();
     m_ecs->RegisterView<LightComponent, TransformComponent>();
+    m_ecs->RegisterView<TransformComponent, AABBComponent>();
 }
 
 void Scene::Init() {
@@ -26,6 +27,31 @@ void Scene::Init() {
     for (size_t i = 0; i < scripts.End(); i++) {
         auto& script = scripts[i];
         script.script->OnCreate();
+    }
+}
+
+// FIXME!!! Camera -> make use TransformComponent angles!!
+void Scene::CollisionUpdate() {
+    const auto& aabbs = m_ecs->GetView<TransformComponent, AABBComponent>();
+    for (const auto& a1 : aabbs) {
+        AABBComponent& aabb_component1 = m_ecs->GetComponent<AABBComponent>(a1);
+        TransformComponent& transform1 = m_ecs->GetComponent<TransformComponent>(a1);
+        aabb_component1.collided = false;
+        for (const auto& a2 : aabbs) {
+            if (a2 == a1) { continue; }
+            AABBComponent& aabb_component2 = m_ecs->GetComponent<AABBComponent>(a2);
+            TransformComponent& transform2 = m_ecs->GetComponent<TransformComponent>(a2);
+
+            AABB aabb1 = aabb_component1.aabb;
+            aabb1.Translate(transform1.position);
+            AABB aabb2 = aabb_component2.aabb;
+            aabb2.Translate(transform2.position);
+
+            if (AABB::Collision(aabb1, aabb2)) {
+                aabb_component1.collided = true;
+            }
+
+        }
     }
 }
 

@@ -1,4 +1,5 @@
 #pragma once
+#include "ecs/Components.h"
 #include "pch.h"
 #include "ecs/EntityComponentSystem.h"
 #include "ecs/Entity.h"
@@ -20,6 +21,7 @@ public:
 
 	void Init();
 	void OnUpdate();
+    void CollisionUpdate();
 	void RenderScene();
 	void Destroy();
 private:

@@ -15,13 +15,18 @@ I will only stop using these fancy C++ features if I need more performance for t
 I think they hit the sweet spot in terms of performance and ease of use.
 
 ## What was I Doing Last
+Need to make Asset manager so no redundant assets = descriptors manager properly
+
+### Lights
 Make separate list for each light type
 Variable size light array. In the middle of changing uniform to storage bufffer but not sure if this is best.
 Just added 2nd light so need to make size of lights array passed to shader dynamic.
+
+### Other
 Quuick profiling hack on render time taken and update time taken (Not Accurate)
 Need to make camera use transform component instead
 
-## Current Tasks
+## Task List
 Automatic shader recompliation on change
 1. Scene Graph Component
     - This will be optionally added to an entity to allow for that entity to enter the scene graph

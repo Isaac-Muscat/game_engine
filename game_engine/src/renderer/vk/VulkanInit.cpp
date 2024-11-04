@@ -652,7 +652,8 @@ namespace vk::init {
         poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
         poolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
         poolInfo.pPoolSizes = poolSizes.data();
-        poolInfo.maxSets = 2 * static_cast<uint32_t>(context.MAX_FRAMES_IN_FLIGHT);
+        // TODO Need to make the number of descriptor sets variable so no crash when a new set is made
+        poolInfo.maxSets = 3 * static_cast<uint32_t>(context.MAX_FRAMES_IN_FLIGHT);
 
         VkDescriptorPool descriptor_pool;
         if (vkCreateDescriptorPool(context.device, &poolInfo, nullptr, &descriptor_pool) != VK_SUCCESS) {

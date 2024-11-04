@@ -13,6 +13,9 @@
     <Filter Include="hid\windows">
       <UniqueIdentifier>{94575A67-000D-D35C-8901-CD33F5B5C960}</UniqueIdentifier>
     </Filter>
+    <Filter Include="physics">
+      <UniqueIdentifier>{A823A1AC-1403-2048-1D1B-AB1E897986A9}</UniqueIdentifier>
+    </Filter>
     <Filter Include="renderer">
       <UniqueIdentifier>{9C6AA017-8837-FB22-B150-E9CA9D7C30B1}</UniqueIdentifier>
     </Filter>
@@ -70,6 +73,12 @@
       <Filter>hid\windows</Filter>
     </ClInclude>
     <ClInclude Include="src\pch.h" />
+    <ClInclude Include="src\physics\AABB.h">
+      <Filter>physics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\physics\TriangleBVH.h">
+      <Filter>physics</Filter>
+    </ClInclude>
     <ClInclude Include="src\renderer\Camera.h">
       <Filter>renderer</Filter>
     </ClInclude>
@@ -136,6 +145,12 @@
       <Filter>hid\windows</Filter>
     </ClCompile>
     <ClCompile Include="src\pch.cpp" />
+    <ClCompile Include="src\physics\AABB.cpp">
+      <Filter>physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\physics\TriangleBVH.cpp">
+      <Filter>physics</Filter>
+    </ClCompile>
     <ClCompile Include="src\renderer\Camera.cpp">
       <Filter>renderer</Filter>
     </ClCompile>

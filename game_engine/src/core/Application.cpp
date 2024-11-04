@@ -51,6 +51,7 @@ void Application::Run() {
         Stopwatch::Start();
         if (scene_loaded) {
             m_scenes[m_current_scene_index]->OnUpdate();
+            m_scenes[m_current_scene_index]->CollisionUpdate();
         }
         OnUpdate();
         float update_time = Stopwatch::Stop();
