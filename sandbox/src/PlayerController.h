@@ -21,7 +21,7 @@ public:
     bool grounded = false;
 
     void OnAwake() override {
-        terrain_manager = std::dynamic_pointer_cast<TerrainManager>(FindEntityByTag("terrain_manager").GetComponent<ScriptComponent>().script);
+        terrain_manager = FindEntityByTag("terrain_manager").GetScriptComponent<TerrainManager>();
     }
 
 	void OnUpdate() override {

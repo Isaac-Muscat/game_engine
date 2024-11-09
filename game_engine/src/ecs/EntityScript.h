@@ -1,6 +1,7 @@
 #pragma once
 #include "pch.h"
 #include "Entity.h"
+#include <memory>
 
 // When adding scripts, inherit from this class.
 class EntityScript {

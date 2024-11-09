@@ -7,112 +7,21 @@
 #include "core/SimplexNoise.h"
 #include "physics/TriangleBVH.h"
 
-class TerrainManager : public EntityScript {
+class EnemyManager : public EntityScript {
 public:
-    std::vector<Entity> chunks;
-    Entity player_entity;
-    SimplexNoise noise = SimplexNoise(1, 1, 2, 0.5);
-    int size = 20;
-    int current_chunk_x = 0;
-    int current_chunk_z = 0;
-    int w = 3;
-    std::shared_ptr<vk::VulkanTexture> white_texture;
-    std::shared_ptr<vk::VulkanMaterial> white_material;
-
-    Entity GetClosestChunk(glm::vec3 pos) {
-        for (auto chunk: chunks) {
-            glm::vec3 chunk_pos = chunk.GetComponent<TransformComponent>().position;
-            if (floor(pos.x / size) == floor(chunk_pos.x / size) && floor(pos.z / size) == floor(chunk_pos.z / size)) {
-                return chunk;
-            }
-        }
-        return chunks[0];
-    }
-
-    glm::vec3 calculate_normal(std::array<glm::vec3, 3> v) {
-        glm::vec3 l1 = v[0] - v[1];
-        glm::vec3 l2 = v[0] - v[2];
-        return glm::normalize(glm::cross(l1, l2));
-    }
-
-    void MakeTerrain(int size_x, int size_z, int x_offset, int z_offset, Entity terrain) {
-
-        std::vector<vk::Vertex> vertices;
-        std::vector<uint32_t> indices;
-        TriangleBVH bvh;
-
-        // Create all vertices (there are duplicates to fix normals)
-        // Each inner loop creates two triangles to make a quad (6 vertices each)
-        int octaves = 4;
-        float p_step = 1.0f;
-        float n_step = 0.007f;
-        float h = 30;
-        int index = 0;
-        for (int i_x = 0; i_x < size_x; i_x++) {
-            for (int i_z = 0; i_z < size_z; i_z++) {
-                float n_x = (i_x + size_x * x_offset) * n_step;
-                float n_z = (i_z + size_z * z_offset) * n_step;
-
-                float p_x = i_x * p_step;
-                float p_z = i_z * p_step;
-                glm::vec3 color(0.3f, 0.8f, 0.2f);
-
-                // TODO Fix normals!!
-                vk::Vertex v1, v2, v3;
-                v1 = { glm::vec3(p_x,         noise.fractal(octaves, n_x, n_z) * h,               p_z       ), color, glm::vec2(0), glm::vec3(0, 1, 0) };
-                v2 = { glm::vec3(p_x,         noise.fractal(octaves, n_x, n_z + n_step) * h,        p_z + p_step), color, glm::vec2(0), glm::vec3(0, 1, 0) };
-                v3 = { glm::vec3(p_x + p_step,  noise.fractal(octaves, n_x + n_step, n_z + n_step) * h, p_z + p_step), color, glm::vec2(0), glm::vec3(0, 1, 0) };
-                glm::vec3 n = calculate_normal({v1.pos, v2.pos, v3.pos});
-                v1.normal = n;
-                v2.normal = n;
-                v3.normal = n;
-                bvh.InsertTriangle({v1.pos, v2.pos, v3.pos});
-                vertices.push_back(v1);
-                vertices.push_back(v2);
-                vertices.push_back(v3);
-                indices.push_back(index);
-                indices.push_back(index + 1);
-                indices.push_back(index + 2);
-                
-                index += 3;
-
-                vk::Vertex v4, v5, v6;
-                v4 = { glm::vec3(p_x,           noise.fractal(octaves, n_x, n_z) * h,               p_z       ), color, glm::vec2(0), glm::vec3(0, 1, 0) };
-                v5 = { glm::vec3(p_x + p_step,  noise.fractal(octaves, n_x + n_step, n_z + n_step) * h, p_z + p_step), color, glm::vec2(0), glm::vec3(0, 1, 0) };
-                v6 = { glm::vec3(p_x + p_step,  noise.fractal(octaves, n_x + n_step, n_z) * h,        p_z       ), color, glm::vec2(0), glm::vec3(0, 1, 0) };
-                n = calculate_normal({v4.pos, v5.pos, v6.pos});
-                v4.normal = n;
-                v5.normal = n;
-                v6.normal = n;
-                vertices.push_back(v4);
-                vertices.push_back(v5);
-                vertices.push_back(v6);
-                bvh.InsertTriangle({v4.pos, v5.pos, v6.pos});
-                indices.push_back(index);
-                indices.push_back(index + 1);
-                indices.push_back(index + 2);
-                
-                index += 3;
-            }
-        }
-        terrain.AddComponent<MeshColliderComponent>({bvh, true, false});
-        terrain.AddComponent<MeshComponent>({std::make_shared<vk::VulkanMesh>(vertices, indices)});
-    }
+    std::vector<Entity> Enemies;
 
     void OnAwake() override {
-        player_entity = FindEntityByTag("main_player");
         white_texture = std::make_shared<vk::VulkanTexture>("assets/textures/white.png");
         white_material = std::make_shared<vk::VulkanMaterial>(white_texture);
 
         for (int x = -w; x <= w; x++) {
-            for (int z = -w; z <= w; z++) {
-                Entity terrain = CreateEntity();
-                terrain.AddComponent<TransformComponent>({ glm::vec3(x * size, -31.0f, z * size), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1)});
-                terrain.AddComponent<MaterialComponent>({ white_material });
-                MakeTerrain(size, size, x, z, terrain);
-                terrain.GetComponent<MeshColliderComponent>().bvh.m_position = terrain.GetComponent<TransformComponent>().position;
-                chunks.push_back(terrain);
-            }
+            Entity terrain = CreateEntity();
+            terrain.AddComponent<TransformComponent>({ glm::vec3(x * size, -31.0f, z * size), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1)});
+            terrain.AddComponent<MaterialComponent>({ white_material });
+            MakeTerrain(size, size, x, z, terrain);
+            terrain.GetComponent<MeshColliderComponent>().bvh.m_position = terrain.GetComponent<TransformComponent>().position;
+            chunks.push_back(terrain);
         }
     }
 

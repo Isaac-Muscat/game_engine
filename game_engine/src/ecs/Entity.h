@@ -25,6 +25,10 @@ public:
 		return m_ecs->GetComponent<T>(m_id);
 	}
 
+
+    template<typename T>
+    std::shared_ptr<T> GetScriptComponent() { return std::dynamic_pointer_cast<T>(GetComponent<ScriptComponent>().script); }
+
 	template<typename T>
 	void DeleteComponent() {
 		m_ecs->DeleteComponent<T>(m_id);
