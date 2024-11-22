@@ -13,6 +13,11 @@ namespace vk {
         alignas(16) glm::mat4 proj;
     };
 
+    struct RenderPipeline {
+        VkPipeline pipeline;
+        VkPipelineLayout pipeline_layout;
+    };
+
     // Struct for passing around commonly needed information
     typedef struct VulkanContext {
         const int MAX_FRAMES_IN_FLIGHT = 2;

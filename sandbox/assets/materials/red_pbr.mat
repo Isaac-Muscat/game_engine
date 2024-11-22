@@ -1,0 +1,7 @@
+texture assets/textures/white.png
+vertex_shader assets/shaders/pbr_vert.spv
+fragment_shader assets/shaders/pbr_frag.spv
+albedo
+roughness
+metallic
+ao

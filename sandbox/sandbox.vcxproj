@@ -90,6 +90,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\EnemyManager.h" />
     <ClInclude Include="src\PlayerController.h" />
     <ClInclude Include="src\TerrainManager.h" />
   </ItemGroup>

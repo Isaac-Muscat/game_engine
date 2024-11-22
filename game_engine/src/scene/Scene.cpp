@@ -86,6 +86,7 @@ void Scene::RenderScene() {
         light_vec.push_back(light);
     }
     g_renderer->BeginFrame(m_main_camera.GetComponent<CameraComponent>().camera, light_vec);
+    // TODO Do some sorting and frustrum culling
     for (const auto& e : entities) {
         MeshComponent& mesh = m_ecs->GetComponent<MeshComponent>(e);
         TransformComponent& transform = m_ecs->GetComponent<TransformComponent>(e);

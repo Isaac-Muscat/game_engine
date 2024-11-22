@@ -1,5 +1,6 @@
 #pragma once
 #include "pch.h"
+#include "physics/SphereCollider.h"
 #include "renderer/vk/VulkanMesh.h"
 #include "renderer/vk/VulkanShader.h"
 #include "renderer/vk/VulkanMaterial.h"
@@ -52,6 +53,12 @@ struct TransformComponent {
 // TODO: Need to give AABB a position and then copy transformcomponent into aabb
 struct AABBComponent {
     AABB aabb;
+    bool static_collider;
+    bool collided;
+};
+
+struct SphereColliderComponent {
+    SphereCollider collider;
     bool static_collider;
     bool collided;
 };

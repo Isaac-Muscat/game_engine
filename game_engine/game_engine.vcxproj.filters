@@ -82,6 +82,9 @@
     <ClInclude Include="src\physics\AABB.h">
       <Filter>physics</Filter>
     </ClInclude>
+    <ClInclude Include="src\physics\SphereCollider.h">
+      <Filter>physics</Filter>
+    </ClInclude>
     <ClInclude Include="src\physics\TriangleBVH.h">
       <Filter>physics</Filter>
     </ClInclude>

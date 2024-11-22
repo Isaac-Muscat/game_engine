@@ -1,4 +1,5 @@
 #pragma once
+#include "core/AssetManager.h"
 #include "pch.h"
 #include "ecs/Components.h"
 #include "ecs/EntityScript.h"
@@ -10,12 +11,14 @@
 class EnemyManager : public EntityScript {
 public:
     std::vector<Entity> Enemies;
+    std::shared_ptr<vk::VulkanTexture> white_texture;
+    std::shared_ptr<vk::VulkanMaterial> white_material;
 
     void OnAwake() override {
-        white_texture = std::make_shared<vk::VulkanTexture>("assets/textures/white.png");
-        white_material = std::make_shared<vk::VulkanMaterial>(white_texture);
+        white_texture = Assets::LoadTexture("assets/textures/white.png");
+        white_material = Assets::(white_texture);
 
-        for (int x = -w; x <= w; x++) {
+        for (int i = 0; i < 5; i++) {
             Entity terrain = CreateEntity();
             terrain.AddComponent<TransformComponent>({ glm::vec3(x * size, -31.0f, z * size), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1)});
             terrain.AddComponent<MaterialComponent>({ white_material });

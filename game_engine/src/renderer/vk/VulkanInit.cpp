@@ -4,7 +4,9 @@
 #include "VulkanRenderer.h"
 #include "VulkanValidationLayers.h"
 #include "hid/Window.h"
+#include "renderer/vk/VulkanBuffer.h"
 #include "vulkan/vulkan_core.h"
+#include <memory>
 
 namespace vk::init {
     const std::vector<const char*> g_device_extensions = {
@@ -391,6 +393,9 @@ namespace vk::init {
         return renderPass;
     }
 
+    // Set 0 : per scene resources
+    // Set 1: per material resources
+    // Set 2: per mesh resources
     std::vector<VkDescriptorSetLayout> CreateDescriptorSetLayouts(const VulkanContext& context) {
         std::vector<VkDescriptorSetLayout> layouts;
 
@@ -401,14 +406,13 @@ namespace vk::init {
             uboLayoutBinding.descriptorCount = 1;
             uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 
-            VkDescriptorSetLayoutBinding samplerLayoutBinding{};
-            samplerLayoutBinding.binding = 1;
-            samplerLayoutBinding.descriptorCount = 1;
-            samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-            samplerLayoutBinding.pImmutableSamplers = nullptr;
-            samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+            VkDescriptorSetLayoutBinding lightsLayoutBinding{};
+            lightsLayoutBinding.binding = 1;
+            lightsLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+            lightsLayoutBinding.descriptorCount = 1;
+            lightsLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 
-            std::array<VkDescriptorSetLayoutBinding, 2> bindings = { uboLayoutBinding, samplerLayoutBinding };
+            std::array<VkDescriptorSetLayoutBinding, 2> bindings = { uboLayoutBinding, lightsLayoutBinding };
             VkDescriptorSetLayoutCreateInfo layoutInfo{};
             layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
             layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
@@ -421,13 +425,20 @@ namespace vk::init {
             layouts.push_back(descriptorSetLayout);
         }
         {
+            VkDescriptorSetLayoutBinding samplerLayoutBinding{};
+            samplerLayoutBinding.binding = 0;
+            samplerLayoutBinding.descriptorCount = 1;
+            samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+            samplerLayoutBinding.pImmutableSamplers = nullptr;
+            samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+
             VkDescriptorSetLayoutBinding uboLayoutBinding{};
-            uboLayoutBinding.binding = 0;
-            uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+            uboLayoutBinding.binding = 1;
+            uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
             uboLayoutBinding.descriptorCount = 1;
             uboLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 
-            std::array<VkDescriptorSetLayoutBinding, 1> bindings = { uboLayoutBinding };
+            std::array<VkDescriptorSetLayoutBinding, 2> bindings = { samplerLayoutBinding, uboLayoutBinding };
             VkDescriptorSetLayoutCreateInfo layoutInfo{};
             layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
             layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
@@ -443,17 +454,17 @@ namespace vk::init {
         return layouts;
 
     }
-    VkPipeline CreateGraphicsPipeline(const VulkanContext& context, std::shared_ptr<VulkanShader> shader, const std::unique_ptr<VulkanSwapchain>& swapchain, VkRenderPass renderPass, std::vector<VkDescriptorSetLayout> descriptorSetLayouts, VkPipelineLayout* pipelineLayout) {
+    VkPipeline CreateGraphicsPipeline(const VulkanContext& context, std::shared_ptr<VulkanShader> vertex_shader, std::shared_ptr<VulkanShader> fragment_shader, const std::unique_ptr<VulkanSwapchain>& swapchain, VkRenderPass renderPass, std::vector<VkDescriptorSetLayout> descriptorSetLayouts, VkPipelineLayout* pipelineLayout) {
         VkPipelineShaderStageCreateInfo vertShaderStageInfo{};
         vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
         vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
-        vertShaderStageInfo.module = shader->m_vert_shader_module;
+        vertShaderStageInfo.module = vertex_shader->m_shader_module;
         vertShaderStageInfo.pName = "main";
 
         VkPipelineShaderStageCreateInfo fragShaderStageInfo{};
         fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
         fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
-        fragShaderStageInfo.module = shader->m_frag_shader_module;
+        fragShaderStageInfo.module = fragment_shader->m_shader_module;
         fragShaderStageInfo.pName = "main";
 
         VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
@@ -623,16 +634,18 @@ namespace vk::init {
         return command_buffers;
     }
 
-    VkDescriptorPool CreateLightDescriptorPool(const VulkanContext& context) {
-        std::array<VkDescriptorPoolSize, 1> poolSizes{};
-        poolSizes[0].type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+    VkDescriptorPool CreateSceneDescriptorPool(const VulkanContext& context) {
+        std::array<VkDescriptorPoolSize, 2> poolSizes{};
+        poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
         poolSizes[0].descriptorCount = static_cast<uint32_t>(context.MAX_FRAMES_IN_FLIGHT);
+        poolSizes[1].type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+        poolSizes[1].descriptorCount = static_cast<uint32_t>(context.MAX_FRAMES_IN_FLIGHT);
 
         VkDescriptorPoolCreateInfo poolInfo{};
         poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
         poolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
         poolInfo.pPoolSizes = poolSizes.data();
-        poolInfo.maxSets = static_cast<uint32_t>(context.MAX_FRAMES_IN_FLIGHT);
+        poolInfo.maxSets = 2 * static_cast<uint32_t>(context.MAX_FRAMES_IN_FLIGHT);
 
         VkDescriptorPool descriptor_pool;
         if (vkCreateDescriptorPool(context.device, &poolInfo, nullptr, &descriptor_pool) != VK_SUCCESS) {
@@ -643,17 +656,17 @@ namespace vk::init {
 
     VkDescriptorPool CreateDescriptorPool(const VulkanContext& context) {
         std::array<VkDescriptorPoolSize, 2> poolSizes{};
-        poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-        poolSizes[0].descriptorCount = static_cast<uint32_t>(context.MAX_FRAMES_IN_FLIGHT);
-        poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-        poolSizes[1].descriptorCount = static_cast<uint32_t>(context.MAX_FRAMES_IN_FLIGHT);
+        poolSizes[0].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        poolSizes[0].descriptorCount = 10; // One descriptor per texture, for now just 10 textures total possible
+        poolSizes[1].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        poolSizes[1].descriptorCount = 10;
 
         VkDescriptorPoolCreateInfo poolInfo{};
         poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
         poolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
         poolInfo.pPoolSizes = poolSizes.data();
         // TODO Need to make the number of descriptor sets variable so no crash when a new set is made
-        poolInfo.maxSets = 3 * static_cast<uint32_t>(context.MAX_FRAMES_IN_FLIGHT);
+        poolInfo.maxSets = 10;
 
         VkDescriptorPool descriptor_pool;
         if (vkCreateDescriptorPool(context.device, &poolInfo, nullptr, &descriptor_pool) != VK_SUCCESS) {
@@ -703,7 +716,7 @@ namespace vk::init {
 
             descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
             descriptorWrites[0].dstSet = descriptor_sets[i];
-            descriptorWrites[0].dstBinding = 0;
+            descriptorWrites[0].dstBinding = 1;
             descriptorWrites[0].dstArrayElement = 0;
             descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
             descriptorWrites[0].descriptorCount = 1;
@@ -712,43 +725,9 @@ namespace vk::init {
         }
     }
 
-    std::vector<VkDescriptorSet> LightsCreateDescriptorSets(const VulkanContext& context, VkDescriptorSetLayout descriptorSetLayout, VkDescriptorPool descriptorPool, 
-        const std::vector<std::shared_ptr<VulkanSharedBuffer>>& uniform_buffers, uint32_t num_lights) {
-        std::vector<VkDescriptorSetLayout> layouts(context.MAX_FRAMES_IN_FLIGHT, descriptorSetLayout);
-        VkDescriptorSetAllocateInfo allocInfo{};
-        allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-        allocInfo.descriptorPool = descriptorPool;
-        allocInfo.descriptorSetCount = static_cast<uint32_t>(context.MAX_FRAMES_IN_FLIGHT);
-        allocInfo.pSetLayouts = layouts.data();
+    std::vector<VkDescriptorSet> CreateSceneDescriptorSets(const VulkanContext& context, VkDescriptorSetLayout descriptorSetLayout, VkDescriptorPool descriptorPool, 
+        const std::vector<std::shared_ptr<VulkanSharedBuffer>>& light_buffers, const std::vector<std::shared_ptr<VulkanSharedBuffer>>& uniform_buffers, uint32_t num_lights) {
 
-
-        std::vector<VkDescriptorSet> descriptor_sets(context.MAX_FRAMES_IN_FLIGHT);
-        if (vkAllocateDescriptorSets(context.device, &allocInfo, descriptor_sets.data()) != VK_SUCCESS) {
-            throw std::runtime_error("failed to allocate descriptor sets!");
-        }
-
-        for (size_t i = 0; i < context.MAX_FRAMES_IN_FLIGHT; i++) {
-            VkDescriptorBufferInfo bufferInfo{};
-            bufferInfo.buffer = uniform_buffers[i]->m_buffer;
-            bufferInfo.offset = 0;
-            bufferInfo.range = num_lights * sizeof(Light);
-
-            std::array<VkWriteDescriptorSet, 1> descriptorWrites{};
-
-            descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-            descriptorWrites[0].dstSet = descriptor_sets[i];
-            descriptorWrites[0].dstBinding = 0;
-            descriptorWrites[0].dstArrayElement = 0;
-            descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-            descriptorWrites[0].descriptorCount = 1;
-            descriptorWrites[0].pBufferInfo = &bufferInfo;
-            vkUpdateDescriptorSets(context.device, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
-        }
-        return descriptor_sets;
-    }
-
-    std::vector<VkDescriptorSet> CreateDescriptorSets(const VulkanContext& context, VkDescriptorSetLayout descriptorSetLayout, VkDescriptorPool descriptorPool, 
-        const std::vector<std::shared_ptr<VulkanSharedBuffer>>& uniform_buffers, std::shared_ptr<VulkanTexture> texture) {
         std::vector<VkDescriptorSetLayout> layouts(context.MAX_FRAMES_IN_FLIGHT, descriptorSetLayout);
         VkDescriptorSetAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
@@ -762,15 +741,16 @@ namespace vk::init {
         }
 
         for (size_t i = 0; i < context.MAX_FRAMES_IN_FLIGHT; i++) {
-            VkDescriptorBufferInfo bufferInfo{};
-            bufferInfo.buffer = uniform_buffers[i]->m_buffer;
-            bufferInfo.offset = 0;
-            bufferInfo.range = sizeof(UniformBufferObject);
+            VkDescriptorBufferInfo light_buffer_info{};
+            light_buffer_info.buffer = light_buffers[i]->m_buffer;
+            light_buffer_info.offset = 0;
+            light_buffer_info.range = num_lights * sizeof(Light);
 
-            VkDescriptorImageInfo imageInfo{};
-            imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-            imageInfo.imageView = texture->m_image->m_view;
-            imageInfo.sampler = texture->m_sampler;
+            VkDescriptorBufferInfo camera_buffer_info{};
+            camera_buffer_info.buffer = uniform_buffers[i]->m_buffer;
+            camera_buffer_info.offset = 0;
+            camera_buffer_info.range = sizeof(UniformBufferObject);
+
 
             std::array<VkWriteDescriptorSet, 2> descriptorWrites{};
 
@@ -780,18 +760,66 @@ namespace vk::init {
             descriptorWrites[0].dstArrayElement = 0;
             descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
             descriptorWrites[0].descriptorCount = 1;
-            descriptorWrites[0].pBufferInfo = &bufferInfo;
+            descriptorWrites[0].pBufferInfo = &camera_buffer_info;
 
             descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
             descriptorWrites[1].dstSet = descriptor_sets[i];
             descriptorWrites[1].dstBinding = 1;
             descriptorWrites[1].dstArrayElement = 0;
-            descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+            descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
             descriptorWrites[1].descriptorCount = 1;
-            descriptorWrites[1].pImageInfo = &imageInfo;
+            descriptorWrites[1].pBufferInfo = &light_buffer_info;
             vkUpdateDescriptorSets(context.device, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
+
         }
         return descriptor_sets;
+    }
+
+    VkDescriptorSet CreateDescriptorSets(const VulkanContext& context, VkDescriptorSetLayout descriptorSetLayout, VkDescriptorPool descriptorPool, 
+         std::shared_ptr<VulkanTexture> texture, std::shared_ptr<vk::VulkanSharedBuffer>& material_buffer) {
+
+        std::vector<VkDescriptorSetLayout> layouts(context.MAX_FRAMES_IN_FLIGHT, descriptorSetLayout);
+        VkDescriptorSetAllocateInfo allocInfo{};
+        allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+        allocInfo.descriptorPool = descriptorPool;
+        allocInfo.descriptorSetCount = 1;
+        allocInfo.pSetLayouts = layouts.data();
+
+        VkDescriptorSet descriptor_set;
+        if (vkAllocateDescriptorSets(context.device, &allocInfo, &descriptor_set) != VK_SUCCESS) {
+            throw std::runtime_error("failed to allocate descriptor sets!");
+        }
+
+        VkDescriptorBufferInfo material_data{};
+        material_data.buffer = material_buffer->m_buffer;
+        material_data.offset = 0;
+        material_data.range = sizeof(MaterialData);
+
+        VkDescriptorImageInfo imageInfo{};
+        imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        imageInfo.imageView = texture->m_image->m_view;
+        imageInfo.sampler = texture->m_sampler;
+
+        std::array<VkWriteDescriptorSet, 2> descriptorWrites{};
+
+        descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        descriptorWrites[0].dstSet = descriptor_set;
+        descriptorWrites[0].dstBinding = 0;
+        descriptorWrites[0].dstArrayElement = 0;
+        descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        descriptorWrites[0].descriptorCount = 1;
+        descriptorWrites[0].pImageInfo = &imageInfo;
+
+        descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        descriptorWrites[1].dstSet = descriptor_set;
+        descriptorWrites[1].dstBinding = 1;
+        descriptorWrites[1].dstArrayElement = 0;
+        descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        descriptorWrites[1].descriptorCount = 1;
+        descriptorWrites[1].pBufferInfo = &material_data;
+        vkUpdateDescriptorSets(context.device, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
+
+        return descriptor_set;
     }
 
     void CreateSyncObjects(const VulkanContext& context,

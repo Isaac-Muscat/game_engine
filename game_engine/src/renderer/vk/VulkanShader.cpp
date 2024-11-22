@@ -2,13 +2,11 @@
 #include "VulkanShader.h"
 
 namespace vk {
-	VulkanShader::VulkanShader(const VulkanContext& context, const std::string& vert_filepath, const std::string& frag_filepath) 
-		: m_vert_filepath(vert_filepath), m_frag_filepath(frag_filepath) {
-		auto vertShaderCode = ReadFile(vert_filepath);
-		auto fragShaderCode = ReadFile(frag_filepath);
+	VulkanShader::VulkanShader(const VulkanContext& context, const std::string& filepath) 
+		: m_filepath(filepath) {
+		auto shader_code = ReadFile(filepath);
 
-		m_vert_shader_module = CreateShaderModule(vertShaderCode, context);
-		m_frag_shader_module = CreateShaderModule(fragShaderCode, context);
+		m_shader_module = CreateShaderModule(shader_code, context);
 	}
 	std::vector<char> VulkanShader::ReadFile(const std::string& filename) {
 		std::ifstream file(filename, std::ios::ate | std::ios::binary);

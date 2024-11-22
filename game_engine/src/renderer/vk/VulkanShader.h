@@ -6,16 +6,18 @@
 namespace vk {
 	class VulkanShader {
 	public:
-		VkShaderModule m_vert_shader_module;
-		VkShaderModule m_frag_shader_module;
+		VkShaderModule m_shader_module;
+		std::string m_filepath;
 
-		VulkanShader(const VulkanContext& context, const std::string& vert_filename, const std::string& frag_filename);
+		VulkanShader(const VulkanContext& context, const std::string& filename);
 		static std::vector<char> ReadFile(const std::string& filename);
 		static VkShaderModule CreateShaderModule(const std::vector<char>& code, const VulkanContext& context);
-	private:
-		std::string m_vert_filepath;
-		std::string m_frag_filepath;
 	};
+
+    struct ShaderStages {
+        std::shared_ptr<VulkanShader> vertex_shader;
+        std::shared_ptr<VulkanShader> fragment_shader;
+    };
 
 }
 

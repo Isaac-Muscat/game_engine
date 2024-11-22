@@ -1,17 +1,26 @@
 #pragma once
 #include "pch.h"
 #include "VulkanTexture.h"
+#include "VulkanShader.h"
+#include "renderer/vk/VulkanBuffer.h"
+#include "renderer/vk/VulkanTypes.h"
 
 namespace vk {
+    struct MaterialData {
+        alignas(16) glm::vec3 albedo;
+        alignas(4) float roughness;
+        alignas(4) float metallic;
+        alignas(4) float ao;
+    };
 	// TODO: Add builder functionality.
 	class VulkanMaterial {
 	public:
-		VulkanMaterial(std::shared_ptr<VulkanTexture> texture);
-		VkDescriptorSet* GetDescriptorSet(size_t current_frame) {
-			return  &m_descriptor_sets[current_frame];
-		}
-	private:
+        RenderPipeline m_pipeline;
+        ShaderStages m_shader_stages;
+        VkDescriptorSet m_descriptor_set;
 		std::shared_ptr<VulkanTexture> m_texture;
-		std::vector<VkDescriptorSet> m_descriptor_sets;
+        std::shared_ptr<VulkanSharedBuffer> m_material_data;
+
+		VulkanMaterial(std::shared_ptr<VulkanShader> vertex_shader, std::shared_ptr<VulkanShader> fragment_shader, std::shared_ptr<VulkanTexture> texture);
 	};
 }

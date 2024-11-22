@@ -114,6 +114,7 @@
     <ClInclude Include="src\hid\windows\Win32Window.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\physics\AABB.h" />
+    <ClInclude Include="src\physics\SphereCollider.h" />
     <ClInclude Include="src\physics\TriangleBVH.h" />
     <ClInclude Include="src\renderer\Camera.h" />
     <ClInclude Include="src\renderer\Light.h" />

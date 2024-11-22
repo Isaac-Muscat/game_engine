@@ -1,4 +1,5 @@
 #pragma once
+#include "core/AssetManager.h"
 #include "pch.h"
 #include "ecs/Components.h"
 #include "ecs/EntityScript.h"
@@ -6,6 +7,7 @@
 #include "core/Time.h"
 #include "core/SimplexNoise.h"
 #include "physics/TriangleBVH.h"
+
 
 class TerrainManager : public EntityScript {
 public:
@@ -16,7 +18,6 @@ public:
     int current_chunk_x = 0;
     int current_chunk_z = 0;
     int w = 3;
-    std::shared_ptr<vk::VulkanTexture> white_texture;
     std::shared_ptr<vk::VulkanMaterial> white_material;
 
     Entity GetClosestChunk(glm::vec3 pos) {
@@ -36,6 +37,7 @@ public:
     }
 
     void MakeTerrain(int size_x, int size_z, int x_offset, int z_offset, Entity terrain) {
+        auto pos = terrain.GetComponent<TransformComponent>().position;
 
         std::vector<vk::Vertex> vertices;
         std::vector<uint32_t> indices;
@@ -93,6 +95,16 @@ public:
                 indices.push_back(index + 2);
                 
                 index += 3;
+
+                /*
+                if (i_z == 3 && i_x == 3) {
+                    Entity cube;
+                    std::shared_ptr<vk::VulkanMesh> cube_mesh;
+                    cube.AddComponent<TransformComponent>({ v4.pos + pos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f)});
+                    cube.AddComponent<MeshComponent>({ cube_mesh });
+                    cube.AddComponent<MaterialComponent>({ white_material });
+                }
+                */
             }
         }
         terrain.AddComponent<MeshColliderComponent>({bvh, true, false});
@@ -101,8 +113,7 @@ public:
 
     void OnAwake() override {
         player_entity = FindEntityByTag("main_player");
-        white_texture = std::make_shared<vk::VulkanTexture>("assets/textures/white.png");
-        white_material = std::make_shared<vk::VulkanMaterial>(white_texture);
+        white_material = Assets::LoadMaterial("assets/materials/red_pbr.mat");
 
         for (int x = -w; x <= w; x++) {
             for (int z = -w; z <= w; z++) {

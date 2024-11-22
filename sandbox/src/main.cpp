@@ -1,11 +1,12 @@
-#include <Core/Core.h>
+#include <core/Core.h>
 
 #include "TerrainManager.h"
+#include "core/AssetManager.h"
+#include "ecs/Components.h"
+#include "physics/SphereCollider.h"
 
 Entity point_light;
 Entity sun;
-
-
 
 void Application::OnCreate() {
 	// Test Workspace
@@ -21,7 +22,7 @@ void Application::OnCreate() {
     // Add lights
     point_light = scene->m_ecs->CreateEntity();
     LightComponent light1 = {};
-    light1.color = glm::vec3(0.6,0.5,0.4);
+    light1.color = glm::vec3(0.8,0.8,0.8);
     light1.ambient = 0.0f;
     light1.diffuse = 1.0f;
     light1.type = LightType::Point;
@@ -30,11 +31,11 @@ void Application::OnCreate() {
 
 	
 	// Make buffers abstract and keep meshes graphics api independant. Same for textures?
-    std::shared_ptr<vk::VulkanMesh> cube_mesh = std::make_shared<vk::VulkanMesh>("assets/models/cube.obj");
-    std::shared_ptr<vk::VulkanMesh> sphere_mesh = std::make_shared<vk::VulkanMesh>("assets/models/sphere.obj");
+    std::shared_ptr<vk::VulkanMesh> cube_mesh = Assets::LoadMesh("assets/models/cube.obj");
+    std::shared_ptr<vk::VulkanMesh> sphere_mesh = Assets::LoadMesh("assets/models/sphere.obj");
 
-    std::shared_ptr<vk::VulkanTexture> white_texture = std::make_shared<vk::VulkanTexture>("assets/textures/white.png");
-    std::shared_ptr<vk::VulkanMaterial> white_material = std::make_shared<vk::VulkanMaterial>(white_texture);
+    std::shared_ptr<vk::VulkanMaterial> white_material = Assets::LoadMaterial("assets/materials/default_white.mat");
+    std::shared_ptr<vk::VulkanMaterial> red_pbr_material = Assets::LoadMaterial("assets/materials/red_pbr.mat");
 
     // Create terrain manager entity
     Entity terrain_manager = scene->m_ecs->CreateEntity();
@@ -47,20 +48,19 @@ void Application::OnCreate() {
     Entity cube = scene->m_ecs->CreateEntity();
     cube.AddComponent<TransformComponent>({ glm::vec3(10.0f, 3.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f)});
     cube.AddComponent<MeshComponent>({ cube_mesh });
-    cube.AddComponent<MaterialComponent>({ white_material });
+    cube.AddComponent<MaterialComponent>({ red_pbr_material });
 	cube.AddComponent<AABBComponent>({AABB(glm::vec3(-1), glm::vec3(1)), false, false});
 
     Entity sphere = scene->m_ecs->CreateEntity();
     sphere.AddComponent<TransformComponent>({ glm::vec3(7.0f, 3.0f, -3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0f)});
     sphere.AddComponent<MeshComponent>({ sphere_mesh });
-    sphere.AddComponent<MaterialComponent>({ white_material });
+    sphere.AddComponent<MaterialComponent>({ red_pbr_material });
 
     point_light.AddComponent<MeshComponent>({ sphere_mesh });
     point_light.AddComponent<MaterialComponent>({ white_material });
 
-    std::shared_ptr<vk::VulkanMesh> mesh = std::make_shared<vk::VulkanMesh>("assets/models/viking_room.obj");
-    std::shared_ptr<vk::VulkanTexture> texture = std::make_shared<vk::VulkanTexture>("assets/textures/viking_room.png");
-    std::shared_ptr<vk::VulkanMaterial> material = std::make_shared<vk::VulkanMaterial>(texture);
+    std::shared_ptr<vk::VulkanMesh> mesh = Assets::LoadMesh("assets/models/viking_room.obj");
+    std::shared_ptr<vk::VulkanMaterial> material = Assets::LoadMaterial("assets/materials/viking_room.mat");
 
     for (int i = -1; i < 2; i++) {
         for (int j = -1; j < 2; j++) {
@@ -82,7 +82,7 @@ void Application::OnCreate() {
 	ScriptComponent camera_controller = { std::make_shared<PlayerController>() };
 	camera_controller.script->m_entity = camera_entity;
 
-	camera_entity.AddComponent<AABBComponent>({AABB(glm::vec3(-0.5), glm::vec3(0.5)), false, false});
+	camera_entity.AddComponent<SphereColliderComponent>({SphereCollider(glm::vec3(0), 1), false, false});
 	camera_entity.AddComponent<CameraComponent>({ Camera() });
 	camera_entity.AddComponent<TransformComponent>({ glm::vec3(0, 15, 0), glm::vec3(1), glm::vec3(1) });
 	camera_entity.AddComponent<ScriptComponent>(camera_controller);

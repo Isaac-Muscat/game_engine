@@ -15,31 +15,20 @@ I will only stop using these fancy C++ features if I need more performance for t
 I think they hit the sweet spot in terms of performance and ease of use.
 
 ## What was I Doing Last
-Need to make Asset manager so no redundant assets = descriptors manager properly
-
-### Lights
 Make separate list for each light type
 Variable size light array. In the middle of changing uniform to storage bufffer but not sure if this is best.
 Just added 2nd light so need to make size of lights array passed to shader dynamic.
-
-### Other
-Quuick profiling hack on render time taken and update time taken (Not Accurate)
 Need to make camera use transform component instead
 
 ## Task List
 Automatic shader recompliation on change
-1. Scene Graph Component
+1. Batch renderer for 2D
+2. UI (or IMGUI, but really want to attempt to reinvent the wheel on this one)
+3. Scene Graph Component
     - This will be optionally added to an entity to allow for that entity to enter the scene graph
     - This is not super performant, but it can allow helpful queries for the developer
-2. Material System
-    - This will combine descriptors and pipelines into one object
-    - Need to figure out where shaders fit in
-3. Lights
-    - Use Storage Buffers that are dynamically changing in size if more lights are added or removed
-    - Light component with different types
-4. PBR pipeline
+4. PBR pipeline, Phong pipeline, defered rendering pipline, other pipeline types? (obviously depnds on shaders used)
 5. Animation
-6. Start procedural world/terrain generation (In sandbox as target game)
 
 ## To Be Implemented
 * Compute Shader frustrum culling by uploading scene onto GPU with AABBs and/or Binary Space Partitioning
@@ -61,7 +50,6 @@ Automatic shader recompliation on change
 	* SoA
 	* Environment Maps
 	* Etc, etc, ...
-
 * Platform Specific Code
 	* Win32 window to replace glfw
 * Audio

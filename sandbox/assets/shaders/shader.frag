@@ -8,8 +8,6 @@ layout(location = 3) in vec3 fragPosition;
 
 layout(location = 0) out vec4 outColor;
 
-layout(set = 0, binding = 1) uniform sampler2D texSampler;
-
 struct Light {
     int type;
     float ambient, diffuse, specular;
@@ -23,9 +21,17 @@ struct Light {
 #define Spot 2
 #define Area 3
 
-layout(set = 1, binding = 0) readonly buffer LightBuffer {
+layout(set = 0, binding = 1) readonly buffer LightBuffer {
     Light lights[];
 } light_buffer;
+
+layout(set = 1, binding = 0) uniform sampler2D texSampler;
+//layout(set = 1, binding = 1) uniform UniformBufferObject {
+//    glm::vec4 albedo;
+//    glm::vec4 roughness;
+//    glm::vec4 specular;
+//    etc...
+//} material_constants;
 
 void main() {
     vec3 lighting = vec3(0);

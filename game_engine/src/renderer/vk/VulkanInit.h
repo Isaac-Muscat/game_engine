@@ -17,11 +17,11 @@ namespace vk::init {
     
     std::vector<VkDescriptorSetLayout> CreateDescriptorSetLayouts(const VulkanContext& context);
     VkRenderPass CreateRenderPass(const VulkanContext& context);
-    VkPipeline CreateGraphicsPipeline(const VulkanContext& context, std::shared_ptr<VulkanShader> shader, const std::unique_ptr<VulkanSwapchain>& swapchain, VkRenderPass renderpass, std::vector<VkDescriptorSetLayout> descriptor_set_layouts, VkPipelineLayout* p_pipeline_layout);
+    VkPipeline CreateGraphicsPipeline(const VulkanContext& context, std::shared_ptr<VulkanShader> vertex_shader, std::shared_ptr<VulkanShader> fragment_shader, const std::unique_ptr<VulkanSwapchain>& swapchain, VkRenderPass renderPass, std::vector<VkDescriptorSetLayout> descriptorSetLayouts, VkPipelineLayout* pipelineLayout);
     
     VkImageView CreateImageView(VkDevice device, VkImage image, VkFormat format, VkImageAspectFlags aspect_flags, uint32_t mip_levels);
     VkDescriptorPool CreateDescriptorPool(const VulkanContext& context);
-    VkDescriptorPool CreateLightDescriptorPool(const VulkanContext& context);
+    VkDescriptorPool CreateSceneDescriptorPool(const VulkanContext& context);
     VkCommandPool CreateCommandPool(const VulkanContext& context);
 
     void CreateBuffer(const VulkanContext& context, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& buffer_memory);
@@ -32,9 +32,11 @@ namespace vk::init {
 
     void LightsUpdateDescriptorSets(const VulkanContext& context, VkDescriptorSetLayout descriptorSetLayout, VkDescriptorPool descriptorPool, const std::vector<std::shared_ptr<VulkanSharedBuffer>>& uniform_buffers, uint32_t num_lights, std::vector<VkDescriptorSet>& descriptor_sets);
 
-    std::vector<VkDescriptorSet> LightsCreateDescriptorSets(const VulkanContext& context, VkDescriptorSetLayout descriptorSetLayout, VkDescriptorPool descriptorPool, const std::vector<std::shared_ptr<VulkanSharedBuffer>>& uniform_buffers, uint32_t num_lights);
+    std::vector<VkDescriptorSet> CreateSceneDescriptorSets(const VulkanContext& context, VkDescriptorSetLayout descriptorSetLayout, VkDescriptorPool descriptorPool, 
+        const std::vector<std::shared_ptr<VulkanSharedBuffer>>& light_buffers, const std::vector<std::shared_ptr<VulkanSharedBuffer>>& uniform_buffers, uint32_t num_lights);
 
-    std::vector<VkDescriptorSet> CreateDescriptorSets(const VulkanContext& context, VkDescriptorSetLayout descriptor_set_layout, VkDescriptorPool descriptor_pool, const std::vector<std::shared_ptr<VulkanSharedBuffer>>& uniform_buffers, std::shared_ptr<VulkanTexture> texture);
+    VkDescriptorSet CreateDescriptorSets(const VulkanContext& context, VkDescriptorSetLayout descriptorSetLayout, VkDescriptorPool descriptorPool, 
+         std::shared_ptr<VulkanTexture> texture, std::shared_ptr<vk::VulkanSharedBuffer>& material_buffer);
 
     VkSampleCountFlagBits GetMaxUsableSampleCount(VkPhysicalDevice physical_device);
     SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice device, VkSurfaceKHR surface);
