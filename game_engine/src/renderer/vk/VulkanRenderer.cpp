@@ -1,6 +1,8 @@
+#include "glm/ext/matrix_transform.hpp"
+#include "pch.h"
 #include "ecs/ComponentArray.h"
 #include "ecs/Components.h"
-#include "pch.h"
+#include "core/AssetManager.h"
 #include "VulkanRenderer.h"
 #include "VulkanInit.h"
 #include "VulkanValidationLayers.h"
@@ -49,6 +51,7 @@ namespace vk {
 	}
 
     void VulkanRenderer::BeginFrame(const Camera& camera, std::vector<Light>& lights) {
+        std::cout << "Begin frame" << "\n";
         m_current_camera = camera;
         m_current_lights = &lights;
 
@@ -73,7 +76,7 @@ namespace vk {
         renderPassInfo.renderArea.offset = { 0, 0 };
         renderPassInfo.renderArea.extent = m_swapchain->m_extent;
         std::array<VkClearValue, 2> clearValues{};
-        clearValues[0].color = { {0.0f, 0.0f, 0.0f, 1.0f} };
+        clearValues[0].color = { {0.5f, 0.8f, 1.0f, 1.0f} };
         clearValues[1].depthStencil = { 1.0f, 0 };
         renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
         renderPassInfo.pClearValues = clearValues.data();
@@ -85,8 +88,10 @@ namespace vk {
 
 	void VulkanRenderer::Draw(const std::shared_ptr<VulkanMesh>& mesh, glm::mat4 transform, const std::shared_ptr<VulkanMaterial>& material) {
         if (m_last_material != material) {
+            std::cout << "Material changed" << "\n";
             m_last_material = material;
             if (m_last_pipeline != material->m_pipeline.pipeline) {
+                std::cout << "Pipeline changed" << "\n";
                 m_last_pipeline = material->m_pipeline.pipeline;
                 // Bind the pipline
                 vkCmdBindPipeline(m_command_buffers[m_current_frame], VK_PIPELINE_BIND_POINT_GRAPHICS, material->m_pipeline.pipeline);
@@ -141,8 +146,54 @@ namespace vk {
         vkCmdDrawIndexed(m_command_buffers[m_current_frame], static_cast<uint32_t>(mesh->m_indices.size()), 1, 0, 0, 0);
 	}
 
+    void VulkanRenderer::DrawGUI() {
+        
+    }
+
 
     void VulkanRenderer::EndFrame() {
+        std::vector<Vertex> vertices;
+        std::vector<uint32_t> indices;
+        vk::Vertex v1, v2, v3, v4;
+
+        glm::vec3 color(1.0f);
+        uint32_t index = 0;
+
+        v1 = { glm::vec3(0.0f, -0.5f, 0.5f), color, glm::vec2(0), glm::vec3(0, 1, 0) };
+        v2 = { glm::vec3(0.0f, -0.5f, -0.5f), color, glm::vec2(0), glm::vec3(0, 1, 0) };
+        v3 = { glm::vec3(0.0f, 0.5f, -0.5f), color, glm::vec2(0), glm::vec3(0, 1, 0) };
+        v4 = { glm::vec3(0.0f, 0.5f, 0.5f), color, glm::vec2(0), glm::vec3(0, 1, 0) };
+        v1.normal = glm::vec3(0, 1, 0);
+        v2.normal = glm::vec3(0, 1, 0);
+        v3.normal = glm::vec3(0, 1, 0);
+        v4.normal = glm::vec3(0, 1, 0);
+        vertices.push_back(v1);
+        vertices.push_back(v2);
+        vertices.push_back(v3);
+        vertices.push_back(v4);
+        indices.push_back(index);
+        indices.push_back(index + 2);
+        indices.push_back(index + 1);
+    
+        indices.push_back(index);
+        indices.push_back(index + 3);
+        indices.push_back(index + 2);
+
+        std::shared_ptr<VulkanMesh> mesh = std::make_shared<VulkanMesh>(vertices, indices);
+        glm::mat4 transform = glm::identity<glm::mat4>();
+
+        auto material = Assets::LoadMaterial("assets/materials/default_white.mat");
+        vkCmdBindPipeline(m_command_buffers[m_current_frame], VK_PIPELINE_BIND_POINT_GRAPHICS, material->m_pipeline.pipeline);
+        vkCmdBindDescriptorSets(m_command_buffers[m_current_frame], VK_PIPELINE_BIND_POINT_GRAPHICS, material->m_pipeline.pipeline_layout, 1, 1, &material->m_descriptor_set, 0, nullptr);
+        VkBuffer vertexBuffers[] = { mesh->m_vertex_buffer->m_buffer };
+        VkDeviceSize offsets[] = { 0 };
+        vkCmdBindVertexBuffers(m_command_buffers[m_current_frame], 0, 1, vertexBuffers, offsets);
+        vkCmdBindIndexBuffer(m_command_buffers[m_current_frame], mesh->m_index_buffer->m_buffer, 0, VK_INDEX_TYPE_UINT32);
+
+        ModelPushConstant model = { transform };
+        vkCmdPushConstants(m_command_buffers[m_current_frame], material->m_pipeline.pipeline_layout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(ModelPushConstant), &model);
+        vkCmdDrawIndexed(m_command_buffers[m_current_frame], static_cast<uint32_t>(mesh->m_indices.size()), 1, 0, 0, 0);
+
         // End the renderpass
         vkCmdEndRenderPass(m_command_buffers[m_current_frame]);
 

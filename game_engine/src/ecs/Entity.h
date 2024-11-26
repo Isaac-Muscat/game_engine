@@ -9,9 +9,10 @@ public:
 	friend class EntityComponentSystem;
 	Entity(EntityID id, EntityComponentSystem* ecs) : m_id(id), m_ecs(ecs) {}
 	Entity() { m_id = 0; m_ecs = nullptr; };
-    //~Entity() { m_ecs->DestroyEntity(m_id); } // TODO: FIgure out how entities should get destroyed
+	//~Entity() { m_ecs->DestroyEntity(m_id); } // TODO: FIgure out how entities should get destroyed
 
 	EntityComponentSystem* GetECS() { return m_ecs; }
+	EntityID GetID() const { return m_id;  }
 
     int IsInitialized() { return m_id != 0; }
 

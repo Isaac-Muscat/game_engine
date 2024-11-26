@@ -59,11 +59,17 @@ void Application::OnCreate() {
     point_light.AddComponent<MeshComponent>({ sphere_mesh });
     point_light.AddComponent<MaterialComponent>({ white_material });
 
+    std::shared_ptr<vk::VulkanMesh> tree_model = Assets::LoadMesh("assets/models/tree1.obj");
+    std::shared_ptr<vk::VulkanMaterial> tree_material = Assets::LoadMaterial("assets/materials/tree_material.mat");
+	Entity tree = scene->m_ecs->CreateEntity();
+	tree.AddComponent<TransformComponent>({ glm::vec3(4.0f, 0.0f, 0.0f) });
+	tree.AddComponent<MeshComponent>({ tree_model });
+	tree.AddComponent<MaterialComponent>({ tree_material });
+
     std::shared_ptr<vk::VulkanMesh> mesh = Assets::LoadMesh("assets/models/viking_room.obj");
     std::shared_ptr<vk::VulkanMaterial> material = Assets::LoadMaterial("assets/materials/viking_room.mat");
-
-    for (int i = -1; i < 2; i++) {
-        for (int j = -1; j < 2; j++) {
+    for (int i = -10; i < 10; i++) {
+        for (int j = -10; j < 10; j++) {
             float rotation = (rand() % 3600) / 10.0f;
             Entity dungeon = scene->m_ecs->CreateEntity();
             dungeon.AddComponent<TransformComponent>({ glm::vec3(10.0f, i * 3.0f + 3.0f, j * 3.0f), glm::vec3(0.0f, glm::radians(rotation), 0.0f), glm::vec3(2.0f)});
@@ -72,10 +78,6 @@ void Application::OnCreate() {
         }
     }
 
-	Entity dungeon2 = scene->m_ecs->CreateEntity();
-	dungeon2.AddComponent<TransformComponent>({ glm::vec3(4.0f, 0.0f, 0.0f) });
-	dungeon2.AddComponent<MeshComponent>({ mesh });
-	dungeon2.AddComponent<MaterialComponent>({ material });
 
 	// Create First Person Camera.
 	Entity camera_entity = scene->m_ecs->CreateEntity();
@@ -108,7 +110,7 @@ void Application::OnUpdate() {
     if (Input::GetKeyPressed(GLFW_KEY_E) && !sun.IsInitialized()) {
         sun = GetCurrentScene()->m_ecs->CreateEntity();
         LightComponent light2 = {};
-        light2.color = glm::vec3(0.9,0.8,0.7);
+        light2.color = glm::vec3(1,1,0.7);
         light2.ambient = 0.05f;
         light2.diffuse = 1.0f;
         light2.type = LightType::Directional;

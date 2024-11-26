@@ -1,7 +1,7 @@
-texture assets/textures/white.png
+texture assets/textures/Atlas.png
 vertex_shader assets/shaders/pbr_vert.spv
 fragment_shader assets/shaders/pbr_frag.spv
-albedo 1.0 0.0 0.0
+albedo 1.0 1.0 1.0
 roughness 0.5
 metallic 0.1
 ao 0.1f

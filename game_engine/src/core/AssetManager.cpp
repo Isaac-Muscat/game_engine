@@ -40,6 +40,7 @@ std::shared_ptr<vk::VulkanMaterial> AssetManager::LoadMaterial(std::string path)
         std::shared_ptr<vk::VulkanTexture> texture;
         std::shared_ptr<vk::VulkanShader> vertex_shader;
         std::shared_ptr<vk::VulkanShader> fragment_shader;
+        vk::MaterialData material_data;
 
         std::string line;
         while (std::getline(file, line)) {
@@ -54,9 +55,20 @@ std::shared_ptr<vk::VulkanMaterial> AssetManager::LoadMaterial(std::string path)
                 vertex_shader = LoadShader(value);
             } else if (key == "fragment_shader") {
                 fragment_shader = LoadShader(value);
+            } else if (key == "albedo") {
+                std::string sg, sb;
+                std::getline(ss, sg, ' ');
+                std::getline(ss, sb, ' ');
+                material_data.albedo = glm::vec3(atof(value.data()), atof(sg.data()), atof(sb.data()));
+            } else if(key == "roughness") {
+                material_data.roughness = atof(value.data());
+            } else if(key == "metallic") {
+                material_data.metallic = atof(value.data());
+            } else if(key == "ao") {
+                material_data.ao = atof(value.data());
             }
         }
-        m_materials[path] = std::make_shared<vk::VulkanMaterial>(vertex_shader, fragment_shader, texture);
+        m_materials[path] = std::make_shared<vk::VulkanMaterial>(vertex_shader, fragment_shader, texture, material_data);
     }
     return m_materials[path];
 }

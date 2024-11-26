@@ -74,7 +74,7 @@ float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
 }
 
 void main() {
-    vec3 albedo = material.albedo;
+    vec3 albedo = material.albedo * texture(texSampler, fragTexCoord).rgb;
     float roughness = material.roughness;
     float metallic = material.metallic;
     float ao = material.ao;

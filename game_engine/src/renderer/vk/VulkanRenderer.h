@@ -16,12 +16,19 @@
 #include "vulkan/vulkan.h"
 
 namespace vk {
+    class UIRenderer {
+        VulkanSharedBuffer vbo;
+        void Rect(glm::vec2 min, glm::vec2 max, glm::vec4 color);
+        void Text(std::string text, glm::vec2 min, glm::vec2 max);
+    };
+
 	class VulkanRenderer {
 	public:
 		VulkanRenderer();
 		const VulkanContext& GetContext() const { return m_context; }
 		void BeginFrame(const Camera& camera, std::vector<Light>& lights);
 		void Draw(const std::shared_ptr<VulkanMesh>& mesh, glm::mat4 transform, const std::shared_ptr<VulkanMaterial>& material);
+		void DrawGUI();
 		void EndFrame();
 		void GetNextBuffer();
         
@@ -32,6 +39,7 @@ namespace vk {
 		VkRenderPass m_renderpass {};
 		std::unique_ptr<VulkanSwapchain> m_swapchain;
         std::unordered_map<std::string, RenderPipeline> m_pipeline_cache;
+        std::unique_ptr<UIRenderer> m_ui_renderer;
 
         std::vector<VkDescriptorSetLayout> m_descriptor_set_layouts;
 		VkDescriptorPool m_descriptor_pool;

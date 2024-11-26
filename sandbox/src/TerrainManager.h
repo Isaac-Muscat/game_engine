@@ -18,7 +18,7 @@ public:
     int current_chunk_x = 0;
     int current_chunk_z = 0;
     int w = 3;
-    std::shared_ptr<vk::VulkanMaterial> white_material;
+    std::shared_ptr<vk::VulkanMaterial> ground_material;
 
     Entity GetClosestChunk(glm::vec3 pos) {
         for (auto chunk: chunks) {
@@ -96,15 +96,15 @@ public:
                 
                 index += 3;
 
-                /*
                 if (i_z == 3 && i_x == 3) {
-                    Entity cube;
+                    Entity cube = CreateEntity();
+                    std::shared_ptr<vk::VulkanMesh> tree_model = Assets::LoadMesh("assets/models/tree1.obj");
+                    std::shared_ptr<vk::VulkanMaterial> tree_material = Assets::LoadMaterial("assets/materials/tree_material.mat");
                     std::shared_ptr<vk::VulkanMesh> cube_mesh;
                     cube.AddComponent<TransformComponent>({ v4.pos + pos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f)});
-                    cube.AddComponent<MeshComponent>({ cube_mesh });
-                    cube.AddComponent<MaterialComponent>({ white_material });
+                    cube.AddComponent<MeshComponent>({ tree_model });
+                    cube.AddComponent<MaterialComponent>({ tree_material });
                 }
-                */
             }
         }
         terrain.AddComponent<MeshColliderComponent>({bvh, true, false});
@@ -113,13 +113,13 @@ public:
 
     void OnAwake() override {
         player_entity = FindEntityByTag("main_player");
-        white_material = Assets::LoadMaterial("assets/materials/red_pbr.mat");
+        ground_material = Assets::LoadMaterial("assets/materials/dark_green_pbr.mat");
 
         for (int x = -w; x <= w; x++) {
             for (int z = -w; z <= w; z++) {
                 Entity terrain = CreateEntity();
                 terrain.AddComponent<TransformComponent>({ glm::vec3(x * size, -31.0f, z * size), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1)});
-                terrain.AddComponent<MaterialComponent>({ white_material });
+                terrain.AddComponent<MaterialComponent>({ ground_material });
                 MakeTerrain(size, size, x, z, terrain);
                 terrain.GetComponent<MeshColliderComponent>().bvh.m_position = terrain.GetComponent<TransformComponent>().position;
                 chunks.push_back(terrain);
@@ -142,7 +142,7 @@ public:
                     Entity terrain = CreateEntity();
                     terrain.AddComponent<TransformComponent>({ glm::vec3((current_chunk_x + w) * size, -31.0f, t_pos.z), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1)});
                     MakeTerrain(size, size, current_chunk_x + w, floor(t_pos.z/size), terrain);
-                    terrain.AddComponent<MaterialComponent>({ white_material });
+                    terrain.AddComponent<MaterialComponent>({ ground_material });
                     terrain.GetComponent<MeshColliderComponent>().bvh.m_position = terrain.GetComponent<TransformComponent>().position;
                     chunks[i] = terrain;
                 }
@@ -157,7 +157,7 @@ public:
                     Entity terrain = CreateEntity();
                     terrain.AddComponent<TransformComponent>({ glm::vec3((current_chunk_x - w) * size, -31.0f, t_pos.z), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1)});
                     MakeTerrain(size, size, current_chunk_x - w, floor(t_pos.z/size), terrain);
-                    terrain.AddComponent<MaterialComponent>({ white_material });
+                    terrain.AddComponent<MaterialComponent>({ ground_material });
                     terrain.GetComponent<MeshColliderComponent>().bvh.m_position = terrain.GetComponent<TransformComponent>().position;
                     chunks[i] = terrain;
                 }
@@ -174,7 +174,7 @@ public:
                     Entity terrain = CreateEntity();
                     terrain.AddComponent<TransformComponent>({ glm::vec3(t_pos.x, -31.0f, (current_chunk_z + w) * size), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1)});
                     MakeTerrain(size, size, floor(t_pos.x/size), current_chunk_z + w, terrain);
-                    terrain.AddComponent<MaterialComponent>({ white_material });
+                    terrain.AddComponent<MaterialComponent>({ ground_material });
                     terrain.GetComponent<MeshColliderComponent>().bvh.m_position = terrain.GetComponent<TransformComponent>().position;
                     chunks[i] = terrain;
                 }
@@ -189,7 +189,7 @@ public:
                     Entity terrain = CreateEntity();
                     terrain.AddComponent<TransformComponent>({ glm::vec3(t_pos.x, -31.0f, (current_chunk_z - w) * size), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1)});
                     MakeTerrain(size, size, floor(t_pos.x/size), current_chunk_z - w, terrain);
-                    terrain.AddComponent<MaterialComponent>({ white_material });
+                    terrain.AddComponent<MaterialComponent>({ ground_material });
                     terrain.GetComponent<MeshColliderComponent>().bvh.m_position = terrain.GetComponent<TransformComponent>().position;
                     chunks[i] = terrain;
                 }
