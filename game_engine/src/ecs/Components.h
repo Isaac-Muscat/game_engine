@@ -1,4 +1,6 @@
 #pragma once
+#include "glm/fwd.hpp"
+#include "glm/ext.hpp"
 #include "pch.h"
 #include "physics/SphereCollider.h"
 #include "renderer/vk/VulkanMesh.h"
@@ -38,11 +40,11 @@ struct TransformComponent {
 	glm::mat4 GetModelMatrix() {
 		glm::mat4 m = glm::mat4(1.0f);
 
-		m = glm::scale(m, scale);
-		m = glm::translate(m, position);
+        m = glm::translate(m, position);
 		m = glm::rotate(m, euler_angles.x, glm::vec3(1.0f, 0.0f, 0.0f));
 		m = glm::rotate(m, euler_angles.y, glm::vec3(0.0f, 1.0f, 0.0f));
 		m = glm::rotate(m, euler_angles.z, glm::vec3(0.0f, 0.0f, 1.0f));
+        m = glm::scale(m, scale);
 		return m;
 	}
     void Print() {

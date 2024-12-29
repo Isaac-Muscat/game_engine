@@ -12,10 +12,11 @@ namespace vk {
         glm::vec3 color;
         glm::vec2 texture_coords;
         glm::vec3 normal;
+        uint8_t material_id = 0;
         
 
         static VkVertexInputBindingDescription GetBindingDescription();
-        static std::array<VkVertexInputAttributeDescription, 4> GetAttributeDescriptions();
+        static std::array<VkVertexInputAttributeDescription, 5> GetAttributeDescriptions();
         bool operator==(const Vertex& other) const {
             return pos == other.pos && color == other.color && texture_coords == other.texture_coords && normal == other.normal;
         }

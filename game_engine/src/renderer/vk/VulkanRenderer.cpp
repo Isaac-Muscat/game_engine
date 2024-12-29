@@ -88,10 +88,10 @@ namespace vk {
 
 	void VulkanRenderer::Draw(const std::shared_ptr<VulkanMesh>& mesh, glm::mat4 transform, const std::shared_ptr<VulkanMaterial>& material) {
         if (m_last_material != material) {
-            std::cout << "Material changed" << "\n";
+            //std::cout << "Material changed" << "\n";
             m_last_material = material;
             if (m_last_pipeline != material->m_pipeline.pipeline) {
-                std::cout << "Pipeline changed" << "\n";
+                //std::cout << "Pipeline changed" << "\n";
                 m_last_pipeline = material->m_pipeline.pipeline;
                 // Bind the pipline
                 vkCmdBindPipeline(m_command_buffers[m_current_frame], VK_PIPELINE_BIND_POINT_GRAPHICS, material->m_pipeline.pipeline);

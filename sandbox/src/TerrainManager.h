@@ -14,10 +14,10 @@ public:
     std::vector<Entity> chunks;
     Entity player_entity;
     SimplexNoise noise = SimplexNoise(1, 1, 2, 0.5);
-    int size = 20;
+    int size = 10;
     int current_chunk_x = 0;
     int current_chunk_z = 0;
-    int w = 3;
+    int w = 7;
     std::shared_ptr<vk::VulkanMaterial> ground_material;
 
     Entity GetClosestChunk(glm::vec3 pos) {
@@ -47,7 +47,7 @@ public:
         // Each inner loop creates two triangles to make a quad (6 vertices each)
         int octaves = 4;
         float p_step = 1.0f;
-        float n_step = 0.007f;
+        float n_step = 0.003f;
         float h = 30;
         int index = 0;
         for (int i_x = 0; i_x < size_x; i_x++) {
@@ -61,9 +61,9 @@ public:
 
                 // TODO Fix normals!!
                 vk::Vertex v1, v2, v3;
-                v1 = { glm::vec3(p_x,         noise.fractal(octaves, n_x, n_z) * h,               p_z       ), color, glm::vec2(0), glm::vec3(0, 1, 0) };
-                v2 = { glm::vec3(p_x,         noise.fractal(octaves, n_x, n_z + n_step) * h,        p_z + p_step), color, glm::vec2(0), glm::vec3(0, 1, 0) };
-                v3 = { glm::vec3(p_x + p_step,  noise.fractal(octaves, n_x + n_step, n_z + n_step) * h, p_z + p_step), color, glm::vec2(0), glm::vec3(0, 1, 0) };
+                v1 = { glm::vec3(p_x,         noise.fractal(octaves, n_x, n_z) * h,               p_z       ), color, glm::vec2(0), glm::vec3(0, 1, 0), 0};
+                v2 = { glm::vec3(p_x,         noise.fractal(octaves, n_x, n_z + n_step) * h,        p_z + p_step), color, glm::vec2(0), glm::vec3(0, 1, 0), 0 };
+                v3 = { glm::vec3(p_x + p_step,  noise.fractal(octaves, n_x + n_step, n_z + n_step) * h, p_z + p_step), color, glm::vec2(0), glm::vec3(0, 1, 0), 0};
                 glm::vec3 n = calculate_normal({v1.pos, v2.pos, v3.pos});
                 v1.normal = n;
                 v2.normal = n;
@@ -79,9 +79,9 @@ public:
                 index += 3;
 
                 vk::Vertex v4, v5, v6;
-                v4 = { glm::vec3(p_x,           noise.fractal(octaves, n_x, n_z) * h,               p_z       ), color, glm::vec2(0), glm::vec3(0, 1, 0) };
-                v5 = { glm::vec3(p_x + p_step,  noise.fractal(octaves, n_x + n_step, n_z + n_step) * h, p_z + p_step), color, glm::vec2(0), glm::vec3(0, 1, 0) };
-                v6 = { glm::vec3(p_x + p_step,  noise.fractal(octaves, n_x + n_step, n_z) * h,        p_z       ), color, glm::vec2(0), glm::vec3(0, 1, 0) };
+                v4 = { glm::vec3(p_x,           noise.fractal(octaves, n_x, n_z) * h,               p_z       ), color, glm::vec2(0), glm::vec3(0, 1, 0), 0};
+                v5 = { glm::vec3(p_x + p_step,  noise.fractal(octaves, n_x + n_step, n_z + n_step) * h, p_z + p_step), color, glm::vec2(0), glm::vec3(0, 1, 0), 0};
+                v6 = { glm::vec3(p_x + p_step,  noise.fractal(octaves, n_x + n_step, n_z) * h,        p_z       ), color, glm::vec2(0), glm::vec3(0, 1, 0), 0};
                 n = calculate_normal({v4.pos, v5.pos, v6.pos});
                 v4.normal = n;
                 v5.normal = n;

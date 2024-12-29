@@ -4,6 +4,7 @@
 #include "ecs/EntityScript.h"
 #include "ecs/EntityComponentSystem.h"
 #include "renderer/Camera.h"
+#include "renderer/vk/VulkanMaterial.h"
 #include "renderer/vk/VulkanRenderer.h"
 #include "core/Time.h"
 
@@ -93,7 +94,6 @@ void Scene::RenderScene() {
         };
         light_vec.push_back(light);
     }
-    g_renderer->BeginFrame(m_main_camera.GetComponent<CameraComponent>().camera, light_vec);
     // TODO Do some sorting and frustrum culling
     std::vector<Entity> entities_sorted;
     for (const auto& e : entities) {
@@ -104,24 +104,32 @@ void Scene::RenderScene() {
         inline bool operator() (const Entity& e1, const Entity& e2) {
             auto mat1 = e1.GetComponent<MaterialComponent>();
             auto mat2 = e2.GetComponent<MaterialComponent>();
-            std::string val1 = mat1.material->m_shader_stages.vertex_shader->m_filepath + mat1.material->m_shader_stages.fragment_shader->m_filepath;
-            std::string val2 = mat2.material->m_shader_stages.vertex_shader->m_filepath + mat2.material->m_shader_stages.fragment_shader->m_filepath;
-            auto& mdat1 = mat1.material->m_material_data;
-            auto& mdat2 = mat2.material->m_material_data;
-            return val1 < val2 || mdat1 != mdat2;
+            uint64_t val1 = (uint64_t)mat1.material->m_pipeline.pipeline;
+            uint64_t val2 = (uint64_t)mat2.material->m_pipeline.pipeline;
+            uint64_t mdat1 = (uint64_t)mat1.material->m_material_buffer->m_buffer;
+            uint64_t mdat2 = (uint64_t)mat2.material->m_material_buffer->m_buffer;
+            return val1 < val2 || mdat1 < mdat2;
         }
     };
-    std::sort(entities_sorted.begin(), entities_sorted.end(), less_than());
+    //std::sort(entities_sorted.begin(), entities_sorted.end(), less_than());
 
+    float update_time = Stopwatch::Stop();
+    Stopwatch::Start();
+    g_renderer->BeginFrame(m_main_camera.GetComponent<CameraComponent>().camera, light_vec);
     // Final submission of all meshes
     for (const auto& e : entities_sorted) {
         MeshComponent& mesh = m_ecs->GetComponent<MeshComponent>(e.GetID());
         TransformComponent& transform = m_ecs->GetComponent<TransformComponent>(e.GetID());
         MaterialComponent& material = m_ecs->GetComponent<MaterialComponent>(e.GetID());
+        //std::cout << material.material->m_pipeline.pipeline << std::endl;
+        //std::cout << material.material->m_material_data[0].albedo.x << " " << material.material->m_material_data[0].albedo.y << " " << material.material->m_material_data[0].albedo.z << std::endl;
         // glm::rotate(glm::mat4(1.0f), Time::DeltaTime() * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f))
         g_renderer->Draw(mesh.mesh, transform.GetModelMatrix(), material.material);
     }
     g_renderer->EndFrame();
+    float render_time = Stopwatch::Stop();
+    std::cout << "Update Time (ms): " << update_time << " " << 
+                 "Render Time (ms): " << render_time << "\n";
 }
 
 void Scene::Destroy() {

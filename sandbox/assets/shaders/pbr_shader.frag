@@ -4,7 +4,8 @@ layout(location = 0) in vec3 fragColor;
 layout(location = 1) in vec2 fragTexCoord;
 layout(location = 2) in vec3 fragNormal;
 layout(location = 3) in vec3 fragPosition;
-layout(location = 4) in vec3 cameraPosition;
+layout(location = 4) flat in uint fragMatID;
+layout(location = 5) in vec3 cameraPosition;
 
 layout(location = 0) out vec4 outColor;
 
@@ -27,12 +28,19 @@ layout(set = 0, binding = 1) readonly buffer LightBuffer {
 } light_buffer;
 
 layout(set = 1, binding = 0) uniform sampler2D texSampler;
-layout(set = 1, binding = 1) uniform UniformBufferObject {
+
+
+struct Material {
     vec3 albedo;
     float roughness;
     float metallic;
     float ao;
-} material;
+};
+
+#define MAX_MATERIALS 10
+layout(set = 1, binding = 1) uniform MaterialBufferObject {
+    Material materials[MAX_MATERIALS];
+} material_buffer;
 
 
 vec3 fresnelSchlick(float cosTheta, vec3 F0)
@@ -74,6 +82,7 @@ float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
 }
 
 void main() {
+    Material material = material_buffer.materials[fragMatID];
     vec3 albedo = material.albedo * texture(texSampler, fragTexCoord).rgb;
     float roughness = material.roughness;
     float metallic = material.metallic;

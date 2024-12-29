@@ -9,6 +9,7 @@ GLFW_INCLUDE_DIR = "%{wks.location}/dependencies/glfw/include"
 GLM_INCLUDE_DIR = "%{wks.location}/dependencies/glm"
 STB_INCLUDE_DIR = "%{wks.location}/dependencies/stb"
 TINY_OBJ_LOADER_INCLUDE_DIR = "%{wks.location}/dependencies/tiny_obj_loader"
+TINY_GLTF_INCLUDE_DIR = "%{wks.location}/dependencies/tinygltf"
 
 workspace "game_engine"
 	architecture "x86_64"

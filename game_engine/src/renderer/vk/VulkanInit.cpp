@@ -5,6 +5,7 @@
 #include "VulkanValidationLayers.h"
 #include "hid/Window.h"
 #include "renderer/vk/VulkanBuffer.h"
+#include "renderer/vk/VulkanMaterial.h"
 #include "vulkan/vulkan_core.h"
 #include <memory>
 
@@ -793,7 +794,7 @@ namespace vk::init {
         VkDescriptorBufferInfo material_data{};
         material_data.buffer = material_buffer->m_buffer;
         material_data.offset = 0;
-        material_data.range = sizeof(MaterialData);
+        material_data.range = MAX_MATERIAL_DATA * sizeof(MaterialData);
 
         VkDescriptorImageInfo imageInfo{};
         imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;

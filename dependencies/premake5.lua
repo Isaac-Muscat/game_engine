@@ -62,3 +62,24 @@ project "glfw"
 	filter "configurations:Release"
 		runtime "Release"
 		optimize "on"
+
+project "tinygltf"
+	kind "StaticLib"
+	language "C"
+
+	targetdir ("%{wks.location}/bin/%{cfg.buildcfg}/%{prj.name}")
+	objdir ("%{wks.location}/bin/obj/%{cfg.buildcfg}/%{prj.name}")
+	location ("tinygltf")
+
+	files {
+		"tinygltf/tiny_gltf.h",
+		"tinygltf/tiny_gltf.cc"
+	}
+
+	filter "configurations:Debug"
+		runtime "Debug"
+		symbols "on"
+
+	filter "configurations:Release"
+		runtime "Release"
+		optimize "on"

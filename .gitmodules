@@ -13,3 +13,6 @@
 [submodule "premake-bin/premake-ecc"]
 	path = premake-bin/premake-ecc
 	url = https://github.com/MattBystrin/premake-ecc.git
+[submodule "dependencies/tinygltf"]
+	path = dependencies/tinygltf
+	url = https://github.com/syoyo/tinygltf.git

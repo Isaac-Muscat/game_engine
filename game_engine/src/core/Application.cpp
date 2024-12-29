@@ -60,15 +60,10 @@ void Application::Run() {
             m_scenes[m_current_scene_index]->CollisionUpdate();
         }
         OnUpdate();
-        float update_time = Stopwatch::Stop();
 
-        Stopwatch::Start();
         if (scene_loaded) {
             m_scenes[m_current_scene_index]->RenderScene();
         }
-        float render_time = Stopwatch::Stop();
-        std::cout << "Update Time (ms): " << update_time << " " << 
-                     "Render Time (ms): " << render_time << "\n";
     }
 
     if (scene_loaded) {

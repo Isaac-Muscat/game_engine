@@ -19,11 +19,13 @@ project "game_engine"
 		GLFW_INCLUDE_DIR,
 		GLM_INCLUDE_DIR,
 		STB_INCLUDE_DIR,
-		TINY_OBJ_LOADER_INCLUDE_DIR
+		TINY_OBJ_LOADER_INCLUDE_DIR,
+		TINY_GLTF_INCLUDE_DIR
 	}
 
 	links {
 		VULKAN_LIB,
+        "tinygltf",
 		"glfw",
 	}
 

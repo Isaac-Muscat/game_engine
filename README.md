@@ -6,6 +6,7 @@ I started out supporting only Windows and Vulkan, but I hope to support other pl
 Currently the only libraries being used are:
 * C++ STL
 * tiny_obj_loader
+* tinygltf
 * glm
 * GLFW
 * stb_image
@@ -22,12 +23,13 @@ Need to make camera use transform component instead
 
 ## Task List
 Automatic shader recompliation on change
+GLTF Loading models and animations
 1. Batch renderer for 2D
 2. UI (or IMGUI, but really want to attempt to reinvent the wheel on this one)
 3. Scene Graph Component
     - This will be optionally added to an entity to allow for that entity to enter the scene graph
     - This is not super performant, but it can allow helpful queries for the developer
-4. PBR pipeline, Phong pipeline, defered rendering pipline, other pipeline types? (obviously depnds on shaders used)
+4. Phong pipeline, defered rendering pipline, other pipeline types? (obviously depnds on shaders used)
 5. Animation
 
 ## To Be Implemented

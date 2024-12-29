@@ -20,7 +20,7 @@ namespace vk {
 
     // Struct for passing around commonly needed information
     typedef struct VulkanContext {
-        const int MAX_FRAMES_IN_FLIGHT = 2;
+        const int MAX_FRAMES_IN_FLIGHT = 3;
         VkInstance instance;
         VkSurfaceKHR surface;
         VkPhysicalDevice physical_device;
