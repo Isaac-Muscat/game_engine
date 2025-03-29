@@ -24,6 +24,11 @@ project "sandbox"
 		"game_engine"
 	}
 
+    postbuildcommands {
+        'cd "%{wks.location}/%{prj.name}/assets/shaders/"',
+        './compile.bat'
+    }
+
 	filter "configurations:Debug"
 		defines { "DEBUG" }
 		symbols "On"

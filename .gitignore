@@ -369,3 +369,4 @@ cmake_install.cmake
 compile_commands.json
 compile_commands
 *.make
+sandbox/output.txt

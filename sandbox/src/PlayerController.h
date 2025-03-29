@@ -1,4 +1,4 @@
-#include "TerrainManager.h"
+#include "CubeMarchTerrain.h"
 #include "ecs/Components.h"
 #include "ecs/EntityScript.h"
 #include "core/Time.h"
@@ -12,9 +12,9 @@
 
 class PlayerController : public EntityScript {
 public:
-    std::shared_ptr<TerrainManager> terrain_manager;
+    std::shared_ptr<CubeMarchTerrain> terrain_manager;
     // camera options
-    float MovementSpeed = 5.0f;
+    float MovementSpeed = 30.0f;
     float MouseSensitivity = 0.1f;
 
     glm::vec3 acceleration = glm::vec3(0.0f, -9.8f, 0.0f);
@@ -24,7 +24,7 @@ public:
     bool grounded = false;
 
     void OnAwake() override {
-        terrain_manager = FindEntityByTag("terrain_manager").GetScriptComponent<TerrainManager>();
+        terrain_manager = FindEntityByTag("terrain").GetScriptComponent<CubeMarchTerrain>();
     }
 
 	void OnUpdate() override {

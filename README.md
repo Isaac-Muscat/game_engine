@@ -16,9 +16,6 @@ I will only stop using these fancy C++ features if I need more performance for t
 I think they hit the sweet spot in terms of performance and ease of use.
 
 ## What was I Doing Last
-Make separate list for each light type
-Variable size light array. In the middle of changing uniform to storage bufffer but not sure if this is best.
-Just added 2nd light so need to make size of lights array passed to shader dynamic.
 Need to make camera use transform component instead
 
 ## Task List

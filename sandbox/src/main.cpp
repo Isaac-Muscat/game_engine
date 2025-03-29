@@ -1,6 +1,6 @@
 #include <core/Core.h>
 
-#include "TerrainManager.h"
+#include "CubeMarchTerrain.h"
 #include "core/AssetManager.h"
 #include "ecs/Components.h"
 #include "physics/SphereCollider.h"
@@ -39,11 +39,13 @@ void Application::OnCreate() {
 
     std::shared_ptr<vk::VulkanMaterial> white_material = Assets::LoadMaterial("assets/materials/default_white.mat");
     std::shared_ptr<vk::VulkanMaterial> red_pbr_material = Assets::LoadMaterial("assets/materials/red_pbr.mat");
+    std::shared_ptr<vk::VulkanMaterial> blue_pbr_material = Assets::LoadMaterial("assets/materials/blue_pbr.mat");
+    std::shared_ptr<vk::VulkanMaterial> dark_green_pbr_material = Assets::LoadMaterial("assets/materials/dark_green_pbr.mat");
 
     // Create terrain manager entity
     Entity terrain_manager = scene->m_ecs->CreateEntity();
-    terrain_manager.SetTag("terrain_manager");
-	ScriptComponent terrain_manager_script = { std::make_shared<TerrainManager>() };
+    terrain_manager.SetTag("terrain");
+	ScriptComponent terrain_manager_script = { std::make_shared<CubeMarchTerrain>() };
 	terrain_manager_script.script->m_entity = terrain_manager;
 	terrain_manager.AddComponent<ScriptComponent>(terrain_manager_script);
 
@@ -53,6 +55,28 @@ void Application::OnCreate() {
     cube.AddComponent<MeshComponent>({ cube_mesh });
     cube.AddComponent<MaterialComponent>({ red_pbr_material });
 	cube.AddComponent<AABBComponent>({AABB(glm::vec3(-1), glm::vec3(1)), false, false});
+
+    // ----------------------------------------------------
+    // ----------------------------------------------------
+    // ----------------------------------------------------
+    Entity cube_x = scene->m_ecs->CreateEntity();
+    cube_x.AddComponent<TransformComponent>({ glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0), glm::vec3(2.0f, 0.5f, 0.5f)});
+    cube_x.AddComponent<MeshComponent>({ cube_mesh });
+    cube_x.AddComponent<MaterialComponent>({ red_pbr_material });
+
+    Entity cube_y = scene->m_ecs->CreateEntity();
+    cube_y.AddComponent<TransformComponent>({ glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0), glm::vec3(0.5f, 2.0f, 0.5f)});
+    cube_y.AddComponent<MeshComponent>({ cube_mesh });
+    cube_y.AddComponent<MaterialComponent>({ dark_green_pbr_material });
+
+    Entity cube_z = scene->m_ecs->CreateEntity();
+    cube_z.AddComponent<TransformComponent>({ glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0), glm::vec3(0.5f, 0.5f, 2.0f)});
+    cube_z.AddComponent<MeshComponent>({ cube_mesh });
+    cube_z.AddComponent<MaterialComponent>({ blue_pbr_material });
+
+    // ----------------------------------------------------
+    // ----------------------------------------------------
+    // ----------------------------------------------------
 
     Entity sphere = scene->m_ecs->CreateEntity();
     sphere.AddComponent<TransformComponent>({ glm::vec3(7.0f, 3.0f, -3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0f)});

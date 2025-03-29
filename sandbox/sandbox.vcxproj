@@ -68,6 +68,10 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PostBuildEvent>
+      <Command>cd "$(SolutionDir)/$(ProjectName)/assets/shaders/"
+./compile.bat</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -88,8 +92,13 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
+    <PostBuildEvent>
+      <Command>cd "$(SolutionDir)/$(ProjectName)/assets/shaders/"
+./compile.bat</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\CubeMarchTerrain.h" />
     <ClInclude Include="src\EnemyManager.h" />
     <ClInclude Include="src\PlayerController.h" />
     <ClInclude Include="src\TerrainManager.h" />

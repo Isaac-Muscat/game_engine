@@ -1,5 +1,6 @@
 #pragma once
 #include "core/AssetManager.h"
+#include "glm/ext/quaternion_geometric.hpp"
 #include "pch.h"
 #include "ecs/Components.h"
 #include "ecs/EntityScript.h"
@@ -64,11 +65,12 @@ public:
                 v1 = { glm::vec3(p_x,         noise.fractal(octaves, n_x, n_z) * h,               p_z       ), color, glm::vec2(0), glm::vec3(0, 1, 0), 0};
                 v2 = { glm::vec3(p_x,         noise.fractal(octaves, n_x, n_z + n_step) * h,        p_z + p_step), color, glm::vec2(0), glm::vec3(0, 1, 0), 0 };
                 v3 = { glm::vec3(p_x + p_step,  noise.fractal(octaves, n_x + n_step, n_z + n_step) * h, p_z + p_step), color, glm::vec2(0), glm::vec3(0, 1, 0), 0};
-                glm::vec3 n = calculate_normal({v1.pos, v2.pos, v3.pos});
+                Triangle t = {v1.pos, v2.pos, v3.pos};
+                glm::vec3 n = glm::normalize(t.GetNormal());
                 v1.normal = n;
                 v2.normal = n;
                 v3.normal = n;
-                bvh.InsertTriangle({v1.pos, v2.pos, v3.pos});
+                bvh.InsertTriangle(t);
                 vertices.push_back(v1);
                 vertices.push_back(v2);
                 vertices.push_back(v3);

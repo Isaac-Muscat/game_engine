@@ -80,6 +80,9 @@ float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
 	
     return ggx1 * ggx2;
 }
+vec3 lerp(vec3 a, vec3 b, float t) {
+    return b * t + a * (1 - t);
+}
 
 void main() {
     Material material = material_buffer.materials[fragMatID];
@@ -160,8 +163,10 @@ void main() {
                 break;
         }
     }
+    vec3 fog_col = vec3(1);
+    float len = length(cameraPosition - fragPosition);
     vec3 ambient = vec3(0.03) * albedo * ao;
-    vec3 color = ambient + Lo;
+    vec3 color = lerp(ambient + Lo, fog_col, clamp(exp(len/50.0f)/10.0f - 1, 0, 1));
 	
     color = color / (color + vec3(1.0));
     color = pow(color, vec3(1.0/2.2));  
